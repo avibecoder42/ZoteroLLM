@@ -8,7 +8,7 @@ import { fmtDate } from '../../core/util.js';
 import { btn, card, field, textInput, textArea, select, segmented, checkbox, notice, emptyState, badge } from '../../ui/components.js';
 import { icon } from '../../ui/icons.js';
 import { R, rs, enc, loadProjects, openProject, closeProject, summaryLine, busy, isBusy, loadProject, aiInfo, aiEstimate, tokenText,
-  noteUsage } from './common.js';
+  noteUsage, zotllmProject, assignProject } from './common.js';
 
 // ------------------------------------------------------------------ Liste
 export function projectList() {
@@ -17,22 +17,29 @@ export function projectList() {
     loadProjects().catch(err => toast(err.message, 'error'));
     return h('div', { class: 'center-pad muted' }, t('Lade Projekte …'));
   }
+  if (!zotllmProject()) return emptyState('search', t('Kein Projekt geöffnet'), t('Eine Recherche gehört zu einem Projekt – zuerst unter Einrichtung ein Projekt öffnen oder anlegen.'));
   const create = () => busy('create', async () => {
-    const p = await api.post(`${R}/projects`, { title: t('Neues Projekt') });
+    const p = await api.post(`${R}/projects`, { title: zotllmProject().name || t('Neue Recherche'), settings: { zotllm_project: zotllmProject().id } });
     await loadProjects();
     openProject(p.id, 'project');
   });
+  const tile = (p, extra) => h('div', { key: p.id, class: 'row' },
+    h('button', { type: 'button', class: 'rs-project-tile grow', onclick: () => openProject(p.id) },
+      h('div', { class: 'grow' }, h('b', null, p.title),
+        p.question && h('div', { class: 'muted small rs-clamp' }, p.question),
+        h('div', { class: 'small' }, summaryLine(p.summary))),
+      h('div', { class: 'muted small nowrap' }, fmtDate(p.updated_at))), extra);
   return h('div', { class: 'view-body scroll' },
     h('div', { class: 'rs-narrow stack' },
-      h('div', { class: 'row' }, h('h2', { class: 'grow' }, t('Recherche-Projekte')),
-        btn(t('Neues Projekt'), { kind: 'primary', icon: 'plus', onClick: create, busy: isBusy('create') })),
-      s.projects.length ? s.projects.map(p => h('button', { key: p.id, type: 'button', class: 'rs-project-tile', onclick: () => openProject(p.id) },
-        h('div', { class: 'grow' }, h('b', null, p.title),
-          p.question && h('div', { class: 'muted small rs-clamp' }, p.question),
-          h('div', { class: 'small' }, summaryLine(p.summary))),
-        h('div', { class: 'muted small nowrap' }, fmtDate(p.updated_at))))
-        : emptyState('search', t('Noch kein Projekt'), t('Ein Projekt hält Fragestellung, Kriterien, Suchstrings, Treffer und Entscheide zusammen.'),
-          btn(t('Neues Projekt'), { kind: 'primary', icon: 'plus', onClick: create }))));
+      h('div', { class: 'row' }, h('h2', { class: 'grow' }, t('Recherchen in „{p}“', { p: zotllmProject().name })),
+        btn(t('Neue Recherche'), { kind: 'primary', icon: 'plus', onClick: create, busy: isBusy('create') })),
+      s.projects.length ? s.projects.map(p => tile(p))
+        : emptyState('search', t('Noch keine Recherche'), t('Eine Recherche hält Fragestellung, Kriterien, Suchstrings, Treffer und Entscheide zusammen.'),
+          btn(t('Neue Recherche'), { kind: 'primary', icon: 'plus', onClick: create })),
+      // Recherchen ohne (gültiges) Projekt, z. B. nach dem Löschen eines Projekts: nie still verloren, hier zuordnen
+      (s.unassigned || []).length ? h('div', { class: 'stack-sm' }, h('h3', null, t('Ohne Projekt')),
+        s.unassigned.map(p => tile(p, btn(t('Diesem Projekt zuordnen'), { size: 'sm', icon: 'plus', busy: isBusy(`assign${p.id}`),
+          onClick: () => busy(`assign${p.id}`, () => assignProject(p.id)) })))) : null));
 }
 
 // ------------------------------------------------------------------ Formular

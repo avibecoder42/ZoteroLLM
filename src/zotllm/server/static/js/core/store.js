@@ -6,7 +6,7 @@ import { fmtInt, nTexts } from './util.js';
 export const state = {
   ready: false,
   bootError: null,
-  view: 'setup',       // jeder Programmstart beginnt mit der Einrichtung
+  view: 'setup',       // beim Start: letztes Projekt und Ansicht (main.js), sonst die Einrichtung
   info: null,          // Version, Datenordner
   settings: null,
   catalog: null,       // Anbieter

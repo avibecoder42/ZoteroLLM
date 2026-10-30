@@ -174,7 +174,7 @@ zeigt das aktive Projekt; *Projekt*, *Fragen*, *Forschungsstand* und *Korpora* b
 
 ## Erste Schritte
 
-Jeder Programmstart beginnt im Fenster **Einrichtung**: oben *Alle Projekte*, *Neues Projekt* und *Projekt importieren*,
+Der erste Start (und jeder Start, solange Schritte der Einrichtung offen sind) beginnt im Fenster **Einrichtung**; sonst öffnet ZotLLM das zuletzt offene Projekt in der zuletzt benutzten Ansicht. Die Einrichtung zeigt oben *Alle Projekte*, *Neues Projekt* und *Projekt importieren*,
 darunter die Einrichtungs-Checkliste mit dem nächsten offenen Schritt hervorgehoben. Alle Seitenleisten lassen sich in
 der Breite ziehen (Doppelklick: Standardbreite).
 
@@ -259,8 +259,8 @@ werden nicht neu gelesen, nur für das neue Modell eingebettet.
 
 ## Recherche
 
-Die Ansicht **Recherche** (Strg+8) führt eine Literatursuche von der Fragestellung bis zur ausgewählten Literatur in
-Zotero. Ihre Projekte sind unabhängig von den Projekten von ZotLLM und liegen in `research.db` im Datenordner.
+Die Ansicht **Recherche** (Strg+2) führt eine Literatursuche von der Fragestellung bis zur ausgewählten Literatur in
+Zotero. Jede Recherche gehört zu einem ZotLLM-Projekt (die Projektseite zeigt ihren Stand); die Daten liegen in `research.db` im Datenordner.
 
 | Reiter | Was geschieht |
 |---|---|

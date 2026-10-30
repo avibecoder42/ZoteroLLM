@@ -5,8 +5,8 @@ All notable changes, newest first.
 ## 1.1.0 – 2026-10-30
 
 ### New
-- **Literature search** (new view, Ctrl+8): the step before the literature review, taken over from the standalone
-  literature search app as the module `zotllm.research`. A search project leads from the research question to the
+- **Database search** (new project view, Ctrl+2; German: “Recherche”): the step before the literature review, taken
+  over from the standalone literature search app (litsearch) as the module `zotllm.research`. A search project leads from the research question to the
   selected literature in Zotero, in eight tabs (Alt+1 … Alt+8):
   - **Project** and **Databases:** research question, criteria; disciplines and a database catalog with access, terms
     of use and keys.
@@ -20,8 +20,18 @@ All notable changes, newest first.
     PRISMA-S.
   - Optional **AI suggestions** (screening, databases, concept blocks, subfolders) with the model of the pre-selection
     in literature reviews; token and cost estimate before each run; decisions are always made by hand.
-  - Projects live in `research.db` in the data folder. Keys for the Zotero web API and the databases are read from the
-    key store (`zotero-web`, `openalex`, `ncbi`, `semanticscholar`); a settings section for them will follow.
+  - Every database search belongs to a ZotLLM project; the project page lists them with their screening status, and
+    searches without a project (e.g. after deleting one) can be assigned again. Data lives in `research.db` in the data folder.
+  - Keys for the Zotero web API and the databases are read from the key store (`zotero-web`, `openalex`, `ncbi`,
+    `semanticscholar`); a settings section for them will follow.
+
+### Changed
+- **Project views in the order of the workflow:** Project, Database search, Search, Corpora, Ask, Literature review
+  (Ctrl+1 … Ctrl+6). Index moves to **Ctrl+8**, the CSL editor stays on Ctrl+7.
+- **ZotLLM reopens the last project** in the view used last; the Setup window comes first only on the first start and
+  while setup steps are open.
+
+### Also new
 - Language models can answer with a **JSON schema** where the provider supports it (Claude structured outputs, Gemini,
   OpenAI); otherwise the schema is part of the request.
 

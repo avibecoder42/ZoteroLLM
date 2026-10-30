@@ -8,6 +8,7 @@ import { t } from '../core/i18n.js';
 import { icon } from '../ui/icons.js';
 import { btn, iconBtn, notice, openMenu, paneProps, splitter } from '../ui/components.js';
 import { navigate } from './shell.js';
+import { rs, openProject as openResearch, summaryLine } from './research/common.js';
 import { fmtAgo, fmtInt, plural, nIndexed } from '../core/util.js';
 import { projectBadge, projectColor, newProjectDialog, importProject, editProjectDialog, exportProject, projectMenuItems,
   archivedMenuItems, archiveProject, moveProject } from './projects.js';
@@ -159,6 +160,15 @@ function recentList(items, ic, empty, onOpen) {
     icon(ic, 16), h('span', { class: 'recent-name' }, x.title), h('span', { class: 'recent-date' }, fmtAgo(x.updated_at)))));
 }
 
+// Recherchen des Projekts (Modul „Recherche“) mit Stand des Screenings
+function researchList(items) {
+  if (!items || !items.length) return h('p', { class: 'muted' }, t('Noch keine Recherche in diesem Projekt.'));
+  return h('div', { class: 'recent-list' }, items.map(x => h('button', { key: x.id, type: 'button', class: 'recent-item', title: summaryLine(x.summary),
+    onclick: () => { rs().projects = null; openResearch(x.id); navigate('research'); } },
+  icon('litsearch', 16), h('span', { class: 'recent-name' }, x.title),
+  h('span', { class: 'recent-date' }, t('gesichtet {a}/{b}', { a: fmtInt(x.summary.screened || 0), b: fmtInt(x.summary.visible || 0) })))));
+}
+
 function projectOverview(st) {
   const p = project();
   if (!p) return null;
@@ -172,11 +182,13 @@ function projectOverview(st) {
         btn(t('Als Datei speichern'), { size: 'sm', kind: 'ghost', icon: 'download', title: t('Projekt als .zllm-Datei exportieren (Sicherung, anderer Rechner)'), onClick: () => exportProject(p) }),
         btn(t('Archivieren'), { size: 'sm', kind: 'ghost', icon: 'archive', title: t('Projekt ins Archiv verschieben – es lässt sich jederzeit zurückholen'), onClick: () => archiveProject(p) }))),
     h('div', { class: 'start-cards' },
+      actionCard('litsearch', t('Recherche'), t('Neue Literatur in Fachdatenbanken suchen, sichten und nach Zotero übernehmen.'), () => navigate('research')),
       actionCard('search', t('Suchen'), t('Bibliothek und Gruppen durchsuchen – ohne Sprachmodell.'), () => navigate('search')),
+      actionCard('corpus', t('Wissenskorpora'), t('Sammlungen aus Zotero für dieses Projekt bündeln.'), () => navigate('corpora')),
       actionCard('chat', t('Frage stellen'), t('Antworten aus den Korpora dieses Projekts, jede Aussage mit Quelle.'), () => navigate('ask'), ready),
-      actionCard('review', t('Forschungsstand'), t('Suchstrategie, Texte auswerten, Synthese schreiben und prüfen.'), () => navigate('review')),
-      actionCard('corpus', t('Wissenskorpora'), t('Sammlungen aus Zotero für dieses Projekt bündeln.'), () => navigate('corpora'))),
+      actionCard('review', t('Forschungsstand'), t('Suchstrategie, Texte auswerten, Synthese schreiben und prüfen.'), () => navigate('review'))),
     h('div', { class: 'start-columns' },
+      h('section', { class: 'start-section' }, h('h2', null, t('Recherchen')), researchList(st.research)),
       h('section', { class: 'start-section' }, h('h2', null, t('Korpora des Projekts')), corporaOverview()),
       h('section', { class: 'start-section' }, h('h2', null, t('Letzte Fragen')),
         recentList(st.chats, 'chat', t('Noch keine Fragen in diesem Projekt.'), c => { ui('ask').openChat = c.id; navigate('ask'); })),
@@ -193,8 +205,11 @@ export function startView() {
   if (sig && st.forSig !== sig && !st.loading) {
     st.loading = true;
     const pid = p.id;
-    Promise.all([api.get(`/api/chats?project=${pid}`), api.get(`/api/reviews?project=${pid}`)]).then(([c, r]) => {
-      st.chats = c.chats.slice(0, 6); st.reviews = r.reviews.slice(0, 6); st.forSig = sig; st.loading = false; update();
+    Promise.all([api.get(`/api/chats?project=${pid}`), api.get(`/api/reviews?project=${pid}`),
+      api.get('/api/research/projects').catch(() => ({ projects: [] }))]).then(([c, r, rp]) => {
+      st.chats = c.chats.slice(0, 6); st.reviews = r.reviews.slice(0, 6);
+      st.research = rp.projects.filter(x => (x.settings || {}).zotllm_project === pid);
+      st.forSig = sig; st.loading = false; update();
     }).catch(() => { st.loading = false; });
   }
   const s = state.setup;

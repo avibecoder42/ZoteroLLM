@@ -1,6 +1,6 @@
 // Start der Oberfläche: Daten laden, Zeichnen, regelmässig den Zustand des Dienstes abfragen.
 import { render } from './core/vdom.js';
-import { state, update, ui, setRenderer, loadStatus, loadSetup, loadCorpora, loadSettings, loadKeys, loadProjects, loadPresets, projectCorpora, toast, runningJob } from './core/store.js';
+import { state, update, ui, setRenderer, loadStatus, loadSetup, loadCorpora, loadSettings, loadKeys, loadProjects, loadPresets, projectCorpora, toast, runningJob, openProject } from './core/store.js';
 import * as api from './core/api.js';
 import { t, setLanguage, language } from './core/i18n.js';
 import { shell, handleKey, handleClick, navigate, VIEWS, GLOBAL_VIEWS } from './views/shell.js';
@@ -114,9 +114,18 @@ async function boot() {
   }
   applyLanguage();
   await Promise.all([loadStatus(), loadSetup(), loadCorpora(), loadProjects(), loadPresets(), loadKeys().catch(() => {})]);
-  // Jeder Programmstart beginnt mit der Einrichtung (dort: Alle Projekte, Neues Projekt, Projekt importieren);
-  // ein Aufruf aus Zotero (?view=…) springt danach direkt in die gewünschte Ansicht
-  state.view = 'setup';
+  // Weiter, wo zuletzt gearbeitet wurde: im zuletzt offenen Projekt und in dessen letzter Ansicht. Die Einrichtung
+  // kommt zuerst, solange dort Schritte offen sind oder es kein offenes Projekt gibt. Ein Aufruf aus Zotero (?view=…)
+  // springt danach direkt in die gewünschte Ansicht
+  const openSteps = state.setup ? state.setup.steps.filter(s => !s.done && !s.optional).length : 1;
+  let lastView = null;
+  try { lastView = localStorage.getItem('zllm.view'); } catch { /* privat */ }
+  if (state.projectId && !openSteps) {
+    await openProject(state.projectId);
+    state.view = VIEWS.some(v => v.id === lastView) ? lastView : 'start';
+  } else {
+    state.view = 'setup';
+  }
   state.ready = true;
   state.bootError = null;
   const params = new URLSearchParams(location.search);

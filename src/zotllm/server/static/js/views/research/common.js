@@ -1,7 +1,7 @@
 // Gemeinsamer Zustand und Laden für die Ansicht „Recherche“. Alles geht über /api/research/… – in der eigenständigen
 // App wie später in ZotLLM.
 import { h } from '../../core/vdom.js';
-import { update, ui, run, toast } from '../../core/store.js';
+import { state, update, ui, run, toast } from '../../core/store.js';
 import * as api from '../../core/api.js';
 import { t } from '../../core/i18n.js';
 import { fmtInt } from '../../core/util.js';
@@ -45,10 +45,24 @@ export async function loadInfo() {
   rs().info = await api.get(`${R}/info`);
 }
 
+// Jede Recherche gehört zu einem Projekt von ZotLLM (settings.zotllm_project); gezeigt werden die des aktiven Projekts.
+// Recherchen ohne gültiges Projekt (z. B. gelöscht) stehen unter „Ohne Projekt“ und lassen sich zuordnen.
+export const zotllmProject = () => (state.projects || []).find(p => p.id === state.projectId) || null;
+const ownerOf = p => (p.settings && p.settings.zotllm_project) || null;
+
 export async function loadProjects() {
   const r = await api.get(`${R}/projects`);
-  rs().projects = r.projects;
+  const s = rs();
+  const known = new Set((state.projects || []).map(p => p.id));  // auch archivierte: deren Recherchen ruhen mit
+  s.projects = r.projects.filter(p => ownerOf(p) === state.projectId);
+  s.unassigned = r.projects.filter(p => !known.has(ownerOf(p)));
+  s.forProject = state.projectId;
   update();
+}
+
+export async function assignProject(pid) {
+  await api.put(`${R}/projects/${pid}`, { settings: { zotllm_project: state.projectId } });
+  await loadProjects();
 }
 
 export async function loadProject(pid = rs().pid) {

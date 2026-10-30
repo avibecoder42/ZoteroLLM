@@ -10,7 +10,7 @@ ZotLLM erschliesst die eigene Zotero-Bibliothek – auch Gruppenbibliotheken –
 
 Davor kann die **Recherche** stehen: eine Literatursuche in Fachdatenbanken (PubMed, OpenAlex und weitere), mit Screening und Übergabe der ausgewählten Literatur in Zotero-Sammlungen.
 
-Die Navigationsleiste links ist zweigeteilt. Oben stehen die Ansichten des aktiven **Projekts**: Projekt, Suchen, Fragen, Forschungsstand und Korpora. Unten stehen **Recherche**, **CSL-Editor**, **Index**, **Hilfe** und **Einstellungen**; sie gelten für alle Projekte (die Recherche hat eigene Projekte). Über dem Menü zeigt die Projektkachel das aktive Projekt; ein Klick darauf (oder **Strg+P**) wechselt das Projekt.
+Die Navigationsleiste links ist zweigeteilt. Oben stehen die Ansichten des aktiven **Projekts** in der Reihenfolge des Ablaufs: Projekt, Recherche, Suchen, Korpora, Fragen und Forschungsstand – erst Literatur finden (neu in Fachdatenbanken oder in der eigenen Bibliothek), dann festlegen, was gelesen wird, dann damit arbeiten. Unten stehen **CSL-Editor**, **Index**, **Hilfe** und **Einstellungen**; sie gelten für alle Projekte. Über dem Menü zeigt die Projektkachel das aktive Projekt; ein Klick darauf (oder **Strg+P**) wechselt das Projekt.
 
 ZotLLM ist ein unabhängiges Projekt und steht in keiner Verbindung zu Zotero oder der Corporation for Digital Scholarship; „Zotero“ ist deren eingetragene Marke.
 
@@ -27,8 +27,8 @@ Warnhinweise (braun hinterlegt) lassen sich mit dem × oben rechts ausblenden. H
 
 ### Tastenkürzel
 
-- **Strg+1 … Strg+5** Projekt, Suchen, Fragen, Forschungsstand, Korpora
-- **Strg+6** Index, **Strg+7** CSL-Editor, **Strg+8** Recherche, **Strg+,** Einstellungen, **F1** Hilfe
+- **Strg+1 … Strg+6** Projekt, Recherche, Suchen, Korpora, Fragen, Forschungsstand
+- **Strg+7** CSL-Editor, **Strg+8** Index, **Strg+,** Einstellungen, **F1** Hilfe
 - **Strg+P** Projekt wechseln
 - In der Recherche: **Alt+1 … Alt+8** wechselt den Reiter; im Screening siehe Kapitel Recherche
 - **Esc** schliesst Menüs, Vorschauen und Dialoge
@@ -46,7 +46,7 @@ Schliessen des Fensters beendet ZotLLM ganz. Läuft gerade eine Indexierung, ein
 
 ## Einrichtung
 
-Jeder Programmstart beginnt im Fenster **Einrichtung** – oberster Eintrag der Navigationsleiste, unter dem roten ZotLLM-Symbol. Oben stehen **Alle Projekte** (springt zur Ansicht Projekt mit allen Projekten), **Neues Projekt** und **Projekt importieren**, darunter die Checkliste der Einrichtung mit dem nächsten offenen Schritt. Solange Pflichtschritte offen sind, trägt der Eintrag Einrichtung einen Punkt.
+Beim ersten Start und solange Schritte der Einrichtung offen sind, beginnt ZotLLM im Fenster **Einrichtung**; sonst öffnet es das zuletzt offene Projekt in der zuletzt benutzten Ansicht. Die Einrichtung ist der oberste Eintrag der Navigationsleiste, unter dem roten ZotLLM-Symbol. Oben stehen **Alle Projekte** (springt zur Ansicht Projekt mit allen Projekten), **Neues Projekt** und **Projekt importieren**, darunter die Checkliste der Einrichtung mit dem nächsten offenen Schritt. Solange Pflichtschritte offen sind, trägt der Eintrag Einrichtung einen Punkt.
 
 ### Zotero verbinden
 
@@ -336,7 +336,7 @@ Folgefragen beziehen sich auf den bisherigen Verlauf. Links stehen die bisherige
 
 ## Recherche
 
-Die **Recherche** (Strg+8) führt eine Literatursuche in Fachdatenbanken von der Fragestellung bis zur ausgewählten Literatur in Zotero. Die Maschine sucht, entfernt Duplikate und schlägt vor – entscheiden tun Sie. Recherche-Projekte sind unabhängig von den Projekten von ZotLLM; sie liegen in `research.db` im Datenordner. Ein Projekt hat acht Reiter (Alt+1 … Alt+8): Projekt, Datenbanken, Suchstrategie, Suche & Import, Pool, Ordner, Screening und Übergabe. Die Kopfzeile zeigt, wo das Projekt steht, z. B. „PubMed 503 · OpenAlex 934 · gesichtet 380/1150“.
+Die **Recherche** (Strg+2) führt eine Literatursuche in Fachdatenbanken von der Fragestellung bis zur ausgewählten Literatur in Zotero. Die Maschine sucht, entfernt Duplikate und schlägt vor – entscheiden tun Sie. Jede Recherche gehört zu einem Projekt; die Ansicht zeigt die Recherchen des aktiven Projekts, die Projektseite ihren Stand. Die Daten liegen in `research.db` im Datenordner. Recherchen ohne Projekt (z. B. nach dem Löschen eines Projekts) stehen unter „Ohne Projekt“ und lassen sich zuordnen. Ein Projekt hat acht Reiter (Alt+1 … Alt+8): Projekt, Datenbanken, Suchstrategie, Suche & Import, Pool, Ordner, Screening und Übergabe. Die Kopfzeile zeigt, wo das Projekt steht, z. B. „PubMed 503 · OpenAlex 934 · gesichtet 380/1150“.
 
 ### Projekt und Datenbanken
 

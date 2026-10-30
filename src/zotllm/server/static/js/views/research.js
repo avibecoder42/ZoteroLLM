@@ -2,7 +2,7 @@
 // Pool, Ordner, Screening, Übergabe). Kopfzeile zeigt, wo man steht: „PubMed 503 · OpenAlex 937 · gesichtet 380/1150 · ausgewählt 71“.
 // Diese Datei und views/research/ wandern bei der Integration unverändert nach ZotLLM (static/js/views).
 import { h } from '../core/vdom.js';
-import { update, ui } from '../core/store.js';
+import { state, update, ui } from '../core/store.js';
 import * as api from '../core/api.js';
 import { t } from '../core/i18n.js';
 import { fmtInt } from '../core/util.js';
@@ -43,6 +43,10 @@ function header() {
 
 export function researchView() {
   const s = rs();
+  if (s.projects && s.forProject !== state.projectId) {  // anderes ZotLLM-Projekt: dessen Recherchen zeigen
+    Object.assign(s, { projects: null, pid: null, project: null, queries: null, runs: null, pool: null, queue: null, plan: null,
+      recall: null, stale: {} });
+  }
   if (!s.pid) return h('div', { class: 'view-wrap' }, projectList());
   if (!s.project) return h('div', { class: 'view-wrap' }, header(), h('div', { class: 'view-body muted' }, t('Lade Projekt …')));
   return h('div', { class: 'view-wrap' }, header(), (VIEWS[s.tab] || projectTab)());

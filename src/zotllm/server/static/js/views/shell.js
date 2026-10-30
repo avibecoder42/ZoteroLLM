@@ -19,19 +19,20 @@ import { cslEditorView } from './csleditor.js';
 import { projectBadge, switcherItems } from './projects.js';
 import { researchBoot, researchView, researchKey, researchStatus } from './research.js';
 
-// Ansichten des aktiven Projekts (Strg+1–5); Recherche (mit eigenen Projekten), CSL-Editor, Index, Hilfe und
-// Einstellungen gelten für alle Projekte (unten)
+// Ansichten des aktiven Projekts in der Reihenfolge des Ablaufs (Strg+1–6): finden (Recherche, Suchen) → festlegen,
+// was gelesen wird (Korpora) → damit arbeiten (Fragen, Forschungsstand). CSL-Editor, Index, Hilfe und Einstellungen
+// gelten für alle Projekte (unten)
 export const VIEWS = [
   { id: 'start', icon: 'home', label: () => t('Projekt') },
-  { id: 'search', icon: 'search', label: () => t('Suchen') },
+  { id: 'research', icon: 'litsearch', label: () => t('Recherche'), hint: () => t('neue Literatur in Fachdatenbanken') },
+  { id: 'search', icon: 'search', label: () => t('Suchen'), hint: () => t('in der eigenen Zotero-Bibliothek') },
+  { id: 'corpora', icon: 'corpus', label: () => t('Korpora') },
   { id: 'ask', icon: 'chat', label: () => t('Fragen') },
   { id: 'review', icon: 'review', label: () => t('Forschungs­stand') },
-  { id: 'corpora', icon: 'corpus', label: () => t('Korpora') },
 ];
 export const GLOBAL_VIEWS = [
-  { id: 'research', icon: 'litsearch', label: () => t('Recherche'), key: 'Strg+8' },
   { id: 'csl', icon: 'cslStyle', label: () => t('CSL-Editor'), key: 'Strg+7' },
-  { id: 'index', icon: 'index', label: () => t('Index'), key: 'Strg+6' },
+  { id: 'index', icon: 'index', label: () => t('Index'), key: 'Strg+8' },
   { id: 'help', icon: 'help', label: () => t('Hilfe'), key: 'F1' },
   { id: 'settings', icon: 'settings', label: () => t('Einstellungen'), key: 'Strg+,' },
 ];
@@ -44,6 +45,7 @@ export function openProjectSwitcher(el) {
 export function navigate(view) {
   state.view = view;
   state.popover = null;
+  try { localStorage.setItem('zllm.view', view); } catch { /* privat */ }  // beim nächsten Start wieder hier
   update();
 }
 
@@ -60,7 +62,8 @@ function rail() {
   const indexJob = Object.values(state.jobs).find(j => j.kind === 'index' && j.status === 'running');
   const p = project();
   const item = (v, shortcut) => h('button', {
-    key: v.id, type: 'button', class: ['rail-item', state.view === v.id && 'active'], title: `${v.label().replace('­', '')} (${shortcut})`,
+    key: v.id, type: 'button', class: ['rail-item', state.view === v.id && 'active'],
+    title: `${v.label().replace('­', '')}${v.hint ? ` – ${v.hint()}` : ''} (${shortcut})`,
     onclick: () => navigate(v.id), 'aria-current': state.view === v.id ? 'page' : null,
   }, icon(v.icon, 21), h('span', null, v.label()),
   v.id === 'index' && indexJob ? h('span', { class: 'rail-dot busy', title: t('Indexierung läuft') }) : null);
@@ -268,10 +271,9 @@ function safe(part, fn) {
 
 export function handleKey(e) {
   const mod = e.ctrlKey || e.metaKey;
-  if (mod && /^[1-5]$/.test(e.key)) { e.preventDefault(); navigate(VIEWS[Number(e.key) - 1].id); return; }
-  if (mod && e.key === '6') { e.preventDefault(); navigate('index'); return; }
+  if (mod && /^[1-6]$/.test(e.key)) { e.preventDefault(); navigate(VIEWS[Number(e.key) - 1].id); return; }
   if (mod && e.key === '7') { e.preventDefault(); navigate('csl'); return; }
-  if (mod && e.key === '8') { e.preventDefault(); navigate('research'); return; }
+  if (mod && e.key === '8') { e.preventDefault(); navigate('index'); return; }
   if (mod && e.key === ',') { e.preventDefault(); navigate('settings'); return; }
   if (mod && (e.key === 'p' || e.key === 'P')) { e.preventDefault(); openProjectSwitcher(); return; }
   if (e.key === 'F1') { e.preventDefault(); openHelp(); return; }

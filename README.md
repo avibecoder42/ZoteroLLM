@@ -37,11 +37,11 @@ Also included: a **CSL editor** to find a citation style on zotero.org, adapt it
 it directly in Zotero. It is a first version and still in development – feedback and contributions are welcome
 ([issues](https://github.com/avibecoder42/ZotLLM/issues)).
 
-New in 1.1: **Literature search** – the step before the literature review. A search project leads from the research
+New in 1.1: **Database search** – the step before the literature review. A search project leads from the research
 question through search strings for PubMed, OpenAlex and other open databases (plus RIS import from licensed ones such
 as PsycInfo), a de-duplicated pool and keyboard screening to the selected literature in Zotero collections. Optional AI
 suggestions use the language model set in ZotLLM; the decisions are always yours. See
-[Literature search](#literature-search).
+[Database search](#database-search).
 
 <p align="center"><img src="docs/screenshots/en/ask.png" alt="Ask: answer with numbered citations and the cited passage"></p>
 <p align="center"><sub>Answers with citations; a click shows the passage and its page. Demo library with fictitious sources.</sub></p>
@@ -168,7 +168,7 @@ A **project** bundles knowledge corpora, chats and literature reviews. The switc
 
 ## First steps
 
-Every start begins in the **Setup** window: *All projects*, *New project* and *Import project* at the top, the setup
+The first start (and every start while setup steps are open) begins in the **Setup** window; otherwise ZotLLM reopens the last project in the view used last. Setup shows *All projects*, *New project* and *Import project* at the top, the setup
 checklist below with the next open step highlighted. All side panels can be resized (double-click: default width).
 
 1. **Language models** (*Settings → Language models*): choose a provider and store its key. If the chosen provider has
@@ -246,10 +246,10 @@ only embedded for the new model.
   copy is read and used. ZotLLM asks before a manual run which copy to use.
 - Citations of items deleted in Zotero are moved to a remaining copy of the same work.
 
-## Literature search
+## Database search
 
-The **Literature search** view (Ctrl+8) takes a search from the research question to the selected literature in
-Zotero. Its projects are independent of ZotLLM's projects and are stored in `research.db` in the data folder.
+The **Database search** view (Ctrl+2) takes a search from the research question to the selected literature in
+Zotero. Every database search belongs to a ZotLLM project (the project page shows its status); the data is stored in `research.db` in the data folder.
 
 | Tab | What happens |
 |---|---|
@@ -306,7 +306,7 @@ work (see [the risk of deskilling](#use-it-as-a-tool--the-risk-of-deskilling)).
 - **What leaves your computer:** with cloud LLMs, the retrieved passages (for literature reviews, the texts of the
   selected documents); with cloud embeddings, all indexed texts. With built-in (or Ollama) embeddings and Ollama as LLM,
   everything stays local. Hugging Face is contacted only for downloads you start and for the model name search.
-  Literature search sends search strings to the databases you choose and, for AI suggestions, titles and abstracts of
+  Database search sends search strings to the databases you choose and, for AI suggestions, titles and abstracts of
   the records plus the project text to the language model.
 - **Model downloads** are pinned to a commit and SHA-256; the built-in runtime only accepts requests carrying
   ZotLLM's random key.
@@ -358,7 +358,7 @@ src/zotllm/
   index/       SQLite (FTS5 + vectors per embedding space), indexer, duplicates
   retrieval/   hybrid search (RRF), MMR, reranking
   rag/         questions, literature review, sources
-  research/    literature search: databases, search strings, pool, screening, handover to Zotero (/api/research/…);
+  research/    database search: databases, search strings, pool, screening, handover to Zotero (/api/research/…);
                knows nothing of ZotLLM – research_adapters.py connects it (Zotero client, key store, language models)
   server/      FastAPI + interface (static/: js, css, help/<language>.md)
   plugin/      Zotero plugin (served by the service as .xpi)

@@ -8,9 +8,9 @@ ZotLLM opens up your own Zotero library – including group libraries – for re
 - **Ask** – questions in your own words; the language model answers only from the passages found, and every statement cites its source and page.
 - **Literature review** – a guided process from the search strategy through an evaluation sheet per text to a checked synthesis with bibliography.
 
-**Literature search** can come first: a search in subject databases (PubMed, OpenAlex and others), with screening and handover of the selected literature to Zotero collections.
+**Database search** can come first: a search in subject databases (PubMed, OpenAlex and others), with screening and handover of the selected literature to Zotero collections.
 
-The navigation bar on the left has two parts. At the top are the views of the active **project**: Project, Search, Ask, Literature review and Corpora. At the bottom are **Literature search**, **CSL editor**, **Index**, **Help** and **Settings**; they apply to all projects (literature search has its own projects). Above the menu, the project tile shows the active project; click it (or press **Ctrl+P**) to switch projects.
+The navigation bar on the left has two parts. At the top are the views of the active **project** in the order of the workflow: Project, Database search, Search, Corpora, Ask and Literature review – first find literature (new in subject databases or in your own library), then decide what is read, then work with it. At the bottom are **CSL editor**, **Index**, **Help** and **Settings**; they apply to all projects. Above the menu, the project tile shows the active project; click it (or press **Ctrl+P**) to switch projects.
 
 ZotLLM is an independent project, not affiliated with Zotero or the Corporation for Digital Scholarship; “Zotero” is their registered trademark.
 
@@ -27,10 +27,10 @@ Warning notices (brown background) can be hidden with the × at the top right. N
 
 ### Keyboard shortcuts
 
-- **Ctrl+1 … Ctrl+5** Project, Search, Ask, Literature review, Corpora
-- **Ctrl+6** Index, **Ctrl+7** CSL editor, **Ctrl+8** Literature search, **Ctrl+,** Settings, **F1** Help
+- **Ctrl+1 … Ctrl+6** Project, Database search, Search, Corpora, Ask, Literature review
+- **Ctrl+7** CSL editor, **Ctrl+8** Index, **Ctrl+,** Settings, **F1** Help
 - **Ctrl+P** switch project
-- In literature search: **Alt+1 … Alt+8** switches the tab; for screening see the chapter Literature search
+- In database search: **Alt+1 … Alt+8** switches the tab; for screening see the chapter Database search
 - **Esc** closes menus, previews and dialogs
 - In input fields, **Enter** starts the search or sends the question; **Shift+Enter** inserts a new line in the question field.
 
@@ -46,7 +46,7 @@ Closing the window quits ZotLLM completely. If indexing, a catalog sync or a lit
 
 ## Setup
 
-Every start of the program begins in the **Setup** window – the top entry of the navigation bar, below the red ZotLLM icon. At the top are **All projects** (jumps to the Project view with all projects), **New project** and **Import project**, below them the setup checklist with the next open step. As long as required steps are open, the Setup entry shows a dot.
+On the first start, and as long as setup steps are open, ZotLLM begins in the **Setup** window; otherwise it reopens the last open project in the view used last. Setup is the top entry of the navigation bar, below the red ZotLLM icon. At the top are **All projects** (jumps to the Project view with all projects), **New project** and **Import project**, below them the setup checklist with the next open step. As long as required steps are open, the Setup entry shows a dot.
 
 ### Connecting Zotero
 
@@ -333,15 +333,15 @@ After the answer, the icons at the bottom right **copy** it (text with reference
 
 Follow-up questions refer to the conversation so far. The project's previous questions are listed on the left; **New question** starts a new conversation.
 
-## Literature search
+## Database search
 
-**Literature search** (Ctrl+8) takes a search in subject databases from the research question to the selected literature in Zotero. The machine searches, removes duplicates and suggests – you decide. Literature search projects are independent of ZotLLM's projects; they are stored in `research.db` in the data folder. A project has eight tabs (Alt+1 … Alt+8): Project, Databases, Search strategy, Search & import, Pool, Folders, Screening and Handover. The header shows where the project stands, e.g. "PubMed 503 · OpenAlex 934 · screened 380/1150".
+**Database search** (Ctrl+2) takes a search in subject databases from the research question to the selected literature in Zotero. The machine searches, removes duplicates and suggests – you decide. Every database search belongs to a project; the view shows the searches of the active project, the project page their status. The data is stored in `research.db` in the data folder. Searches without a project (e.g. after a project was deleted) are listed under “Without project” and can be assigned. A project has eight tabs (Alt+1 … Alt+8): Project, Databases, Search strategy, Search & import, Pool, Folders, Screening and Handover. The header shows where the project stands, e.g. "PubMed 503 · OpenAlex 934 · screened 380/1150".
 
 ### Project and databases
 
 **Project** holds the research question, a short description and the inclusion and exclusion criteria (one line per criterion; the exclusion reasons are offered in screening). Under **Databases** you choose disciplines; the app suggests matching databases from its catalog, with access, terms of use and the key needed. Directly searchable are PubMed, OpenAlex, Europe PMC, ERIC, EconBiz, Semantic Scholar, arXiv, OSF Preprints and swisscovery. Licensed databases (PsycInfo, CINAHL, SocINDEX …) use the **RIS route**: search and export there, import here. The app never logs in to licensed databases and does not automate a browser.
 
-Literature search reads keys from ZotLLM's key store: `openalex` (required by OpenAlex since February 2026), `ncbi` (10 instead of 3 PubMed requests per second), `semanticscholar` and `zotero-web` for the Zotero web API. The Databases tab shows when a key is missing.
+Database search reads keys from ZotLLM's key store: `openalex` (required by OpenAlex since February 2026), `ncbi` (10 instead of 3 PubMed requests per second), `semanticscholar` and `zotero-web` for the Zotero web API. The Databases tab shows when a key is missing.
 
 ### Search strategy, search and import
 
@@ -361,7 +361,7 @@ Under **Folders** you choose the target library (your own or a group, via Zotero
 
 ### AI suggestions
 
-AI suggestions are optional: in screening (relevant with a folder suggestion, not relevant, borderline case – each with the criterion and a one-sentence reason), for databases from the research question, for concept blocks and for subfolders. Literature search uses the model of the **pre-selection in literature reviews** (Settings → Expert → Literature review: helper or main model) with its reasoning depth. Only title, journal, year and abstract of the records plus the project text are sent – nothing from Zotero and no full texts. Before each run the app shows the estimated tokens and – with prices entered – the costs; a run can be stopped. The **AI suggestions** switch hides the suggestions (blind screening). A suggestion never replaces the decision; both are logged.
+AI suggestions are optional: in screening (relevant with a folder suggestion, not relevant, borderline case – each with the criterion and a one-sentence reason), for databases from the research question, for concept blocks and for subfolders. Database search uses the model of the **pre-selection in literature reviews** (Settings → Expert → Literature review: helper or main model) with its reasoning depth. Only title, journal, year and abstract of the records plus the project text are sent – nothing from Zotero and no full texts. Before each run the app shows the estimated tokens and – with prices entered – the costs; a run can be stopped. The **AI suggestions** switch hides the suggestions (blind screening). A suggestion never replaces the decision; both are logged.
 
 ### Handover and log
 
