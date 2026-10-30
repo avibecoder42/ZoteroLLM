@@ -1,0 +1,271 @@
+// Projekte: Liste, neues Projekt; Tabs „Projekt“ (Fragestellung, Kriterien) und „Datenbanken“. Der Entwurf des Formulars
+// gilt auch für den Tab „Ordner“ (folders.js).
+import { h } from '../../core/vdom.js';
+import { update, ui, run, toast, confirmDialog } from '../../core/store.js';
+import * as api from '../../core/api.js';
+import { t } from '../../core/i18n.js';
+import { fmtDate } from '../../core/util.js';
+import { btn, card, field, textInput, textArea, select, segmented, checkbox, notice, emptyState, badge } from '../../ui/components.js';
+import { icon } from '../../ui/icons.js';
+import { R, rs, enc, loadProjects, openProject, closeProject, summaryLine, busy, isBusy, loadProject, aiInfo, aiEstimate, tokenText,
+  noteUsage } from './common.js';
+
+// ------------------------------------------------------------------ Liste
+export function projectList() {
+  const s = rs();
+  if (s.projects == null) {
+    loadProjects().catch(err => toast(err.message, 'error'));
+    return h('div', { class: 'center-pad muted' }, t('Lade Projekte …'));
+  }
+  const create = () => busy('create', async () => {
+    const p = await api.post(`${R}/projects`, { title: t('Neues Projekt') });
+    await loadProjects();
+    openProject(p.id, 'project');
+  });
+  return h('div', { class: 'view-body scroll' },
+    h('div', { class: 'rs-narrow stack' },
+      h('div', { class: 'row' }, h('h2', { class: 'grow' }, t('Recherche-Projekte')),
+        btn(t('Neues Projekt'), { kind: 'primary', icon: 'plus', onClick: create, busy: isBusy('create') })),
+      s.projects.length ? s.projects.map(p => h('button', { key: p.id, type: 'button', class: 'rs-project-tile', onclick: () => openProject(p.id) },
+        h('div', { class: 'grow' }, h('b', null, p.title),
+          p.question && h('div', { class: 'muted small rs-clamp' }, p.question),
+          h('div', { class: 'small' }, summaryLine(p.summary))),
+        h('div', { class: 'muted small nowrap' }, fmtDate(p.updated_at))))
+        : emptyState('search', t('Noch kein Projekt'), t('Ein Projekt hält Fragestellung, Kriterien, Suchstrings, Treffer und Entscheide zusammen.'),
+          btn(t('Neues Projekt'), { kind: 'primary', icon: 'plus', onClick: create }))));
+}
+
+// ------------------------------------------------------------------ Formular
+const FIELDS = ['title', 'question', 'description', 'criteria_in', 'criteria_out', 'target_library', 'target_name', 'zotero_backend', 'folder_map'];
+
+export function draft() {
+  const s = rs();
+  const st = ui('rs-project', { pid: null, d: null, dirty: false });
+  if (st.pid !== s.pid || !st.d) {
+    const p = s.project;
+    st.pid = s.pid;
+    st.d = Object.fromEntries(FIELDS.map(k => [k, JSON.parse(JSON.stringify(p[k] ?? ''))]));
+    st.d.folder_map = (p.folder_map || []).map(f => ({ slot: Number(f.slot), label: f.label || '', path: f.path || '' }))
+      .sort((a, b) => a.slot - b.slot);
+    st.dirty = false;
+  }
+  return st;
+}
+
+export function zoteroLibraries(backend) {
+  const s = rs();
+  const z = s.zotero[backend] || (s.zotero[backend] = { libraries: null, collections: {}, error: null });
+  if (z.libraries == null && !z.loading) {
+    z.loading = true;
+    api.get(`${R}/zotero/libraries?backend=${enc(backend)}`).then(r => { z.libraries = r.libraries; z.error = null; })
+      .catch(err => { z.libraries = []; z.error = err.message; }).finally(() => { z.loading = false; update(); });
+  }
+  return z;
+}
+
+export function collectionPaths(backend, lib) {
+  const z = zoteroLibraries(backend);
+  if (!lib) return [];
+  if (z.collections[lib] === undefined) {
+    z.collections[lib] = null;
+    api.get(`${R}/zotero/collections?backend=${enc(backend)}&lib=${enc(lib)}`).then(r => { z.collections[lib] = r.paths; })
+      .catch(err => { z.collections[lib] = []; z.error = err.message; }).finally(update);
+  }
+  return z.collections[lib] || [];
+}
+
+// Speichern und Zurücksetzen: „Projekt“ und „Ordner“ teilen sich einen Entwurf
+// Entwurf speichern (auch vom Tab „Ordner“ aus, z. B. nach dem Verschieben aus einem gelöschten Ordner)
+export function saveDraft() {
+  const s = rs();
+  const st = draft();
+  return busy('save-project', async () => {
+    const d = st.d;
+    const p = await api.put(`${R}/projects/${s.pid}`, { ...d, folder_map: d.folder_map.filter(f => f.path || f.label) });
+    s.project = p;
+    st.dirty = false;
+    loadProjects().catch(() => {});
+    toast(t('Projekt gespeichert.'), 'success', 2500);
+  });
+}
+
+export function draftBar({ withDelete = false } = {}) {
+  const s = rs();
+  const st = draft();
+  const save = saveDraft;
+  const remove = async () => {
+    if (!(await confirmDialog(t('Projekt löschen?'), t('„{t}“ mit allen Suchstrings, Treffern und Entscheiden löschen? In Zotero bleibt alles, wie es ist.', { t: s.project.title }), { ok: t('Löschen'), danger: true }))) return;
+    await run(() => api.del(`${R}/projects/${s.pid}`));
+    closeProject();
+  };
+  return h('div', { class: 'row rs-sticky-actions' },
+    withDelete ? btn(t('Projekt löschen'), { kind: 'danger', icon: 'trash', onClick: remove }) : null,
+    h('span', { class: 'spacer' }),
+    st.dirty && h('span', { class: 'muted small' }, t('Ungespeicherte Änderungen')),
+    btn(t('Zurücksetzen'), { kind: 'ghost', disabled: !st.dirty, onClick: () => { st.d = null; loadProject(); } }),
+    btn(t('Speichern'), { kind: 'primary', icon: 'save', disabled: !st.dirty, busy: isBusy('save-project'), onClick: save }));
+}
+
+export function projectTab() {
+  const st = draft();
+  const d = st.d;
+  const set = (k, v) => { d[k] = v; st.dirty = true; update(); };
+  return h('div', { class: 'view-body scroll' },
+    h('div', { class: 'rs-narrow stack-lg' },
+      card(t('Fragestellung'), 'edit', h('div', { class: 'stack' },
+        field(t('Titel'), textInput({ value: d.title, onInput: v => set('title', v), class: 'input-title' })),
+        field(t('Fragestellung'), textArea({ value: d.question, rows: 3, onInput: v => set('question', v) })),
+        field(t('Kurzbeschreibung'), textArea({ value: d.description, rows: 4, onInput: v => set('description', v),
+          placeholder: t('z. B. aus dem Antrag') })),
+        h('div', { class: 'field-row' },
+          field(t('Einschlusskriterien'), textArea({ value: d.criteria_in, rows: 5, onInput: v => set('criteria_in', v) }),
+            { hint: t('Eine Zeile je Kriterium.') }),
+          field(t('Ausschlusskriterien'), textArea({ value: d.criteria_out, rows: 5, onInput: v => set('criteria_out', v) }),
+            { hint: t('Eine Zeile je Grund – im Screening als Ausschlussgründe zur Wahl.') })))),
+      h('p', { class: 'muted small' }, t('Weiter: Datenbanken wählen, Suchstrategie aufbauen, unter „Ordner“ die Zielbibliothek und die Ordner festlegen.')),
+      draftBar({ withDelete: true })));
+}
+
+export function databasesTab() {
+  return h('div', { class: 'view-body scroll' },
+    h('div', { class: 'rs-narrow stack-lg' }, databasesCard() || h('div', { class: 'muted' }, t('Lade …'))));
+}
+
+// ------------------------------------------------------------------ Datenbanken
+// Disziplinen wählen → Vorschlag; die Auswahl trifft die Nutzerin bzw. der Nutzer. Gespeichert wird sofort.
+// Dazu auf Wunsch ein KI-Vorschlag aus der Fragestellung (Claude oder Gemini): je Datenbank ein Satz Begründung, übernommen wird
+// nur, was angeklickt wird.
+const ACCESS_ORDER = ['live', 'license', 'export', 'never'];
+const ACCESS_KIND = { live: 'success', license: 'warning', export: 'info', never: 'danger' };
+
+async function saveSettings(patch) {
+  const s = rs();
+  const p = await run(() => api.put(`${R}/projects/${s.pid}`, { settings: patch }));
+  s.project.settings = p.settings;
+  ui('rs-strategy').pid = null;  // Suchstrategie neu aufbauen (weitere Quellen)
+  update();
+}
+
+function suggestionFor(disciplines) {
+  const st = ui('rs-dbs', { key: null, list: [] });
+  const key = disciplines.slice().sort().join(',');
+  if (st.key !== key) {
+    st.key = key;
+    api.get(`${R}/sources/suggest?disciplines=${enc(key)}`).then(r => { st.list = r.sources; update(); }).catch(() => {});
+  }
+  return st.list;
+}
+
+// KI-Vorschlag: gilt für das Projekt, bis er verworfen wird (nicht gespeichert – beim Neuladen der Seite weg)
+function aiSourcesBox(chosen, disciplines) {
+  const s = rs();
+  const info = s.info;
+  const st = ui('rs-dbs-ai', { pid: null, result: null });
+  if (st.pid !== s.pid) { st.pid = s.pid; st.result = null; }
+  const r = st.result;
+  if (!r) return null;
+  const label = id => (info.catalog.find(c => c.id === id) || {}).label || id;
+  const newDisc = r.disciplines.filter(d => !disciplines.includes(d));
+  const newSources = r.sources.filter(x => !chosen.has(x.id)).map(x => x.id);
+  const adopt = (sources, discs) => saveSettings({ sources: [...new Set([...chosen, ...sources])], disciplines: [...new Set([...disciplines, ...discs])] });
+  return notice('info', h('div', { class: 'stack-sm' },
+    h('b', null, t('KI-Vorschlag aus der Fragestellung ({m})', { m: r.model || r.label })),
+    r.disciplines.length ? h('div', { class: 'row wrap small' }, t('Disziplinen: {d}', { d: r.disciplines.map(d => info.disciplines[d] || d).join(', ') }),
+      newDisc.length ? btn(t('übernehmen'), { size: 'sm', kind: 'ghost', onClick: () => adopt([], newDisc) }) : badge(t('gewählt'), 'success')) : null,
+    h('div', { class: 'rs-ai-sources' }, r.sources.map(x => h('div', { key: x.id, class: 'rs-ai-source' },
+      h('div', null, h('b', { class: 'small' }, label(x.id)), ' ', badge(info.access[x.access] || x.access, ACCESS_KIND[x.access] || 'neutral'),
+        x.access === 'live' && !x.in_app ? [' ', badge(t('noch nicht eingebaut'), 'neutral')] : null,
+        h('div', { class: 'small' }, x.reason)),
+      chosen.has(x.id) ? badge(t('gewählt'), 'success')
+        : btn(t('übernehmen'), { size: 'sm', kind: 'ghost', icon: 'plus', onClick: () => adopt([x.id], []) })))),
+    r.note ? h('div', { class: 'muted small' }, r.note) : null,
+    r.used ? h('div', { class: 'muted small' }, t('Verbrauch: {u}', { u: tokenText(r.used, false) })) : null,
+    h('div', { class: 'notice-actions' },
+      newSources.length || newDisc.length ? btn(t('Alle übernehmen'), { size: 'sm', icon: 'plus', onClick: () => adopt(newSources, newDisc) }) : null,
+      btn(t('Verwerfen'), { size: 'sm', kind: 'ghost', onClick: () => { st.result = null; update(); } }))));
+}
+
+async function askAiSources() {
+  const s = rs();
+  const st = ui('rs-dbs-ai', {});
+  const r = await busy('ai-sources', () => api.post(`${R}/projects/${s.pid}/ai/sources`, {}));
+  if (r) { st.pid = s.pid; st.result = r; noteUsage(r); update(); }
+}
+
+// Geschätzter Verbrauch eines KI-Vorschlags aus dem Projekttext (neu geschätzt, wenn sich der Text ändert)
+const projectKey = p => [p.title, p.question, p.description, p.criteria_in, p.criteria_out].join('\u0001').length + ':' + (p.updated_at || '');
+export function estimateLine(kind, body = {}, key = '') {
+  if (!aiInfo().available) return null;
+  const e = aiEstimate(kind, body, `${projectKey(rs().project)}|${key}`);
+  return h('div', { class: 'muted small rs-ai-est' }, e ? t('Geschätzt: {u}', { u: tokenText(e) }) : t('Schätze Token …'));
+}
+
+function databasesCard() {
+  const s = rs();
+  const info = s.info;
+  if (!info || !info.catalog) return null;
+  const settings = s.project.settings || {};
+  const chosen = new Set(settings.sources || []);
+  const disciplines = settings.disciplines || [];
+  const suggested = disciplines.length ? suggestionFor(disciplines) : [];
+  const toggleSource = (id, on) => {
+    const next = new Set(chosen);
+    on ? next.add(id) : next.delete(id);
+    saveSettings({ sources: [...next] });
+  };
+  const toggleDiscipline = d => {
+    const next = disciplines.includes(d) ? disciplines.filter(x => x !== d) : [...disciplines, d];
+    saveSettings({ disciplines: next });
+  };
+  const missing = suggested.filter(id => !chosen.has(id));
+  const fits = c => !disciplines.length || c.disciplines.some(d => disciplines.includes(d)) || chosen.has(c.id);
+  const st = ui('rs-dbs', { all: false });
+  const rows = info.catalog.filter(c => st.all || fits(c));
+  const keyHint = c => c.key && c.key_ok === false
+    ? h('div', { class: 'warn-text small' }, t('Schlüssel fehlt (Schlüsselspeicher von ZotLLM, Name „{k}“).', { k: c.key })) : null;
+  return card(t('Datenbanken'), 'library', h('div', { class: 'stack' },
+    h('p', { class: 'muted small' }, t('Disziplinen wählen – die App schlägt passende Datenbanken vor; welche du durchsuchst, entscheidest du. Direkt in der App laufen die offenen Datenbanken; aus den anderen importierst du RIS-Dateien (unter Suche & Import).')),
+    field(t('Disziplinen'), h('div', { class: 'chips' }, Object.entries(info.disciplines).map(([id, label]) =>
+      h('button', { type: 'button', key: id, class: ['chip', disciplines.includes(id) && 'chip-accent'], onclick: () => toggleDiscipline(id) },
+        h('span', null, label))))),
+    aiSourcesBox(chosen, disciplines),
+    missing.length ? notice('info', h('div', null,
+      t('Vorschlag für diese Disziplinen: {list}.', { list: missing.map(id => (info.catalog.find(c => c.id === id) || {}).label || id).join(', ') }),
+      h('div', { class: 'notice-actions' }, btn(t('Vorschlag übernehmen'), { size: 'sm', icon: 'plus',
+        onClick: () => saveSettings({ sources: [...new Set([...chosen, ...missing])] }) })))) : null,
+    ACCESS_ORDER.map(access => {
+      const list = rows.filter(c => c.access === access);
+      if (!list.length) return null;
+      if (access === 'never') {  // nur zur Information: nicht wählbar
+        return h('div', { key: access, class: 'stack-sm' },
+          h('div', { class: 'row' }, badge(info.access[access], ACCESS_KIND[access]), h('span', { class: 'muted small' }, t('nur zur Information – die App fragt sie nicht ab'))),
+          h('div', { class: 'rs-dbs' }, list.map(c => h('div', { key: c.id, class: 'rs-db rs-db-never' },
+            h('div', { class: 'row' }, icon('x', 14), h('span', null, c.label)),
+            h('div', { class: 'muted small' }, c.note, c.terms ? [' ', h('a', { href: c.terms, target: '_blank', rel: 'noopener' }, t('Bedingungen'))] : null)))));
+      }
+      return h('div', { key: access, class: 'stack-sm' },
+        h('div', { class: 'row' }, badge(info.access[access], ACCESS_KIND[access]),
+          access === 'export' ? h('span', { class: 'muted small' }, t('in der Datenbank suchen und als RIS exportieren, unter Suche & Import importieren')) : null),
+        h('div', { class: 'rs-dbs' }, list.map(c => h('div', { key: c.id, class: ['rs-db', chosen.has(c.id) && 'on'] },
+          checkbox({ checked: chosen.has(c.id), label: c.label, onChange: v => toggleSource(c.id, v) }),
+          h('div', { class: 'rs-db-meta' },
+            suggested.includes(c.id) && badge(t('Vorschlag'), 'accent'),
+            access === 'live' && !c.in_app && badge(t('noch nicht eingebaut'), 'neutral'),
+            c.boolean && c.boolean !== 'ja' && h('span', { class: 'muted small' }, t('Boolesch: {b}', { b: c.boolean })),
+            h('span', { class: 'muted small' }, c.disciplines.includes('multi') ? info.disciplines.multi
+              : c.disciplines.map(d => info.disciplines[d]).join(', '))),
+          h('div', { class: 'muted small' }, c.note, c.terms ? [' ', h('a', { href: c.terms, target: '_blank', rel: 'noopener' }, t('Bedingungen'))] : null),
+          keyHint(c)))));
+    }),
+    h('div', { class: 'row' },
+      h('button', { type: 'button', class: 'rs-link small', onclick: () => { st.all = !st.all; update(); } },
+        st.all ? t('Nur passende Datenbanken zeigen') : t('Alle Datenbanken zeigen')),
+      h('span', { class: 'spacer' }),
+      aiInfo().available
+        ? btn(t('KI-Vorschlag aus der Fragestellung'), { size: 'sm', icon: 'ai', busy: isBusy('ai-sources'), onClick: askAiSources,
+          disabled: !((s.project.question || s.project.description || '').trim()),
+          title: t('Sendet Titel, Fragestellung, Kurzbeschreibung und Kriterien an {m} ({v}). Übernommen wird nur, was du anklickst.',
+            { m: aiInfo().label, v: aiInfo().vendor }) })
+        : h('span', { class: 'muted small', title: aiInfo().message || '' }, t('KI-Vorschlag: unter Einstellungen › Sprachmodelle einen Schlüssel speichern'))),
+    aiInfo().available ? h('div', { class: 'row' }, h('span', { class: 'spacer' }), estimateLine('sources')) : null));
+}

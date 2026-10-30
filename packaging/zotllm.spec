@@ -32,6 +32,9 @@ for dist in ("keyring", "google-genai", "anthropic", "openai", "httpx", "fastapi
         pass
 
 hiddenimports = collect_submodules("zotllm")
+# Modul „Recherche“: das Paket zotllm.research samt Quellen (sources/); collect_submodules("zotllm") erfasst es schon,
+# ausdrücklich genannt, damit es auch bei einer engeren Auswahl nicht fehlt (Selbsttest prüft /api/research/…)
+hiddenimports += collect_submodules("zotllm.research")
 hiddenimports += collect_submodules("uvicorn")
 hiddenimports += collect_submodules("keyring.backends")
 hiddenimports += ["win32ctypes.core", "webview.platforms.winforms", "webview.platforms.edgechromium", "clr"]

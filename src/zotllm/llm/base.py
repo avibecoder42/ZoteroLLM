@@ -29,6 +29,9 @@ class GenParams:
     temperature: float | None = None
     effort: str = ""  # low | medium | high | xhigh | max | "" (Modellstandard)
     json_mode: bool = False
+    # JSON-Schema für die Antwort (nur mit json_mode): Anbieter, die es können, halten es strikt ein; die übrigen
+    # ignorieren es – wer es braucht, beschreibt es dann im Auftrag (so die Recherche, research_adapters.py)
+    json_schema: dict | None = None
 
 
 @dataclass

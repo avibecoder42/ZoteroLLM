@@ -111,7 +111,10 @@ def run(out_dir: str) -> int:
                              "/static/js/i18n/en.js", "/static/help/de.md", "/static/help/en.md",
                              "/static/js/views/embedmodels.js", "/api/embedding/local",
                              "/static/img/icon.svg", "/api/catalog", "/api/settings/defaults", "/api/status",
-                             "/api/setup", "/api/corpora", "/api/library/status", "/plugin/zotllm.xpi"):
+                             "/api/setup", "/api/corpora", "/api/library/status", "/plugin/zotllm.xpi",
+                             # Modul „Recherche“ (zotllm.research): Ansicht und Schnittstelle
+                             "/static/js/views/research.js", "/static/js/views/research/screening.js",
+                             "/static/css/research.css", "/api/research/info", "/api/research/projects"):
                     r = c.get(path)
                     assert r.status_code == 200, f"{path}: {r.status_code}"
                     checked.append(path)

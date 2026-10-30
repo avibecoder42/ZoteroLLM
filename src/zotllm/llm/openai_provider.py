@@ -68,7 +68,10 @@ class OpenAIChat(ChatModel):
             if self.provider == "openai" and effort == "max":
                 effort = "xhigh"
             kw["reasoning_effort"] = effort
-        if params.json_mode:
+        if params.json_mode and params.json_schema and self.provider == "openai":
+            kw["response_format"] = {"type": "json_schema",
+                                     "json_schema": {"name": "answer", "schema": params.json_schema, "strict": False}}
+        elif params.json_mode:
             kw["response_format"] = {"type": "json_object"}
         for k in self._dropped:
             kw.pop(k, None)

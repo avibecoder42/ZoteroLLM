@@ -17,8 +17,10 @@ import { settingsView } from './settings.js';
 import { helpView, openHelp } from './help.js';
 import { cslEditorView } from './csleditor.js';
 import { projectBadge, switcherItems } from './projects.js';
+import { researchBoot, researchView, researchKey, researchStatus } from './research.js';
 
-// Ansichten des aktiven Projekts (Strg+1–5); CSL-Editor, Index, Hilfe und Einstellungen gelten für alle Projekte (unten)
+// Ansichten des aktiven Projekts (Strg+1–5); Recherche (mit eigenen Projekten), CSL-Editor, Index, Hilfe und
+// Einstellungen gelten für alle Projekte (unten)
 export const VIEWS = [
   { id: 'start', icon: 'home', label: () => t('Projekt') },
   { id: 'search', icon: 'search', label: () => t('Suchen') },
@@ -27,6 +29,7 @@ export const VIEWS = [
   { id: 'corpora', icon: 'corpus', label: () => t('Korpora') },
 ];
 export const GLOBAL_VIEWS = [
+  { id: 'research', icon: 'litsearch', label: () => t('Recherche'), key: 'Strg+8' },
   { id: 'csl', icon: 'cslStyle', label: () => t('CSL-Editor'), key: 'Strg+7' },
   { id: 'index', icon: 'index', label: () => t('Index'), key: 'Strg+6' },
   { id: 'help', icon: 'help', label: () => t('Hilfe'), key: 'F1' },
@@ -100,11 +103,13 @@ function statusbar() {
   return h('footer', { class: 'statusbar' },
     h('button', { class: 'status-item link', title: z.message || zText, onclick: () => navigate(z.local_api ? 'corpora' : 'setup') },
       h('span', { class: ['dot', z.local_api ? 'ok' : z.running ? 'warn' : 'err'] }), h('span', null, zText)),
-    h('button', { class: 'status-item link', title: t('Sprachmodell (Einstellungen)'), onclick: () => navigate('settings') },
-      icon('ai', 14), h('span', { class: s.llm.key ? '' : 'warn-text' }, `${providerLabel(s.llm.provider)} · ${s.llm.model}`)),
-    h('div', { class: 'status-item', title: s.embedding.ok ? s.embedding.space : s.embedding.error },
-      icon('index', 14), h('span', { class: s.embedding.ok ? '' : 'danger-text' }, s.embedding.ok ? (s.embedding.label || s.embedding.model) : t('Embedding: Fehler'))),
-    coverageItem(s),
+    // In der Recherche: Zotero-Web-API, NCBI-Schlüssel und das Modell der KI-Vorschläge statt Index und Embedding
+    state.view === 'research' ? researchStatus() : [
+      h('button', { class: 'status-item link', title: t('Sprachmodell (Einstellungen)'), onclick: () => navigate('settings') },
+        icon('ai', 14), h('span', { class: s.llm.key ? '' : 'warn-text' }, `${providerLabel(s.llm.provider)} · ${s.llm.model}`)),
+      h('div', { class: 'status-item', title: s.embedding.ok ? s.embedding.space : s.embedding.error },
+        icon('index', 14), h('span', { class: s.embedding.ok ? '' : 'danger-text' }, s.embedding.ok ? (s.embedding.label || s.embedding.model) : t('Embedding: Fehler'))),
+      coverageItem(s)],
     h('div', { class: 'status-spacer' }),
     jobs.map(j => {
       const c = j.counters || {};
@@ -138,7 +143,7 @@ function modal() {
       h('div', { class: 'modal-head' }, h('h2', null, m.title), !m.sticky && iconBtn('x', t('Schliessen'), close)),
       h('div', { class: 'modal-body' }, typeof m.body === 'function' ? m.body() : m.body),
       m.actions && h('div', { class: 'modal-actions' },
-        (typeof m.actions === 'function' ? m.actions() : m.actions).map(a => a.label ? btn(a.label, { kind: a.kind || 'secondary', onClick: a.onClick, icon: a.icon, disabled: a.disabled }) : a))));
+        (typeof m.actions === 'function' ? m.actions() : m.actions).map(a => a.label ? btn(a.label, { kind: a.kind || 'secondary', onClick: a.onClick, icon: a.icon, disabled: a.disabled, busy: a.busy }) : a))));
 }
 
 // Vorschau einer Quelle beim Klick auf einen Beleg [n]
@@ -225,8 +230,18 @@ export function shell() {
 
 function currentView() {
   const views = { setup: setupView, start: startView, search: searchView, ask: askView, corpora: corporaView, index: indexView,
-    review: reviewView, settings: settingsView, help: helpView, csl: cslEditorView };
+    review: reviewView, settings: settingsView, help: helpView, csl: cslEditorView, research: researchStart };
   return (views[state.view] || setupView)();
+}
+
+// Recherche: Angaben des Moduls und das zuletzt geöffnete Projekt erst beim ersten Öffnen laden
+let researchBooted = false;
+function researchStart() {
+  if (!researchBooted) {
+    researchBooted = true;
+    researchBoot().then(update, () => { researchBooted = false; });
+  }
+  return researchView();
 }
 
 // Ein Fehler beim Zeichnen eines Teils darf die Oberfläche nicht lahmlegen: Meldung statt Stillstand
@@ -256,6 +271,7 @@ export function handleKey(e) {
   if (mod && /^[1-5]$/.test(e.key)) { e.preventDefault(); navigate(VIEWS[Number(e.key) - 1].id); return; }
   if (mod && e.key === '6') { e.preventDefault(); navigate('index'); return; }
   if (mod && e.key === '7') { e.preventDefault(); navigate('csl'); return; }
+  if (mod && e.key === '8') { e.preventDefault(); navigate('research'); return; }
   if (mod && e.key === ',') { e.preventDefault(); navigate('settings'); return; }
   if (mod && (e.key === 'p' || e.key === 'P')) { e.preventDefault(); openProjectSwitcher(); return; }
   if (e.key === 'F1') { e.preventDefault(); openHelp(); return; }
@@ -263,7 +279,10 @@ export function handleKey(e) {
     if (state.menu) { state.menu = null; update(); }
     else if (state.popover) { state.popover = null; update(); }
     else if (state.modal && !state.modal.sticky) { closeModal(); }
+    return;
   }
+  // Recherche: Alt+1…8 wechselt den Reiter, im Screening J/K, Ordner 1–9, X, ?, G, A, Z
+  if (state.view === 'research' && !state.modal && !state.menu && !state.popover) researchKey(e);
 }
 
 // Links nach aussen (zotero://, https://) über das Betriebssystem öffnen statt im Programmfenster

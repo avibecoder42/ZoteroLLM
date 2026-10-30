@@ -33,6 +33,16 @@ def supports_sampling(model: str) -> bool:
     return v is not None and (v[0] < 4 or (v[0] == 4 and v[1] <= 6))
 
 
+def supports_structured_output(model: str) -> bool:
+    """JSON-Antwort nach Schema (output_config.format): Fable/Mythos, die 5er-Modelle, Opus 4.8/4.5/4.1, Haiku 4.5."""
+    if model.startswith(("claude-fable", "claude-mythos")):
+        return True
+    v = _version(model)
+    if v is None:
+        return False
+    return v[0] >= 5 or (v[0] == 4 and ("opus" in model and v[1] in (1, 5, 8) or "haiku" in model and v[1] == 5))
+
+
 def supports_effort(model: str) -> bool:
     if model.startswith(("claude-fable", "claude-mythos")):
         return True
@@ -81,8 +91,13 @@ class AnthropicChat(ChatModel):
         }
         if system:
             kwargs["system"] = system
+        output_config: dict = {}
         if params.effort and supports_effort(self.model):
-            kwargs["output_config"] = {"effort": params.effort}
+            output_config["effort"] = params.effort
+        if params.json_mode and params.json_schema and supports_structured_output(self.model):
+            output_config["format"] = {"type": "json_schema", "schema": params.json_schema}
+        if output_config:
+            kwargs["output_config"] = output_config
         if params.temperature is not None and supports_sampling(self.model):
             kwargs["temperature"] = params.temperature
 

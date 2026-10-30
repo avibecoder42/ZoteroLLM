@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "zotllm"
-version = "1.0.1"
+version = "1.1.0"
 description = "Semantic search, cited answers and literature reviews for your own Zotero library – local service with selectable embedding models and LLMs."
 readme = "README.md"
 license = "MIT"

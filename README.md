@@ -37,6 +37,12 @@ Also included: a **CSL editor** to find a citation style on zotero.org, adapt it
 it directly in Zotero. It is a first version and still in development – feedback and contributions are welcome
 ([issues](https://github.com/avibecoder42/ZotLLM/issues)).
 
+New in 1.1: **Literature search** – the step before the literature review. A search project leads from the research
+question through search strings for PubMed, OpenAlex and other open databases (plus RIS import from licensed ones such
+as PsycInfo), a de-duplicated pool and keyboard screening to the selected literature in Zotero collections. Optional AI
+suggestions use the language model set in ZotLLM; the decisions are always yours. See
+[Literature search](#literature-search).
+
 <p align="center"><img src="docs/screenshots/en/ask.png" alt="Ask: answer with numbered citations and the cited passage"></p>
 <p align="center"><sub>Answers with citations; a click shows the passage and its page. Demo library with fictitious sources.</sub></p>
 
@@ -53,7 +59,7 @@ it directly in Zotero. It is a first version and still in development – feedba
 > application, the Zotero plugin, the installer scripts, the tests and the documentation. The project's initiator,
 > [avibecoder](https://github.com/avibecoder42), defined what to build, tested every version in day-to-day research and decided
 > on each next step; no code was written by hand. Read the code with that in mind: it is extensively tested
-> (≈ 200 automated tests), but it has not been reviewed line by line by a human developer.
+> (≈ 330 automated tests), but it has not been reviewed line by line by a human developer.
 
 > **Use it as a tool, not as a replacement for your own scholarly work.** See
 > [Use it as a tool – the risk of deskilling](#use-it-as-a-tool--the-risk-of-deskilling).
@@ -240,6 +246,34 @@ only embedded for the new model.
   copy is read and used. ZotLLM asks before a manual run which copy to use.
 - Citations of items deleted in Zotero are moved to a remaining copy of the same work.
 
+## Literature search
+
+The **Literature search** view (Ctrl+8) takes a search from the research question to the selected literature in
+Zotero. Its projects are independent of ZotLLM's projects and are stored in `research.db` in the data folder.
+
+| Tab | What happens |
+|---|---|
+| Project | research question, short description, inclusion and exclusion criteria |
+| Databases | choose disciplines; the app suggests databases from its catalog (access, terms of use, keys) |
+| Search strategy | concept blocks → search strings for each database, with live hit counts |
+| Search & import | versioned search strings; searches in PubMed, OpenAlex, Europe PMC, ERIC, EconBiz, Semantic Scholar, arXiv, OSF Preprints and swisscovery; RIS import from Ovid, EBSCO or Web of Science |
+| Pool | de-duplicated records (DOI, PMID, OpenAlex ID, title), check against the Zotero target library, prefilters, borderline cases, missing abstracts fetched, recall check with key papers |
+| Folders | target library and folders 1–20 (shortcuts 1–9), each mapped to a Zotero collection |
+| Screening | cards (J/K browse, 1–9 folder, X exclude, ? unsure, G borderline, A accept AI suggestion, Z undo) or a list with bulk apply |
+| Handover | plan per folder, then write to Zotero – only after explicit confirmation; search log as Markdown/CSV in the style of PRISMA-S |
+
+- **Nothing disappears silently:** prefilters only mark records; records with an exception term become borderline
+  cases, and hidden records can be reviewed and restored.
+- **AI suggestions are optional** (screening, databases, concept blocks, subfolders) and use the model of the
+  pre-selection in literature reviews (*Settings → Expert → Literature review*: helper or main model). Only titles,
+  journal, year and abstracts plus the project text are sent; before each run the app shows the estimated tokens and –
+  with prices entered – the costs. Decisions are made by hand; suggestion and decision are both logged.
+- **Databases only via legal routes:** official interfaces, access unlocked by your institution, or RIS export by
+  hand – no browser automation.
+- **Zotero:** locally through Zotero's API (write permission as elsewhere in ZotLLM) or through the Zotero web API.
+  Keys for the web API and the databases are read from the key store (`zotero-web`, `openalex` – required by OpenAlex
+  since February 2026 –, `ncbi`, `semanticscholar`); a settings section for entering them is planned.
+
 ## Literature review
 
 For requests like "Write the state of research on … in 4000 words", a simple search is not enough. The mode works in
@@ -272,6 +306,8 @@ work (see [the risk of deskilling](#use-it-as-a-tool--the-risk-of-deskilling)).
 - **What leaves your computer:** with cloud LLMs, the retrieved passages (for literature reviews, the texts of the
   selected documents); with cloud embeddings, all indexed texts. With built-in (or Ollama) embeddings and Ollama as LLM,
   everything stays local. Hugging Face is contacted only for downloads you start and for the model name search.
+  Literature search sends search strings to the databases you choose and, for AI suggestions, titles and abstracts of
+  the records plus the project text to the language model.
 - **Model downloads** are pinned to a commit and SHA-256; the built-in runtime only accepts requests carrying
   ZotLLM's random key.
 
@@ -322,6 +358,8 @@ src/zotllm/
   index/       SQLite (FTS5 + vectors per embedding space), indexer, duplicates
   retrieval/   hybrid search (RRF), MMR, reranking
   rag/         questions, literature review, sources
+  research/    literature search: databases, search strings, pool, screening, handover to Zotero (/api/research/…);
+               knows nothing of ZotLLM – research_adapters.py connects it (Zotero client, key store, language models)
   server/      FastAPI + interface (static/: js, css, help/<language>.md)
   plugin/      Zotero plugin (served by the service as .xpi)
   locales/     service messages per language

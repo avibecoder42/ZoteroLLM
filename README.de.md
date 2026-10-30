@@ -37,6 +37,11 @@ Dazu kommt ein **CSL-Editor**: Zitierstil auf zotero.org suchen, per Klick auf d
 Zotero installieren. Er ist eine erste Version und noch in Entwicklung – Hinweise und Beiträge sind willkommen
 ([Issues](https://github.com/avibecoder42/ZotLLM/issues)).
 
+Neu in 1.1: **Recherche** – der Schritt vor dem Forschungsstand. Ein Recherche-Projekt führt von der Fragestellung über
+Suchstrings für PubMed, OpenAlex und weitere offene Datenbanken (dazu RIS-Import aus lizenzierten wie PsycInfo), einen
+Pool ohne Duplikate und ein Screening per Tastatur bis zur ausgewählten Literatur in Zotero-Sammlungen. KI-Vorschläge
+sind freiwillig und nutzen das in ZotLLM eingestellte Sprachmodell; entscheiden tust du. Siehe [Recherche](#recherche).
+
 <p align="center"><img src="docs/screenshots/de/ask.png" alt="Fragen: Antwort mit nummerierten Belegen und der zitierten Textstelle"></p>
 <p align="center"><sub>Antworten mit Belegen; ein Klick zeigt die Textstelle mit Seite. Demo-Bibliothek mit erfundenen Quellen.</sub></p>
 
@@ -53,7 +58,7 @@ Zotero installieren. Er ist eine erste Version und noch in Entwicklung – Hinwe
 > Programm, das Zotero-Plugin, die Installationsskripte, die Tests und die Dokumentation. Initiiert hat das Projekt
 > [avibecoder](https://github.com/avibecoder42): avibecoder hat festgelegt, was entsteht, jede Version im Forschungsalltag getestet und über
 > jeden nächsten Schritt entschieden; von Hand geschrieben wurde kein Code. Bitte den Code in diesem Bewusstsein lesen:
-> Er ist umfangreich getestet (rund 200 automatische Tests), aber nicht Zeile für Zeile von einer Entwicklerin oder
+> Er ist umfangreich getestet (rund 330 automatische Tests), aber nicht Zeile für Zeile von einer Entwicklerin oder
 > einem Entwickler geprüft.
 
 > **Als Werkzeug nutzen, nicht als Ersatz für die eigene wissenschaftliche Arbeit.** Siehe
@@ -252,6 +257,35 @@ werden nicht neu gelesen, nur für das neue Modell eingebettet.
   nur eine Kopie wird gelesen und verwendet. Vor einem Lauf von Hand fragt ZotLLM, welche.
 - Belege auf in Zotero gelöschte Einträge werden auf eine verbleibende Kopie desselben Werks umgestellt.
 
+## Recherche
+
+Die Ansicht **Recherche** (Strg+8) führt eine Literatursuche von der Fragestellung bis zur ausgewählten Literatur in
+Zotero. Ihre Projekte sind unabhängig von den Projekten von ZotLLM und liegen in `research.db` im Datenordner.
+
+| Reiter | Was geschieht |
+|---|---|
+| Projekt | Fragestellung, Kurzbeschreibung, Ein- und Ausschlusskriterien |
+| Datenbanken | Disziplinen wählen; die App schlägt Datenbanken aus ihrem Katalog vor (Zugang, Bedingungen, Schlüssel) |
+| Suchstrategie | Konzeptblöcke → Suchstrings je Datenbank, mit Trefferzahl live |
+| Suche & Import | versionierte Suchstrings; Suche in PubMed, OpenAlex, Europe PMC, ERIC, EconBiz, Semantic Scholar, arXiv, OSF-Preprints und swisscovery; RIS-Import aus Ovid, EBSCO oder Web of Science |
+| Pool | Treffer ohne Duplikate (DOI, PMID, OpenAlex-ID, Titel), Abgleich mit der Zotero-Zielbibliothek, Vorfilter, Grenzfälle, fehlende Abstracts nachladen, Recall-Check mit Schlüsselarbeiten |
+| Ordner | Zielbibliothek und Ordner 1–20 (Kürzel 1–9), je einer Zotero-Sammlung zugeordnet |
+| Screening | Karten (J/K blättern, 1–9 Ordner, X ausschliessen, ? unsicher, G Grenzfall, A KI-Vorschlag übernehmen, Z rückgängig) oder Liste mit Sammel-Übernahme |
+| Übergabe | Plan je Ordner, dann nach Zotero – nur nach ausdrücklicher Bestätigung; Suchprotokoll als Markdown/CSV im Stil von PRISMA-S |
+
+- **Nichts verschwindet still:** Vorfilter markieren nur; Treffer mit einem Ausnahmebegriff werden Grenzfälle,
+  Ausgeblendete lassen sich prüfen und zurückholen.
+- **KI-Vorschläge sind freiwillig** (Screening, Datenbanken, Konzeptblöcke, Unterordner) und nutzen das Modell der
+  Vorauswahl im Forschungsstand (*Einstellungen → Experten → Forschungsstand*: Hilfs- oder Hauptmodell). Gesendet
+  werden nur Titel, Zeitschrift, Jahr und Abstract sowie der Projekttext; vor jedem Lauf zeigt die App die geschätzten
+  Token und – mit eingetragenen Preisen – die Kosten. Entschieden wird von Hand; Vorschlag und Entscheid stehen beide
+  im Protokoll.
+- **Datenbanken nur auf legalem Weg:** offizielle Schnittstellen, von der Hochschule freigeschaltete Zugänge oder
+  RIS-Export von Hand – keine Browser-Automatisierung.
+- **Zotero:** lokal über die API von Zotero (Schreibfreigabe wie im übrigen ZotLLM) oder über die Zotero-Web-API.
+  Schlüssel für die Web-API und die Datenbanken liest die App aus dem Schlüsselspeicher (`zotero-web`, `openalex` –
+  bei OpenAlex seit Februar 2026 nötig –, `ncbi`, `semanticscholar`); eine Einstellungsseite zum Eintragen ist geplant.
+
 ## Forschungsstand
 
 Für Fragen wie «Erarbeite den Forschungsstand zu … in 4000 Wörtern» reicht eine einfache Suche nicht. Der Modus
@@ -284,6 +318,8 @@ endgültige Text bleiben deine Arbeit (siehe [die Gefahr des Deskilling](#werkze
 - **Was das Gerät verlässt:** Bei Cloud-LLMs die gefundenen Textstellen (beim Forschungsstand die Texte der
   ausgewählten Dokumente); bei Cloud-Embeddings alle indexierten Texte. Mit eingebautem Embedding (oder Ollama) und
   Ollama als LLM bleibt alles lokal. Hugging Face wird nur für Downloads per Knopf und die Namenssuche angefragt.
+  Die Recherche sendet Suchstrings an die gewählten Datenbanken und für KI-Vorschläge Titel und Abstracts der Treffer
+  sowie den Projekttext an das Sprachmodell.
 - **Downloads** von Modellen sind mit Commit und SHA-256 festgelegt; die eingebaute Laufzeit nimmt nur Anfragen mit dem
   zufälligen Schlüssel von ZotLLM an.
 
@@ -351,6 +387,8 @@ src/zotllm/
   index/       SQLite (FTS5 + Vektoren je Embedding-Raum), Indexierer, Dubletten
   retrieval/   Hybride Suche (RRF), MMR, Reranking
   rag/         Fragen, Forschungsstand, Quellen
+  research/    Recherche: Datenbanken, Suchstrings, Pool, Screening, Übergabe nach Zotero (/api/research/…);
+               kennt ZotLLM nicht – research_adapters.py verbindet (Zotero-Client, Schlüsselspeicher, Sprachmodelle)
   server/      FastAPI + Oberfläche (static/: js, css, help/<Sprache>.md)
   plugin/      Zotero-Plugin (wird vom Dienst als .xpi ausgeliefert)
   locales/     Meldungen des Dienstes je Sprache

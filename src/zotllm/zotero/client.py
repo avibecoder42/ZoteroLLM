@@ -376,6 +376,10 @@ class ZoteroClient:
                     results.append({"key": None, "error": err.get("message") or str(err)})
         return results
 
+    def create_items(self, lib: str, items: list[dict]) -> list[dict]:
+        """Neue Einträge (JSON der Zotero-API) anlegen; je Eintrag {'key': …} oder {'key': None, 'error': …}."""
+        return self._post_objects(lib, "items", items)
+
     def create_note(self, lib: str, parent_key: str | None, html: str, tags: list[str] | None = None) -> str:
         obj: dict[str, Any] = {"itemType": "note", "note": html, "tags": [{"tag": t} for t in (tags or [])]}
         if parent_key:

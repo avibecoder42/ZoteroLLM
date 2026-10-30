@@ -8,7 +8,9 @@ ZotLLM opens up your own Zotero library – including group libraries – for re
 - **Ask** – questions in your own words; the language model answers only from the passages found, and every statement cites its source and page.
 - **Literature review** – a guided process from the search strategy through an evaluation sheet per text to a checked synthesis with bibliography.
 
-The navigation bar on the left has two parts. At the top are the views of the active **project**: Project, Search, Ask, Literature review and Corpora. At the bottom are **Index**, **Help** and **Settings**; they apply to all projects. Above the menu, the project tile shows the active project; click it (or press **Ctrl+P**) to switch projects.
+**Literature search** can come first: a search in subject databases (PubMed, OpenAlex and others), with screening and handover of the selected literature to Zotero collections.
+
+The navigation bar on the left has two parts. At the top are the views of the active **project**: Project, Search, Ask, Literature review and Corpora. At the bottom are **Literature search**, **CSL editor**, **Index**, **Help** and **Settings**; they apply to all projects (literature search has its own projects). Above the menu, the project tile shows the active project; click it (or press **Ctrl+P**) to switch projects.
 
 ZotLLM is an independent project, not affiliated with Zotero or the Corporation for Digital Scholarship; “Zotero” is their registered trademark.
 
@@ -26,8 +28,9 @@ Warning notices (brown background) can be hidden with the × at the top right. N
 ### Keyboard shortcuts
 
 - **Ctrl+1 … Ctrl+5** Project, Search, Ask, Literature review, Corpora
-- **Ctrl+6** Index, **Ctrl+7** CSL editor, **Ctrl+,** Settings, **F1** Help
+- **Ctrl+6** Index, **Ctrl+7** CSL editor, **Ctrl+8** Literature search, **Ctrl+,** Settings, **F1** Help
 - **Ctrl+P** switch project
+- In literature search: **Alt+1 … Alt+8** switches the tab; for screening see the chapter Literature search
 - **Esc** closes menus, previews and dialogs
 - In input fields, **Enter** starts the search or sends the question; **Shift+Enter** inserts a new line in the question field.
 
@@ -329,6 +332,40 @@ Clicking a citation number **[n]** shows the passage with its page; from there, 
 After the answer, the icons at the bottom right **copy** it (text with references) or **export** it (Word, LaTeX, Markdown). The list of passages can be copied and exported in the same way. See the chapter Export for details.
 
 Follow-up questions refer to the conversation so far. The project's previous questions are listed on the left; **New question** starts a new conversation.
+
+## Literature search
+
+**Literature search** (Ctrl+8) takes a search in subject databases from the research question to the selected literature in Zotero. The machine searches, removes duplicates and suggests – you decide. Literature search projects are independent of ZotLLM's projects; they are stored in `research.db` in the data folder. A project has eight tabs (Alt+1 … Alt+8): Project, Databases, Search strategy, Search & import, Pool, Folders, Screening and Handover. The header shows where the project stands, e.g. "PubMed 503 · OpenAlex 934 · screened 380/1150".
+
+### Project and databases
+
+**Project** holds the research question, a short description and the inclusion and exclusion criteria (one line per criterion; the exclusion reasons are offered in screening). Under **Databases** you choose disciplines; the app suggests matching databases from its catalog, with access, terms of use and the key needed. Directly searchable are PubMed, OpenAlex, Europe PMC, ERIC, EconBiz, Semantic Scholar, arXiv, OSF Preprints and swisscovery. Licensed databases (PsycInfo, CINAHL, SocINDEX …) use the **RIS route**: search and export there, import here. The app never logs in to licensed databases and does not automate a browser.
+
+Literature search reads keys from ZotLLM's key store: `openalex` (required by OpenAlex since February 2026), `ncbi` (10 instead of 3 PubMed requests per second), `semanticscholar` and `zotero-web` for the Zotero web API. The Databases tab shows when a key is missing.
+
+### Search strategy, search and import
+
+The **search strategy** consists of concept blocks (e.g. population, phenomenon, context, plus an exclusion block): within a block OR applies, between blocks AND, exclusion blocks are added with NOT. From them come search strings per database, with live hit counts. Blocks are optional: ready-made search strings can be pasted under **Search & import** or loaded as text files. There, search strings are versioned; a PubMed string can be translated into all selected databases (the translation is a suggestion – check and count). **Count all** and **Search all** run over all directly searchable sources; RIS files are dropped into the drop zone. Every search is logged.
+
+### Pool and prefilters
+
+The **pool** holds all records without duplicates (DOI, PMID, OpenAlex ID, accession number, title) – per search string the records of the latest search, plus the imports. **Check against Zotero** marks what is already in the target library. **Prefilters** only mark, they never delete: an exclusion rule such as "cyberbull*, bully*" can have exception terms; records with an exception term become **borderline cases** instead of being hidden. **Review hidden records** opens a quick review with multiple selection. Missing abstracts are fetched via Crossref, PubMed and Semantic Scholar; without an abstract a record appears as "title only", never as an exclusion. The **recall check** tests known key papers (DOIs) and warns if one is missing or silently hidden.
+
+### Folders
+
+Under **Folders** you choose the target library (your own or a group, via Zotero on this computer or the Zotero web API) and create up to 20 folders with fixed numbers, each mapped to a Zotero collection; the first nine have the shortcuts 1–9 in screening. You choose collections in the tree as elsewhere in ZotLLM; new ones can be marked for creation. Nothing is created in Zotero before you confirm.
+
+### Screening
+
+**Screening** shows the records as **cards** (one record with the full abstract) or as a **list** (all open ones at once). Shortcuts on the cards: **J**/**K** browse, **1–9** include into the folder, **X** exclude (with reason), **?** unsure, **G** borderline case (with reason; the flag stays with the decision), **A** accept the AI suggestion, **Z** undo. In the list you tick what is included; **Apply …** shows the balance and saves everything as one batch, which **Z** undoes as a whole. Queues for open records, borderline cases, unsure and hidden records.
+
+### AI suggestions
+
+AI suggestions are optional: in screening (relevant with a folder suggestion, not relevant, borderline case – each with the criterion and a one-sentence reason), for databases from the research question, for concept blocks and for subfolders. Literature search uses the model of the **pre-selection in literature reviews** (Settings → Expert → Literature review: helper or main model) with its reasoning depth. Only title, journal, year and abstract of the records plus the project text are sent – nothing from Zotero and no full texts. Before each run the app shows the estimated tokens and – with prices entered – the costs; a run can be stopped. The **AI suggestions** switch hides the suggestions (blind screening). A suggestion never replaces the decision; both are logged.
+
+### Handover and log
+
+**Handover** shows the plan per folder: new items (details optionally completed via Crossref, tag "litsearch") and existing ones that are only added to the collection. Writing to Zotero happens only after explicit confirmation; for Zotero on this computer, write permission in Zotero is needed. The **search log** (Markdown, in the style of PRISMA-S) contains sources, search strings with date and version, hit counts, duplicates, prefilters per rule, inclusions and exclusions per reason, AI usage and the selected literature; plus CSV files for searches and for records and decisions.
 
 ## Literature review
 

@@ -36,8 +36,14 @@ export function fmtAgo(ts) {
   return new Date(ts * 1000).toLocaleDateString(locale());
 }
 
+// Zeitpunkt in Sekunden (ZotLLM) oder als ISO-Text (Recherche)
 export function fmtDate(ts) {
-  return ts ? new Date(ts * 1000).toLocaleString(locale()) : '';
+  if (!ts) return '';
+  if (typeof ts === 'string') {
+    const d = new Date(ts);
+    return isNaN(d) ? ts : d.toLocaleString(locale(), { dateStyle: 'short', timeStyle: 'short' });
+  }
+  return new Date(ts * 1000).toLocaleString(locale());
 }
 
 export function debounce(fn, ms) {

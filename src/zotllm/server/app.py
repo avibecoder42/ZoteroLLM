@@ -39,6 +39,9 @@ from zotllm.keystore import SecretStoreError, get_store
 from zotllm.llm import LLMError, make_chat_model
 from zotllm.rag import AskOptions, ChatService, ReviewService
 from zotllm.rag.sources import build_sources
+from zotllm.research.api import install as install_research
+from zotllm.research.service import ResearchService
+from zotllm.research_adapters import build_research_service
 from zotllm.retrieval import Searcher
 from zotllm.service import BackgroundScheduler, launcher_command
 from zotllm.settings import EmbeddingSettings, Settings
@@ -59,10 +62,12 @@ RENAMED_IN = "0.8.0"
 
 
 def create_app(engine: Engine | None = None, on_exit=None, exit_after_minutes: int | None = None,
-               on_open_ui=None, on_idle_exit=None) -> FastAPI:
+               on_open_ui=None, on_idle_exit=None, research: ResearchService | None = None) -> FastAPI:
     """on_exit: beendet den Dienst; on_open_ui(params): zeigt das Programmfenster (nur im Desktop-Programm);
-    on_idle_exit: Beenden, weil Zotero geschlossen ist – darf mit False ablehnen (Standard: on_exit)."""
+    on_idle_exit: Beenden, weil Zotero geschlossen ist – darf mit False ablehnen (Standard: on_exit);
+    research: Dienst des Moduls „Recherche“ (Standard: research.db im Datenordner, research_adapters.py)."""
     engine = engine or Engine()
+    research = research or build_research_service(engine)
     indexer = Indexer(engine)
     try:  # Schnappschüsse neben einer PDF gleich beim Start einordnen (sonst erst beim nächsten Indexieren)
         indexer.reconcile_snapshots()
@@ -90,9 +95,11 @@ def create_app(engine: Engine | None = None, on_exit=None, exit_after_minutes: i
         yield
         scheduler.stop()
         engine.shutdown()
+        research.store.close()
 
     app = FastAPI(title="ZotLLM", version=__version__, lifespan=lifespan, docs_url="/api/docs", redoc_url=None)
     app.state.engine = engine
+    app.state.research = research
 
     # -- Sicherheit ---------------------------------------------------------------------
     @app.middleware("http")
@@ -2054,5 +2061,9 @@ def create_app(engine: Engine | None = None, on_exit=None, exit_after_minutes: i
         if on_exit:
             threading.Timer(0.5, on_exit).start()
         return {"ok": True}
+
+    # -- Recherche ----------------------------------------------------------------------------------
+    # Modul „Recherche“ (Paket zotllm.research): Schnittstelle /api/research/…; Host-Prüfung und X-ZotLLM gelten auch hier
+    install_research(app, research)
 
     return app

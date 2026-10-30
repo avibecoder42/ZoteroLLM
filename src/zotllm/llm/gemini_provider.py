@@ -23,6 +23,7 @@ class GeminiChat(ChatModel):
         self.client = genai.Client(api_key=api_key, http_options=types.HttpOptions(timeout=int(timeout * 1000)))
         self._no_thinking_level = False
         self._no_temperature = False
+        self._no_schema = False
 
     def _contents(self, messages: list[ChatMessage]) -> list[types.Content]:
         out = []
@@ -42,6 +43,8 @@ class GeminiChat(ChatModel):
             kw["thinking_config"] = types.ThinkingConfig(thinking_level=_THINKING.get(params.effort, "high"))
         if params.json_mode:
             kw["response_mime_type"] = "application/json"
+            if params.json_schema and not self._no_schema:
+                kw["response_json_schema"] = params.json_schema
         return types.GenerateContentConfig(**kw)
 
     def _stream(self, system: str, messages: list[ChatMessage], params: GenParams) -> Iterator[StreamEvent]:
@@ -78,6 +81,9 @@ class GeminiChat(ChatModel):
                     continue
                 if not emitted and attempt < 2 and "temperature" in msg and not self._no_temperature:
                     self._no_temperature = True
+                    continue
+                if not emitted and attempt < 2 and "schema" in msg and params.json_schema and not self._no_schema:
+                    self._no_schema = True  # Modell ohne Schema-Unterstützung: nur JSON
                     continue
                 raise self._error(e) from e
             except genai_errors.APIError as e:

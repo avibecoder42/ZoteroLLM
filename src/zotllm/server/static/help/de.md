@@ -8,7 +8,9 @@ ZotLLM erschliesst die eigene Zotero-Bibliothek – auch Gruppenbibliotheken –
 - **Fragen** – Fragen in eigenen Worten; das Sprachmodell antwortet nur aus den gefundenen Textstellen, und jede Aussage ist mit Quelle und Seite belegt.
 - **Forschungsstand** – ein begleiteter Ablauf von der Suchstrategie über Auswertungsblätter je Text bis zur geprüften Synthese mit Literaturverzeichnis.
 
-Die Navigationsleiste links ist zweigeteilt. Oben stehen die Ansichten des aktiven **Projekts**: Projekt, Suchen, Fragen, Forschungsstand und Korpora. Unten stehen **Index**, **Hilfe** und **Einstellungen**; sie gelten für alle Projekte. Über dem Menü zeigt die Projektkachel das aktive Projekt; ein Klick darauf (oder **Strg+P**) wechselt das Projekt.
+Davor kann die **Recherche** stehen: eine Literatursuche in Fachdatenbanken (PubMed, OpenAlex und weitere), mit Screening und Übergabe der ausgewählten Literatur in Zotero-Sammlungen.
+
+Die Navigationsleiste links ist zweigeteilt. Oben stehen die Ansichten des aktiven **Projekts**: Projekt, Suchen, Fragen, Forschungsstand und Korpora. Unten stehen **Recherche**, **CSL-Editor**, **Index**, **Hilfe** und **Einstellungen**; sie gelten für alle Projekte (die Recherche hat eigene Projekte). Über dem Menü zeigt die Projektkachel das aktive Projekt; ein Klick darauf (oder **Strg+P**) wechselt das Projekt.
 
 ZotLLM ist ein unabhängiges Projekt und steht in keiner Verbindung zu Zotero oder der Corporation for Digital Scholarship; „Zotero“ ist deren eingetragene Marke.
 
@@ -26,8 +28,9 @@ Warnhinweise (braun hinterlegt) lassen sich mit dem × oben rechts ausblenden. H
 ### Tastenkürzel
 
 - **Strg+1 … Strg+5** Projekt, Suchen, Fragen, Forschungsstand, Korpora
-- **Strg+6** Index, **Strg+7** CSL-Editor, **Strg+,** Einstellungen, **F1** Hilfe
+- **Strg+6** Index, **Strg+7** CSL-Editor, **Strg+8** Recherche, **Strg+,** Einstellungen, **F1** Hilfe
 - **Strg+P** Projekt wechseln
+- In der Recherche: **Alt+1 … Alt+8** wechselt den Reiter; im Screening siehe Kapitel Recherche
 - **Esc** schliesst Menüs, Vorschauen und Dialoge
 - In Eingabefeldern startet **Enter** die Suche bzw. sendet die Frage; **Umschalt+Enter** macht im Fragefeld eine neue Zeile.
 
@@ -330,6 +333,40 @@ Ein Klick auf eine Belegnummer **[n]** zeigt die Textstelle mit Seite; von dort 
 Nach der Antwort lassen sich mit den Symbolen rechts unten **kopieren** (Text mit Quellenangaben) und **exportieren** (Word, LaTeX, Markdown). Auch die Liste der Textstellen lässt sich so kopieren und exportieren. Mehr dazu im Kapitel Export.
 
 Folgefragen beziehen sich auf den bisherigen Verlauf. Links stehen die bisherigen Fragen des Projekts; **Neue Frage** beginnt einen neuen Verlauf.
+
+## Recherche
+
+Die **Recherche** (Strg+8) führt eine Literatursuche in Fachdatenbanken von der Fragestellung bis zur ausgewählten Literatur in Zotero. Die Maschine sucht, entfernt Duplikate und schlägt vor – entscheiden tun Sie. Recherche-Projekte sind unabhängig von den Projekten von ZotLLM; sie liegen in `research.db` im Datenordner. Ein Projekt hat acht Reiter (Alt+1 … Alt+8): Projekt, Datenbanken, Suchstrategie, Suche & Import, Pool, Ordner, Screening und Übergabe. Die Kopfzeile zeigt, wo das Projekt steht, z. B. „PubMed 503 · OpenAlex 934 · gesichtet 380/1150“.
+
+### Projekt und Datenbanken
+
+Unter **Projekt** stehen Fragestellung, Kurzbeschreibung sowie Ein- und Ausschlusskriterien (eine Zeile je Kriterium; die Ausschlussgründe stehen im Screening zur Wahl). Unter **Datenbanken** wählen Sie Disziplinen; die App schlägt passende Datenbanken aus ihrem Katalog vor, mit Zugang, Bedingungen und nötigem Schlüssel. Direkt durchsuchbar sind PubMed, OpenAlex, Europe PMC, ERIC, EconBiz, Semantic Scholar, arXiv, OSF-Preprints und swisscovery. Lizenzierte Datenbanken (PsycInfo, CINAHL, SocINDEX …) laufen über den **RIS-Weg**: dort suchen und exportieren, hier importieren. Die App meldet sich nie bei lizenzierten Datenbanken an und automatisiert keinen Browser.
+
+Schlüssel liest die Recherche aus dem Schlüsselspeicher von ZotLLM: `openalex` (bei OpenAlex seit Februar 2026 nötig), `ncbi` (10 statt 3 PubMed-Anfragen pro Sekunde), `semanticscholar` und `zotero-web` für die Zotero-Web-API. Fehlt ein Schlüssel, zeigt der Reiter Datenbanken das an.
+
+### Suchstrategie, Suche und Import
+
+Die **Suchstrategie** besteht aus Konzeptblöcken (z. B. Population, Phänomen, Kontext, dazu ein Ausschlussblock): innerhalb eines Blocks gilt ODER, zwischen Blöcken UND, Ausschlussblöcke kommen mit NOT dazu. Daraus entstehen Suchstrings je Datenbank, mit Trefferzahl live. Blöcke sind freiwillig: Fertige Suchstrings lassen sich unter **Suche & Import** einfügen oder als Textdateien laden. Dort sind die Suchstrings versioniert; ein PubMed-String lässt sich in alle gewählten Datenbanken übersetzen (die Übersetzung ist ein Vorschlag – prüfen und zählen). **Alle zählen** und **Alle suchen** laufen über alle direkt durchsuchbaren Quellen; RIS-Dateien zieht man in die Drop-Zone. Jede Suche kommt ins Protokoll.
+
+### Pool und Vorfilter
+
+Der **Pool** enthält alle Treffer ohne Duplikate (DOI, PMID, OpenAlex-ID, Accession Number, Titel) – je Suchstring die Treffer der letzten Suche und dazu die Importe. **Mit Zotero abgleichen** markiert, was in der Zielbibliothek schon da ist. **Vorfilter** markieren nur, sie löschen nie: Eine Ausschlussregel wie „cyberbull*, bully*“ kann Ausnahmebegriffe haben; Treffer mit einem Ausnahmebegriff werden **Grenzfälle** statt ausgeblendet. **Ausgeblendete prüfen** öffnet eine Schnellsichtung mit Mehrfachauswahl. Fehlende Abstracts lädt die App über Crossref, PubMed und Semantic Scholar nach; ohne Abstract erscheint ein Treffer mit „nur Titel“, nie als Ausschluss. Der **Recall-Check** prüft bekannte Schlüsselarbeiten (DOIs) und warnt, wenn eine fehlt oder still ausgeblendet ist.
+
+### Ordner
+
+Unter **Ordner** wählen Sie die Zielbibliothek (eigene oder Gruppe, über Zotero auf diesem Computer oder die Zotero-Web-API) und legen bis zu 20 Ordner mit festen Nummern an, je einer Zotero-Sammlung zugeordnet; die ersten neun haben im Screening die Kürzel 1–9. Sammlungen wählen Sie im Baum wie in ZotLLM; neue lassen sich vormerken. In Zotero angelegt wird erst nach Ihrer Bestätigung.
+
+### Screening
+
+Das **Screening** zeigt die Treffer als **Karten** (ein Treffer mit ganzem Abstract) oder als **Liste** (alle offenen auf einmal). Kürzel auf den Karten: **J**/**K** blättern, **1–9** in den Ordner aufnehmen, **X** ausschliessen (mit Grund), **?** unsicher, **G** Grenzfall (mit Begründung; das Kennzeichen bleibt beim Entscheid), **A** KI-Vorschlag übernehmen, **Z** rückgängig. In der Liste haken Sie an, was aufgenommen wird; **Übernehmen …** zeigt die Bilanz und speichert alles als einen Stapel, den **Z** als Ganzes zurücknimmt. Warteschlangen für offene Treffer, Grenzfälle, unsichere und ausgeblendete Treffer.
+
+### KI-Vorschläge
+
+KI-Vorschläge sind freiwillig: im Screening (passend mit Ordner-Vorschlag, nicht passend, Grenzfall – je mit Kriterium und einem Satz Begründung), für Datenbanken aus der Fragestellung, für Konzeptblöcke und für Unterordner. Die Recherche nutzt das Modell der **Vorauswahl im Forschungsstand** (Einstellungen → Experten → Forschungsstand: Hilfs- oder Hauptmodell) mit dessen Denktiefe. Gesendet werden nur Titel, Zeitschrift, Jahr und Abstract der Treffer sowie der Projekttext, nichts aus Zotero und keine Volltexte. Vor jedem Lauf zeigt die App die geschätzten Token und – mit eingetragenen Preisen – die Kosten; der Lauf lässt sich anhalten. Der Schalter **KI-Vorschläge** blendet die Vorschläge aus (blind sichten). Ein Vorschlag ersetzt nie den Entscheid; beide stehen im Protokoll.
+
+### Übergabe und Protokoll
+
+Die **Übergabe** zeigt den Plan je Ordner: neue Einträge (Angaben auf Wunsch über Crossref vervollständigt, Schlagwort „litsearch“) und vorhandene, die nur der Sammlung zugeordnet werden. Nach Zotero geschrieben wird nur nach ausdrücklicher Bestätigung; für Zotero auf diesem Computer braucht es die Schreibfreigabe in Zotero. Das **Suchprotokoll** (Markdown, im Stil von PRISMA-S) enthält Quellen, Suchstrings mit Datum und Version, Trefferzahlen, Duplikate, Vorfilter je Regel, Ein- und Ausschlüsse je Grund, KI-Nutzung und die ausgewählte Literatur; dazu CSV-Dateien für Suchen sowie Treffer und Entscheide.
 
 ## Forschungsstand
 
