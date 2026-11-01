@@ -2,7 +2,7 @@
 
 All notable changes, newest first.
 
-## 1.1.0 – 2026-10-30
+## 1.1.0 – 2026-11-01
 
 **ZotLLM is now Zotivity.** The name fits what the application has become: comprehensive scholarly work with your Zotero
 library, not only language models.
