@@ -1,4 +1,4 @@
-"""Tests des Moduls „Recherche“ (zotllm.research und die Adapter in research_adapters.py) – ohne Netz, Zotero nur als
+"""Tests des Moduls „Recherche“ (zotivity.research und die Adapter in research_adapters.py) – ohne Netz, Zotero nur als
 Attrappe, nie der echte Schlüsselspeicher."""
 
 from __future__ import annotations
@@ -13,8 +13,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from research_fakes import FakeZoteroPort, MemoryKeyStore, SourceSim  # noqa: E402
 
-from zotllm.research.service import ResearchConfig, ResearchService  # noqa: E402
-from zotllm.research.store import Store  # noqa: E402
+from zotivity.research.service import ResearchConfig, ResearchService  # noqa: E402
+from zotivity.research.store import Store  # noqa: E402
 
 
 @pytest.fixture(autouse=True)
@@ -33,8 +33,8 @@ def no_network(monkeypatch):
         pass
 
 
-KEY_ENV = ("ANTHROPIC_API_KEY", "ZOTLLM_ANTHROPIC_API_KEY", "GEMINI_API_KEY", "GOOGLE_API_KEY", "ZOTLLM_GEMINI_API_KEY",
-           "OPENAI_API_KEY", "ZOTLLM_OPENAI_API_KEY", "DEEPSEEK_API_KEY", "ZOTLLM_DEEPSEEK_API_KEY")
+KEY_ENV = ("ANTHROPIC_API_KEY", "ZOTIVITY_ANTHROPIC_API_KEY", "GEMINI_API_KEY", "GOOGLE_API_KEY", "ZOTIVITY_GEMINI_API_KEY",
+           "OPENAI_API_KEY", "ZOTIVITY_OPENAI_API_KEY", "DEEPSEEK_API_KEY", "ZOTIVITY_DEEPSEEK_API_KEY")
 
 
 @pytest.fixture(autouse=True)

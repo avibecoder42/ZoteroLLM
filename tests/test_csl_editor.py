@@ -5,10 +5,10 @@ import httpx
 import pytest
 from fastapi.testclient import TestClient
 
-from zotllm import csl_editor as csl
-from zotllm.server.app import create_app
+from zotivity import csl_editor as csl
+from zotivity.server.app import create_app
 
-H = {"X-ZotLLM": "1"}
+H = {"X-Zotivity": "1"}
 
 STYLE = """<?xml version="1.0" encoding="utf-8"?>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0" demote-non-dropping-particle="never">
@@ -151,7 +151,7 @@ def test_check_reports_problems():
 def client(zengine, fake_zotero, monkeypatch):
     fake = FakeRepo()
     monkeypatch.setattr(csl, "_client", fake.factory())
-    monkeypatch.setattr("zotllm.server.app.ollama_available", lambda url: False)
+    monkeypatch.setattr("zotivity.server.app.ollama_available", lambda url: False)
     with TestClient(create_app(zengine)) as c:
         c.fake_repo = fake
         yield c
@@ -186,7 +186,7 @@ def test_api_items_for_preview(client, fake_zotero):
 
 def test_item_types_from_zotero_schema(client, fake_zotero, monkeypatch):
     """Weitere Eintragsarten: Liste und Namen aus Zotero, Beispiele wie in Zotero nach CSL-JSON umgesetzt."""
-    from zotllm import csl_types
+    from zotivity import csl_types
 
     monkeypatch.setattr(csl_types, "_memory", {"schema": None, "at": 0.0})
     r = client.get("/api/csl/item-types", params={"lang": "de"}).json()
@@ -238,7 +238,7 @@ def test_library_examples_pick_matching_items(client, zengine):
 
 def test_collection_examples(client, zengine, monkeypatch):
     """Eine Sammlung als Beispiele: ihre Einträge samt Untersammlungen, nach Eintragsart sortiert, mit Namen aus Zotero."""
-    from zotllm import csl_types
+    from zotivity import csl_types
 
     monkeypatch.setattr(csl_types, "_memory", {"schema": None, "at": 0.0})
     store = zengine.store

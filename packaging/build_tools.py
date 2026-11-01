@@ -15,7 +15,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
-from zotllm import __version__  # noqa: E402
+from zotivity import __version__  # noqa: E402
 
 PACKAGES = ["fastapi", "starlette", "pydantic", "pydantic_core", "uvicorn", "httpx", "httpcore", "h11", "anyio",
             "keyring", "pywin32-ctypes", "platformdirs", "numpy", "PyMuPDF", "openai", "anthropic", "google-genai",
@@ -31,12 +31,12 @@ def version_info() -> None:
   ffi=FixedFileInfo(filevers=({nums}), prodvers=({nums}), mask=0x3f, flags=0x0, OS=0x40004, fileType=0x1, subtype=0x0, date=(0, 0)),
   kids=[
     StringFileInfo([StringTable('040704B0', [
-      StringStruct('CompanyName', 'ZotLLM'),
-      StringStruct('FileDescription', 'ZotLLM – Fragen und Forschungsstand für die Zotero-Bibliothek'),
+      StringStruct('CompanyName', 'Zotivity'),
+      StringStruct('FileDescription', 'Zotivity – Fragen und Forschungsstand für die Zotero-Bibliothek'),
       StringStruct('FileVersion', '{__version__}'),
-      StringStruct('InternalName', 'ZotLLM'),
-      StringStruct('OriginalFilename', 'ZotLLM.exe'),
-      StringStruct('ProductName', 'ZotLLM'),
+      StringStruct('InternalName', 'Zotivity'),
+      StringStruct('OriginalFilename', 'Zotivity.exe'),
+      StringStruct('ProductName', 'Zotivity'),
       StringStruct('ProductVersion', '{__version__}')])]),
     VarFileInfo([VarStruct('Translation', [0x0407, 1200])])
   ]
@@ -80,7 +80,7 @@ def licenses(target: str) -> None:
               f"llama.cpp {llama_build} (eingebaute Embedding-Laufzeit): MIT (https://github.com/ggml-org/llama.cpp)",
               "LLVM OpenMP (libomp, Teil von llama.cpp): Apache-2.0 WITH LLVM-exception",
               "citeproc-js 2.4.63 (Vorschau im CSL-Editor): CPAL-1.0 oder AGPL-3.0 "
-              "(https://github.com/Juris-M/citeproc-js; Lizenztext in _internal/zotllm/server/static/vendor/citeproc)",
+              "(https://github.com/Juris-M/citeproc-js; Lizenztext in _internal/zotivity/server/static/vendor/citeproc)",
               "CSL-Sprachdateien (citation-style-language/locales): CC BY-SA 3.0",
               "Microsoft Edge WebView2: Laufzeit von Microsoft (in Windows 10/11 enthalten)",
               "Embedding-Modelle werden nicht mitgeliefert; sie stehen unter den Lizenzen ihrer Hersteller "
@@ -103,9 +103,9 @@ def manifest(installer: str, base_url: str = "") -> None:
         "version": __version__,
         "url": (base_url.rstrip("/") + "/" + path.name) if base_url else path.name,
         "sha256": sha256(path),
-        "notes": "ZotLLM " + __version__,
+        "notes": "Zotivity " + __version__,
     }
-    out = path.parent / "zotllm-update.json"
+    out = path.parent / "zotivity-update.json"
     out.write_text(json.dumps(data, indent=1), encoding="utf-8")
     (path.parent / (path.name + ".sha256")).write_text(f"{data['sha256']}  {path.name}\n", encoding="utf-8")
     print(out)

@@ -8,7 +8,7 @@ import pytest
 from fastapi.testclient import TestClient
 from test_indexing_search import build_library, run_index
 
-H = {"X-ZotLLM": "1"}
+H = {"X-Zotivity": "1"}
 BOTH = [{"lib": "users/0", "key": "ITEMA001"}, {"lib": "users/0", "key": "ITEMB001"}]
 
 
@@ -16,8 +16,8 @@ BOTH = [{"lib": "users/0", "key": "ITEMA001"}, {"lib": "users/0", "key": "ITEMB0
 def api(zengine, fake_zotero, monkeypatch):
     build_library(fake_zotero)
     run_index(zengine)
-    monkeypatch.setattr("zotllm.server.app.ollama_available", lambda url: False)
-    from zotllm.server.app import create_app
+    monkeypatch.setattr("zotivity.server.app.ollama_available", lambda url: False)
+    from zotivity.server.app import create_app
 
     with TestClient(create_app(zengine)) as c:
         yield c
@@ -40,8 +40,8 @@ def test_copy_references_and_short_citations(api):
 
 
 def test_bibliography_from_several_libraries_is_sorted(zengine, monkeypatch):
-    """Zotero sortiert je Bibliothek; über eigene Bibliothek und Gruppen hinweg ordnet ZotLLM zusammen."""
-    from zotllm.exporting import Citations
+    """Zotero sortiert je Bibliothek; über eigene Bibliothek und Gruppen hinweg ordnet Zotivity zusammen."""
+    from zotivity.exporting import Citations
 
     def load(self, zot, by_lib):
         self.bib_html = ["Zeller, A. (2020). <i>Z</i>.", "Meier, B. (2019). <i>M</i>.", "Arnold, C. (2021). <i>A</i>."]
@@ -55,7 +55,7 @@ def test_unavailable_zotero_is_remembered_briefly():
     """Geschlossenes Zotero: nicht bei jedem Kopieren erneut verbinden (unter Windows je rund 2 s)."""
     import httpx
 
-    from zotllm.zotero import ZoteroClient
+    from zotivity.zotero import ZoteroClient
 
     calls = []
     up = {"on": False}

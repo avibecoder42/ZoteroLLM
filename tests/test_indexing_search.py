@@ -1,9 +1,9 @@
 """End-to-End: simulierte Zotero-API → Abgleich → PDF-Extraktion → Embedding → Suche."""
 
-from zotllm.index.indexer import Indexer
-from zotllm.index.store import SearchFilter
-from zotllm.jobs import Job
-from zotllm.retrieval import Searcher, fts_query
+from zotivity.index.indexer import Indexer
+from zotivity.index.store import SearchFilter
+from zotivity.jobs import Job
+from zotivity.retrieval import Searcher, fts_query
 
 TEEN = ("Jugendliche nutzen Chatbots wie ChatGPT zunehmend, um über persönliche Probleme, Einsamkeit "
         "und Stress zu sprechen. Die Befragung von 1200 Jugendlichen zeigt, dass emotionale Unterstützung "
@@ -147,11 +147,11 @@ def test_corpus_filter_and_stats(zengine, fake_zotero):
 
 
 def test_existing_data_lands_in_default_project(tmp_path, monkeypatch):
-    from zotllm.engine import Engine
-    from zotllm.index.store import Store
-    from zotllm.settings import SettingsStore
+    from zotivity.engine import Engine
+    from zotivity.index.store import Store
+    from zotivity.settings import SettingsStore
 
-    monkeypatch.setenv("ZOTLLM_HOME", str(tmp_path))
+    monkeypatch.setenv("ZOTIVITY_HOME", str(tmp_path))
     store = Store(tmp_path / "i.sqlite3")
     cid = store.create_corpus("Projektgruppe", ["groups/1234567:*"])
     chat = store.create_chat("Frage")

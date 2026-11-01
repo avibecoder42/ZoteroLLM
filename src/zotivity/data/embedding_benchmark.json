@@ -1,0 +1,63 @@
+{
+ "about": "Kurztest für Embedding-Modelle: misst das Tempo (Tokens pro Sekunde) und prüft mit sprachübergreifenden Suchfragen, ob die Vektoren plausibel sind. Eigene Texte von Zotivity, frei verwendbar.",
+ "passages": [
+  {
+   "id": "schulsozialarbeit",
+   "lang": "de",
+   "title": "Kooperation in der Schulsozialarbeit",
+   "text": "Schulsozialarbeit ist in den meisten Kantonen inzwischen fester Bestandteil der Volksschule. Ihr Erfolg hängt wesentlich davon ab, wie Fachpersonen der Sozialen Arbeit und Lehrpersonen zusammenarbeiten. Die vorliegende Untersuchung stützt sich auf 34 Leitfadeninterviews an Schulen in städtischen und ländlichen Gemeinden. Sie zeigt, dass Kooperation dort gelingt, wo Zuständigkeiten schriftlich geklärt sind, regelmässige Fallbesprechungen stattfinden und die Schulsozialarbeit früh in Konflikte einbezogen wird, statt erst bei Eskalationen. Lehrpersonen schätzen besonders die Entlastung bei Konflikten in der Klasse und bei Gesprächen mit Eltern. Spannungen entstehen hingegen, wenn die Schulsozialarbeit als verlängerter Arm der Schulleitung wahrgenommen wird: Schülerinnen und Schüler vertrauen ihr dann weniger, und die Schweigepflicht gerät unter Druck. Die Autorinnen empfehlen deshalb ein gemeinsames Kooperationskonzept, das Rollen, Informationsflüsse und Grenzen der Vertraulichkeit festhält, sowie gemeinsame Weiterbildungen. Ein niederschwelliger Zugang, etwa ein offenes Büro während der Pausen, erhöht die Nutzung durch Jugendliche deutlich."
+  },
+  {
+   "id": "bewegung-depression",
+   "lang": "en",
+   "title": "Physical activity and depressive symptoms in later life",
+   "text": "Depression is one of the most common mental health conditions among adults over 65, yet it often remains untreated. This meta-analysis pooled 41 randomised controlled trials with a total of 5,218 participants aged 60 to 92 to examine whether structured physical activity reduces depressive symptoms. Interventions included walking groups, resistance training, tai chi and mixed programmes lasting between eight and 52 weeks. Compared with usual care or social contact controls, exercise produced a moderate reduction in symptom scores (standardised mean difference -0.47). Effects were larger for supervised programmes delivered at least twice a week and for participants with clinically relevant symptoms at baseline. Mind-body interventions such as tai chi performed as well as aerobic training. Adherence declined after six months, and few trials reported long-term follow-up. The authors conclude that physical activity is a safe and low-cost complement to psychotherapy and medication for older adults, but they caution that the certainty of evidence is limited by small samples and heterogeneous outcome measures."
+  },
+  {
+   "id": "gletscher-wasser",
+   "lang": "de",
+   "title": "Gletscherschwund und Wasserversorgung im Alpenraum",
+   "text": "Die Gletscher der Alpen haben seit 1850 rund 60 Prozent ihres Volumens verloren, und der Rückgang hat sich in den letzten zwei Jahrzehnten deutlich beschleunigt. Für die Wasserversorgung ist dabei weniger die jährliche Menge entscheidend als ihre zeitliche Verteilung. Gletscher wirken als Speicher: Sie geben in heissen, trockenen Sommern Schmelzwasser ab, wenn Niederschlag fehlt. Modellrechnungen für 48 Einzugsgebiete in der Schweiz, in Österreich und Italien zeigen, dass der sommerliche Abfluss in vielen Tälern bis Mitte des Jahrhunderts zunächst steigt und danach markant sinkt, sobald die Eismasse zu klein wird. Betroffen sind die Trinkwasserversorgung kleiner Gemeinden, die Bewässerung in inneralpinen Trockentälern und die Stromproduktion der Laufkraftwerke. Die Studie empfiehlt, Mehrzweckspeicher zu prüfen, die Wasserrechte flexibler zu gestalten und Nutzungskonflikte zwischen Landwirtschaft, Tourismus und Energiewirtschaft frühzeitig zu regeln."
+  },
+  {
+   "id": "attention-effizienz",
+   "lang": "en",
+   "title": "Reducing the cost of attention in transformer models",
+   "text": "The self-attention mechanism at the core of transformer models scales quadratically with sequence length, which makes long documents expensive to process in both memory and computation. This survey groups more than 80 proposed remedies into four families. Sparse attention restricts each token to a fixed pattern of neighbours, such as local windows combined with a few global tokens. Low-rank and kernel methods approximate the attention matrix so that its cost grows linearly. Memory-efficient exact algorithms, including tiling approaches that avoid materialising the full matrix, keep the original computation but reorganise it to fit fast on-chip memory. Finally, recurrent and state-space architectures replace attention altogether. Benchmarks on long-context retrieval and summarisation show that exact but memory-efficient attention currently offers the best trade-off on modern GPUs, while approximate methods lose accuracy on tasks that require precise retrieval of distant information. The authors argue that hybrid designs, which combine a few full attention layers with cheaper recurrent layers, are the most promising direction."
+  },
+  {
+   "id": "gesundheitsdaten-einwilligung",
+   "lang": "de",
+   "title": "Einwilligung in die Bearbeitung von Gesundheitsdaten",
+   "text": "Gesundheitsdaten gelten nach dem schweizerischen Datenschutzgesetz als besonders schützenswerte Personendaten. Werden sie von privaten Stellen bearbeitet, braucht es einen Rechtfertigungsgrund, in der Praxis meist die Einwilligung der betroffenen Person. Diese ist nur gültig, wenn sie nach angemessener Information freiwillig erfolgt; bei besonders schützenswerten Daten muss sie zudem ausdrücklich sein. Der Beitrag untersucht, wie Spitäler, Praxen und Anbieter von Gesundheits-Apps diese Anforderungen umsetzen. Problematisch sind pauschale Einwilligungen in allgemeinen Geschäftsbedingungen, die Weitergabe an Dritte zu Forschungszwecken ohne klare Information sowie die fehlende Möglichkeit, eine Einwilligung später zu widerrufen. Für die Forschung verweist der Autor auf das Humanforschungsgesetz, das unter bestimmten Bedingungen eine Generaleinwilligung zulässt. Er empfiehlt abgestufte Einwilligungsformulare, verständliche Kurzinformationen und eine Protokollierung, damit Patientinnen und Patienten jederzeit nachvollziehen können, wer ihre Daten wofür verwendet."
+  },
+  {
+   "id": "maschinenstuermer",
+   "lang": "en",
+   "title": "Machine breaking in early industrial England",
+   "text": "Between 1811 and 1816, groups of textile workers in the English Midlands and the North destroyed stocking frames and shearing machines in a series of nocturnal raids. Later generations portrayed these Luddites as naive opponents of technical progress. This article reconstructs their motives from court records, letters and local newspapers. It argues that the attacks were a form of collective bargaining by riot: workers targeted employers who used new machines to cut wages, hire unapprenticed labour and produce cheaper, lower-quality goods, while sparing workshops that kept customary rates. Rising food prices during the Napoleonic Wars and the ban on trade unions under the Combination Acts left few legal means of protest. The government responded with harsh repression, making frame breaking a capital offence and deploying thousands of soldiers. The author concludes that the Luddites contested the distribution of gains from mechanisation rather than technology as such, a debate that resurfaces with every wave of automation."
+  },
+  {
+   "id": "lesefoerderung",
+   "lang": "de",
+   "title": "Leseförderung in der Primarschule",
+   "text": "Internationale Vergleichsstudien zeigen, dass ein wachsender Anteil der Kinder am Ende der Primarschule nur einfache Texte sicher versteht. Die vorliegende Interventionsstudie mit 1240 Kindern der dritten und vierten Klasse prüfte drei Ansätze über ein Schuljahr. Lautleseverfahren, bei denen Kinder im Tandem wiederholt denselben Text lesen, verbesserten vor allem die Leseflüssigkeit schwacher Leserinnen und Leser. Ein Training von Lesestrategien wie Zusammenfassen, Fragen stellen und Klären unbekannter Wörter wirkte stärker auf das Textverständnis. Die Kombination beider Ansätze erzielte die grössten Effekte, sofern die Lehrpersonen vorgängig geschult wurden und täglich etwa zwanzig Minuten dafür einsetzten. Reine Motivationsprogramme ohne systematische Übung blieben wirkungslos. Die Autorinnen betonen die Bedeutung der Diagnose: Wer die Leseflüssigkeit früh misst, kann Kinder gezielt dem passenden Förderangebot zuweisen. Sprachlich heterogene Klassen profitierten zusätzlich von Wortschatzarbeit vor der Lektüre."
+  },
+  {
+   "id": "mindestlohn",
+   "lang": "en",
+   "title": "Minimum wages and employment",
+   "text": "Whether minimum wages destroy jobs has been one of the most contested questions in labour economics. Standard competitive models predict that a wage floor above the market wage reduces employment, while models of monopsony, in which employers have wage-setting power, allow moderate minimum wages to raise both pay and employment. This study exploits 138 state-level increases in the United States between 1979 and 2019 and compares the number of jobs paying below and just above the new minimum before and after each change. It finds that the number of low-wage jobs fell by far less than the number of jobs paying just above the new floor rose, so overall employment of affected workers remained essentially unchanged over five years. Effects were similar in tradable and non-tradable sectors and did not differ between high- and low-wage regions, although very large increases relative to the local median wage were rare in the sample. The authors caution that the results may not extend to minimum wages set at substantially higher levels."
+  }
+ ],
+ "queries": [
+  {"lang": "de", "text": "Wie gelingt die Zusammenarbeit zwischen Schulsozialarbeit und Lehrpersonen?", "expect": "schulsozialarbeit"},
+  {"lang": "de", "text": "Hilft Sport älteren Menschen gegen Depressionen?", "expect": "bewegung-depression"},
+  {"lang": "en", "text": "How does the retreat of glaciers affect water supply in the Alps?", "expect": "gletscher-wasser"},
+  {"lang": "en", "text": "methods to make attention in transformers cheaper for long sequences", "expect": "attention-effizienz"},
+  {"lang": "en", "text": "consent requirements for processing patients' health data under Swiss law", "expect": "gesundheitsdaten-einwilligung"},
+  {"lang": "de", "text": "Warum zerstörten Arbeiter im 19. Jahrhundert Maschinen?", "expect": "maschinenstuermer"},
+  {"lang": "en", "text": "interventions to improve reading comprehension of primary school children", "expect": "lesefoerderung"},
+  {"lang": "de", "text": "Führt ein Mindestlohn zum Verlust von Arbeitsplätzen?", "expect": "mindestlohn"}
+ ]
+}

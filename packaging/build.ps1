@@ -1,7 +1,7 @@
-﻿# Baut ZotLLM für Windows: Tests, Symbole, PyInstaller-Ordner, Lizenzen, Selbsttest, Inno-Setup-Installer, Update-Manifest.
+﻿# Baut Zotivity für Windows: Tests, Symbole, PyInstaller-Ordner, Lizenzen, Selbsttest, Inno-Setup-Installer, Update-Manifest.
 # Aufruf (PowerShell):  .\packaging\build.ps1                     (vollständig)
 #                       .\packaging\build.ps1 -SkipTests          (ohne pytest)
-#                       .\packaging\build.ps1 -UpdateBaseUrl https://…/zotllm   (Adresse für das Update-Manifest)
+#                       .\packaging\build.ps1 -UpdateBaseUrl https://…/zotivity   (Adresse für das Update-Manifest)
 #                       .\packaging\build.ps1 -SkipWindowTest     (Selbsttest ohne Fenster, z. B. auf GitHub Actions)
 param(
     [switch]$SkipTests,
@@ -28,7 +28,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 New-Item -ItemType Directory -Force (Join-Path $root "build") | Out-Null
 $version = (& $py (Join-Path $PSScriptRoot "build_tools.py") print-version).Trim()
-Write-Host "ZotLLM $version"
+Write-Host "Zotivity $version"
 
 if (-not $SkipTests) {
     & $py -m pytest -q --basetemp (Join-Path $root "build\pytest") -p no:cacheprovider (Join-Path $root "tests")
@@ -40,14 +40,14 @@ if (-not $SkipTests) {
 # Eingebaute Embedding-Laufzeit (llama.cpp, feste Version mit Prüfsumme; Modelle werden nicht mitgeliefert)
 & $py (Join-Path $PSScriptRoot "fetch_llama.py")
 if ($LASTEXITCODE -ne 0) { throw "llama.cpp konnte nicht bereitgestellt werden" }
-& $py -m PyInstaller --noconfirm --clean (Join-Path $PSScriptRoot "zotllm.spec") --distpath (Join-Path $root "dist") --workpath (Join-Path $root "build\pyinstaller")
+& $py -m PyInstaller --noconfirm --clean (Join-Path $PSScriptRoot "zotivity.spec") --distpath (Join-Path $root "dist") --workpath (Join-Path $root "build\pyinstaller")
 if ($LASTEXITCODE -ne 0) { throw "PyInstaller fehlgeschlagen" }
-& $py (Join-Path $PSScriptRoot "build_tools.py") licenses (Join-Path $root "dist\ZotLLM") | Out-Null
+& $py (Join-Path $PSScriptRoot "build_tools.py") licenses (Join-Path $root "dist\Zotivity") | Out-Null
 
 if (-not $SkipSelfTest) {
     $st = Join-Path $root "build\selftest"
     if (Test-Path $st) { Remove-Item -Recurse -Force $st }
-    $exe = Join-Path $root "dist\ZotLLM\ZotLLM.exe"
+    $exe = Join-Path $root "dist\Zotivity\Zotivity.exe"
     $stArgs = @("--self-test", "`"$st`"")
     if ($SkipWindowTest) { $stArgs += "--no-window" }
     $p = Start-Process -FilePath $exe -ArgumentList $stArgs -PassThru -Wait
@@ -67,6 +67,6 @@ $iscc = @(
 if (-not $iscc) { throw "Inno Setup 6 (ISCC.exe) nicht gefunden. Installation: winget install JRSoftware.InnoSetup" }
 & $iscc /Q "/DAppVersion=$version" (Join-Path $PSScriptRoot "installer.iss")
 if ($LASTEXITCODE -ne 0) { throw "Inno Setup fehlgeschlagen" }
-$installer = Join-Path $root "dist\ZotLLM-Setup-$version.exe"
+$installer = Join-Path $root "dist\Zotivity-Setup-$version.exe"
 & $py (Join-Path $PSScriptRoot "build_tools.py") manifest $installer $UpdateBaseUrl | Out-Null
 Write-Host "Fertig: $installer"

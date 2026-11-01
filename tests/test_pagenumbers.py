@@ -4,17 +4,17 @@ Umstellung bestehender Auswertungsblätter und Forschungsstände („o. S.“ oh
 from fakes import make_pdf
 from test_indexing_search import run_index
 
-from zotllm.extract import extract_file
-from zotllm.extract.chunker import chunk_pages
-from zotllm.extract.pagenumbers import detect_page_labels, parse_page_range
-from zotllm.extract.pdf import PageText
-from zotllm.rag import ReviewService
-from zotllm.rag.review import NO_PAGE, PAGES_VERSION, page_at, parse_citation
+from zotivity.extract import extract_file
+from zotivity.extract.chunker import chunk_pages
+from zotivity.extract.pagenumbers import detect_page_labels, parse_page_range
+from zotivity.extract.pdf import PageText
+from zotivity.rag import ReviewService
+from zotivity.rag.review import NO_PAGE, PAGES_VERSION, page_at, parse_citation
 
 
 def test_pdf_labels_from_hex_strings():
     """PyMuPDF gibt Beschriftungen aus PDF-Hex-Text teils roh zurück („<FEFF0032>“ = „2“)."""
-    from zotllm.extract.pagenumbers import clean_pdf_label
+    from zotivity.extract.pagenumbers import clean_pdf_label
 
     assert clean_pdf_label("<FEFF0032>") == "2" and clean_pdf_label("<feff0069 0076>") == "iv"
     assert clean_pdf_label("<FEFF0037>–<FEFF0038>") == "7–8" and clean_pdf_label("<3132>") == "12"
@@ -29,7 +29,7 @@ def test_hex_labels_are_cleaned_in_existing_index(tmp_path):
     import json
     import sqlite3
 
-    from zotllm.index.store import Store
+    from zotivity.index.store import Store
 
     store = Store(tmp_path / "i.sqlite3")
     with store.write() as con:

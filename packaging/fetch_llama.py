@@ -33,7 +33,7 @@ def sha256(path: Path) -> str:
 
 def download(url: str, dest: Path) -> None:
     print(f"Lade {url}")
-    req = urllib.request.Request(url, headers={"User-Agent": "ZotLLM-build"})
+    req = urllib.request.Request(url, headers={"User-Agent": "Zotivity-build"})
     tmp = dest.with_suffix(dest.suffix + ".part")
     with urllib.request.urlopen(req, timeout=120) as resp, open(tmp, "wb") as fh:  # noqa: S310 - feste HTTPS-Adresse
         shutil.copyfileobj(resp, fh)

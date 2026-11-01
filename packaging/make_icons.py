@@ -1,6 +1,6 @@
-"""Programmsymbol aus dem SVG der Oberfläche erzeugen: zotllm.ico (Windows) und icon.png (Linux, 256 px).
+"""Programmsymbol aus dem SVG der Oberfläche erzeugen: zotivity.ico (Windows) und icon.png (Linux, 256 px).
 
-Aufruf: python packaging/make_icons.py   (benötigt nur PyMuPDF, das ZotLLM ohnehin verwendet)
+Aufruf: python packaging/make_icons.py   (benötigt nur PyMuPDF, das Zotivity ohnehin verwendet)
 """
 
 from __future__ import annotations
@@ -11,7 +11,7 @@ from pathlib import Path
 import pymupdf as fitz
 
 ROOT = Path(__file__).resolve().parent.parent
-SVG = ROOT / "src" / "zotllm" / "server" / "static" / "img" / "icon.svg"
+SVG = ROOT / "src" / "zotivity" / "server" / "static" / "img" / "icon.svg"
 SIZES = (16, 20, 24, 32, 40, 48, 64, 128, 256)
 
 
@@ -37,9 +37,9 @@ def write_ico(path: Path, pngs: dict[int, bytes]) -> None:
 
 def main() -> None:
     pngs = {s: render_png(s) for s in SIZES}
-    write_ico(ROOT / "packaging" / "zotllm.ico", pngs)
-    (ROOT / "src" / "zotllm" / "server" / "static" / "img" / "icon.png").write_bytes(pngs[256])
-    (ROOT / "packaging" / "zotllm.png").write_bytes(render_png(512))
+    write_ico(ROOT / "packaging" / "zotivity.ico", pngs)
+    (ROOT / "src" / "zotivity" / "server" / "static" / "img" / "icon.png").write_bytes(pngs[256])
+    (ROOT / "packaging" / "zotivity.png").write_bytes(render_png(512))
     print("Symbole erstellt")
 
 

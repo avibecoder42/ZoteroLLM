@@ -5,9 +5,9 @@ from pathlib import Path
 
 import pytest
 
-from zotllm import i18n
+from zotivity import i18n
 
-STATIC = Path(__file__).resolve().parents[1] / "src" / "zotllm" / "server" / "static"
+STATIC = Path(__file__).resolve().parents[1] / "src" / "zotivity" / "server" / "static"
 
 
 @pytest.fixture
@@ -52,7 +52,7 @@ def test_unknown_language_falls_back():
 
 
 def test_job_dict_is_translated(english):
-    from zotllm.jobs import Job
+    from zotivity.jobs import Job
 
     job = Job("index", "Indexierung aller Korpora")
     job.update(phase="Abschluss", message="12 übrige Abschnitte",

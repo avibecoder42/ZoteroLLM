@@ -1,4 +1,4 @@
-"""Das Modul „Recherche“ im Server von ZotLLM: Sicherheit (Host-Prüfung, X-ZotLLM) und der ganze Ablauf über
+"""Das Modul „Recherche“ im Server von Zotivity: Sicherheit (Host-Prüfung, X-Zotivity) und der ganze Ablauf über
 /api/research/… (ohne Netz, Zotero als Attrappe)."""
 
 from __future__ import annotations
@@ -9,10 +9,10 @@ import pytest
 from fastapi.testclient import TestClient
 from research_fakes import QUERIES
 
-from zotllm import __version__
-from zotllm.server.app import create_app
+from zotivity import __version__
+from zotivity.server.app import create_app
 
-H = {"X-ZotLLM": "1"}
+H = {"X-Zotivity": "1"}
 
 
 @pytest.fixture
@@ -160,7 +160,7 @@ def test_zotero_endpoints(client):
 
 @pytest.mark.skipif(not QUERIES.exists(), reason="Suchstrings des Projekts nicht vorhanden")
 def test_project_query_files(client):
-    """Die echten Suchstrings des Projekts Onlineaggression (Ordner in ZOTLLM_TEST_QUERIES) lassen sich laden (nur lesen)."""
+    """Die echten Suchstrings des Projekts Onlineaggression (Ordner in ZOTIVITY_TEST_QUERIES) lassen sich laden (nur lesen)."""
     pid = client.post("/api/research/projects", headers=H, json={"title": "Onlineaggression"}).json()["id"]
     files = [{"filename": f.name, "content_b64": base64.b64encode(f.read_bytes()).decode()} for f in sorted(QUERIES.glob("*.txt"))]
     qs = client.post(f"/api/research/projects/{pid}/queries/import", headers=H, json={"files": files}).json()["queries"]

@@ -5,8 +5,8 @@ from __future__ import annotations
 import pytest
 from test_research_pool_screening import make_project
 
-from zotllm.research.errors import ZoteroWriteRefused
-from zotllm.research.export import collection_paths
+from zotivity.research.errors import ZoteroWriteRefused
+from zotivity.research.export import collection_paths
 
 
 def setup_pool(service, zotero):

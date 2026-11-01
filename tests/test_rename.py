@@ -1,4 +1,4 @@
-"""Umbenennung ZoteroLLM → ZotLLM (0.8.0): Daten, Schlüssel, Plugin und Dateien der früheren Version gehen weiter."""
+"""Umbenennungen ZoteroLLM → ZotLLM (0.8.0) → Zotivity (1.1.0): Daten, Schlüssel, Plugin und Dateien früherer Versionen gehen weiter."""
 import io
 import json
 import os
@@ -9,10 +9,10 @@ import httpx
 import pytest
 from fastapi.testclient import TestClient
 
-from zotllm import paths, projects_io
-from zotllm.keystore import SecretStore
-from zotllm.server.app import create_app
-from zotllm.zotero import ZoteroClient
+from zotivity import paths, projects_io
+from zotivity.keystore import SecretStore
+from zotivity.server.app import create_app
+from zotivity.zotero import ZoteroClient
 
 
 def _dirs(base, name):
@@ -22,21 +22,21 @@ def _dirs(base, name):
 
 
 def test_legacy_folders_are_adopted(tmp_path):
-    old, new = _dirs(tmp_path, "ZoteroLLM"), _dirs(tmp_path, "ZotLLM")
+    old, new = _dirs(tmp_path, "ZoteroLLM"), _dirs(tmp_path, "Zotivity")
     for d in (old.user_data_dir, old.user_config_dir, old.user_log_dir):
         os.makedirs(d)
     (tmp_path / "ZoteroLLM" / "data" / "index.sqlite3").write_text("index")
     (tmp_path / "ZoteroLLM" / "config" / "settings.json").write_text("{}")
     assert paths._adopt_legacy(new, old)
-    assert (tmp_path / "ZotLLM" / "data" / "index.sqlite3").read_text() == "index"
-    assert (tmp_path / "ZotLLM" / "config" / "settings.json").is_file()
-    assert (tmp_path / "ZotLLM" / "data" / "Logs").is_dir()  # zog mit den Daten um
+    assert (tmp_path / "Zotivity" / "data" / "index.sqlite3").read_text() == "index"
+    assert (tmp_path / "Zotivity" / "config" / "settings.json").is_file()
+    assert (tmp_path / "Zotivity" / "data" / "Logs").is_dir()  # zog mit den Daten um
     assert not (tmp_path / "ZoteroLLM" / "data").exists()
 
 
 def test_legacy_folders_all_or_nothing(tmp_path, monkeypatch):
     """Lässt sich ein Ordner nicht umbenennen (alte Version läuft noch), bleibt alles beim Alten."""
-    old, new = _dirs(tmp_path, "ZoteroLLM"), _dirs(tmp_path, "ZotLLM")
+    old, new = _dirs(tmp_path, "ZoteroLLM"), _dirs(tmp_path, "Zotivity")
     os.makedirs(old.user_data_dir)
     os.makedirs(old.user_config_dir)
     real_replace = os.replace
@@ -57,7 +57,7 @@ def test_legacy_keys_are_moved(memory_keyring):
     store = SecretStore()
     assert store.source("gemini") == "keyring"
     assert store.get("gemini") == "AIza-alt-0000"
-    assert memory_keyring.get_password("ZotLLM", "gemini") == "AIza-alt-0000"
+    assert memory_keyring.get_password("Zotivity", "gemini") == "AIza-alt-0000"
     assert memory_keyring.get_password("ZoteroLLM", "gemini") is None
     # gelöscht wird unter beiden Namen, sonst käme der Schlüssel zurück
     memory_keyring.set_password("ZoteroLLM", "gemini", "AIza-alt-0000")
@@ -66,12 +66,55 @@ def test_legacy_keys_are_moved(memory_keyring):
 
 
 def test_legacy_header_accepted(engine, monkeypatch):
-    monkeypatch.setattr("zotllm.server.app.ollama_available", lambda url: False)
+    monkeypatch.setattr("zotivity.server.app.ollama_available", lambda url: False)
     with TestClient(create_app(engine)) as c:
         body = {"retrieval": {"top_k": 6}}
         assert c.put("/api/settings", json=body).status_code == 403
         assert c.put("/api/settings", json=body, headers={"X-ZoteroLLM": "1"}).status_code == 200
         assert c.put("/api/settings", json=body, headers={"X-ZotLLM": "1"}).status_code == 200
+        assert c.put("/api/settings", json=body, headers={"X-Zotivity": "1"}).status_code == 200
+
+
+def test_zotllm_folders_and_keys_are_taken_over(tmp_path, memory_keyring, monkeypatch):
+    """Von ZotLLM (bis 1.0.1) nach Zotivity: Ordner und Schlüssel; ZotLLM hat Vorrang vor dem noch älteren Namen."""
+    made = {name: _dirs(tmp_path, name) for name in ("Zotivity", "ZotLLM", "ZoteroLLM")}
+    monkeypatch.setattr(paths, "_platform_dirs", lambda name: made[name])
+    paths._dirs.cache_clear()
+    for name in ("ZotLLM", "ZoteroLLM"):
+        os.makedirs(made[name].user_data_dir)
+    (tmp_path / "ZotLLM" / "data" / "research.db").write_text("recherche")
+    try:
+        assert paths._dirs().user_data_dir == made["Zotivity"].user_data_dir
+    finally:
+        paths._dirs.cache_clear()
+    assert (tmp_path / "Zotivity" / "data" / "research.db").read_text() == "recherche"
+
+    memory_keyring.set_password("ZotLLM", "openalex", "OA-alt-0000")
+    store = SecretStore()
+    assert store.get("openalex") == "OA-alt-0000"
+    assert memory_keyring.get_password("Zotivity", "openalex") == "OA-alt-0000"
+    assert memory_keyring.get_password("ZotLLM", "openalex") is None
+
+
+def test_project_file_is_zoty_and_zllm_still_imports(engine):
+    name, payload = projects_io.export_project(engine, engine.store.create_project("Neu"))
+    assert name.endswith(".zoty")
+    with zipfile.ZipFile(io.BytesIO(payload)) as z:
+        assert json.loads(z.read("project.json"))["format"] == "zotivity-project"
+    data = {"format": "zotllm-project", "version": 1, "project": {"name": "Aus ZotLLM"}, "corpora": [], "chats": [],
+            "reviews": [], "sheets": [], "searches": []}
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as z:
+        z.writestr("project.json", json.dumps(data))
+    projects_io.import_project(engine, buf.getvalue())
+    assert any(p["name"] == "Aus ZotLLM" for p in engine.store.projects())
+
+
+def test_styles_from_zotllm_stay_own():
+    from zotivity import csl_editor
+
+    xml = '<style xmlns="http://purl.org/net/xbiblio/csl" version="1.0"><info><title>T</title><id>http://www.zotero.org/styles/zotllm-t</id></info><citation/></style>'
+    assert csl_editor.info(xml)["own"]
 
 
 def test_legacy_project_file_imports(engine):
@@ -90,7 +133,7 @@ def test_legacy_project_file_imports(engine):
         projects_io.import_project(engine, buf.getvalue())
 
 
-@pytest.mark.parametrize("plugin_path", ["/zotllm/uris", "/zoterollm/uris"])
+@pytest.mark.parametrize("plugin_path", ["/zotivity/uris", "/zotllm/uris", "/zoterollm/uris"])
 def test_word_uris_from_old_or_new_plugin(plugin_path):
     def handle(request):
         if request.url.path == "/api/":

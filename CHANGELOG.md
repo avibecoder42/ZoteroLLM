@@ -4,32 +4,58 @@ All notable changes, newest first.
 
 ## 1.1.0 – 2026-10-30
 
+**ZotLLM is now Zotivity.** The name fits what the application has become: comprehensive scholarly work with your Zotero
+library, not only language models.
+
+### Moving from ZotLLM
+- On the first start, Zotivity takes over the data folders, settings and stored API keys of ZotLLM automatically.
+- Projects are saved as **`.zoty`** files; `.zllm` files from earlier versions can still be imported.
+- **Replace the Zotero plugin:** remove the old "ZotLLM" plugin in Zotero and install the new one (Settings → Zotero and
+  export → Save plugin). The setup checklist reminds you. Word documents with existing citations keep working.
+- The installer updates an existing ZotLLM installation and removes its old program folder. The command `zotllm` and the
+  environment variables `ZOTLLM_*` still work.
+
 ### New
 - **Database search** (new project view, Ctrl+2; German: “Recherche”): the step before the literature review, taken
-  over from the standalone literature search app (litsearch) as the module `zotllm.research`. A search project leads from the research question to the
-  selected literature in Zotero, in eight tabs (Alt+1 … Alt+8):
-  - **Project** and **Databases:** research question, criteria; disciplines and a database catalog with access, terms
-    of use and keys.
-  - **Search strategy** and **Search & import:** concept blocks → search strings per database with live hit counts;
+  over from the standalone literature search app (litsearch) as the module `zotivity.research`. A search project leads from the research question to the
+  selected literature in Zotero, in nine tabs (Alt+1 … Alt+9). Everything is saved automatically:
+  - **Project** and **Databases:** research question, criteria, up to three reviewers, target library in Zotero;
+    disciplines and a database catalog with access, terms of use and keys.
+  - **Search strategy** and **Search & import:** concept blocks → search strings per database with live hit counts; AI
+    suggestions appear directly with the blocks;
     searches in PubMed, OpenAlex, Europe PMC, ERIC, EconBiz, Semantic Scholar, arXiv, OSF Preprints and swisscovery;
-    RIS import for licensed databases (PsycInfo, CINAHL …). No browser automation.
+    RIS import for licensed databases (PsycInfo, CINAHL …) with the date of the search; other sources for the log. No
+    browser automation.
   - **Pool:** de-duplicated records, check against the Zotero target library, prefilters that only mark (with
     exception terms that turn records into borderline cases), missing abstracts fetched, recall check with key papers.
   - **Folders** 1–20 (shortcuts 1–9) mapped to Zotero collections; **Screening** as cards (J/K, 1–9, X, ?, G, A, Z)
-    or as a list with bulk apply; **Handover** to Zotero only after explicit confirmation, search log in the style of
-    PRISMA-S.
-  - Optional **AI suggestions** (screening, databases, concept blocks, subfolders) with the model of the pre-selection
+    or as a list with bulk apply, recording who decides; **Handover** to Zotero only after explicit confirmation, search
+    log in the style of PRISMA-S and a PRISMA 2020 flow diagram (SVG).
+  - **Full texts** (optional): status per included text, detected from Zotero where possible – still missing, available,
+    not retrievable, included, excluded with reason. Missing PDFs hold nothing up. Items excluded at full text can be
+    taken out of the search's collections after confirmation and tagged; nothing is deleted.
+  - **Report for the methods section** (optional): a language model drafts sources, search, criteria, selection process
+    and selection flow from the log data, in German or English. Missing information appears as a placeholder, and
+    numbers not found in the log data are reported. It does not replace a complete PRISMA report.
+  - Optional **AI suggestions** (screening, databases, concept blocks, subfolders, report) with the model of the pre-selection
     in literature reviews; token and cost estimate before each run; decisions are always made by hand.
-  - Every database search belongs to a ZotLLM project; the project page lists them with their screening status, and
+  - Every database search belongs to a Zotivity project; the project page lists them with their screening status, and
     searches without a project (e.g. after deleting one) can be assigned again. Data lives in `research.db` in the data folder.
-  - Keys for the Zotero web API and the databases are read from the key store (`zotero-web`, `openalex`, `ncbi`,
-    `semanticscholar`); a settings section for them will follow.
+  - Keys for the databases are stored under **Settings → Databases**, the key for the optional Zotero web API under
+    **Settings → Zotero and export**. Searches write through Zotero on this computer by default.
 
 ### Changed
-- **Project views in the order of the workflow:** Project, Database search, Search, Corpora, Ask, Literature review
-  (Ctrl+1 … Ctrl+6). Index moves to **Ctrl+8**, the CSL editor stays on Ctrl+7.
-- **ZotLLM reopens the last project** in the view used last; the Setup window comes first only on the first start and
-  while setup steps are open.
+- **Project views in the order of the workflow:** Project, Database search, Corpora, Ask, Literature review, and set
+  apart Search (Ctrl+1 … Ctrl+6). Index moves to **Ctrl+8**, the CSL editor stays on Ctrl+7.
+- **Setup is only the technical part** and lives under Settings → Setup, where the first start leads. Zotivity then reopens
+  the last project in the view used last, even if Zotero is closed.
+- **New Guide**, the top entry of the navigation bar: create a project, database search (optional), create and index a
+  corpus, work with the corpora – with links into the views and the status in the active project. The project page names
+  the next step.
+- **Layout:** reading text and forms stay readable and centred; lists and tables use the full width. Panels on the right
+  adapt to the window until you drag them. The project page tiles no longer wrap as 4 + 1.
+- **Zoom:** in the program window the whole interface can be zoomed (status bar, Ctrl + mouse wheel, pinch, Ctrl +/−/0);
+  the value is kept across restarts.
 
 ### Also new
 - Language models can answer with a **JSON schema** where the provider supports it (Claude structured outputs, Gemini,

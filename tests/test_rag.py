@@ -5,10 +5,10 @@ import pytest
 from fakes import ScriptedModel
 from test_indexing_search import build_library, run_index
 
-from zotllm.jobs import Job
-from zotllm.rag import AskOptions, ChatService, ReviewService
-from zotllm.rag import chat as chat_mod
-from zotllm.rag import review as review_mod
+from zotivity.jobs import Job
+from zotivity.rag import AskOptions, ChatService, ReviewService
+from zotivity.rag import chat as chat_mod
+from zotivity.rag import review as review_mod
 
 
 @pytest.fixture
@@ -19,7 +19,7 @@ def indexed(zengine, fake_zotero):
 
 
 def install_models(monkeypatch, helper, main):
-    from zotllm.keystore import get_store
+    from zotivity.keystore import get_store
 
     get_store().set("anthropic", "sk-test-0000")  # eingestellter Anbieter braucht einen Schlüssel
     monkeypatch.setattr(chat_mod, "helper_model", lambda cfg, meter=None: helper)
@@ -52,7 +52,7 @@ def test_chat_answer_with_sources(indexed, monkeypatch):
 
 
 def test_missing_key_gives_actionable_message(indexed, monkeypatch):
-    from zotllm.keystore import get_store
+    from zotivity.keystore import get_store
 
     get_store().set("gemini", "AIza-test-0000")
     monkeypatch.setattr(chat_mod, "main_model", lambda *a, **k: (_ for _ in ()).throw(AssertionError("kein Aufruf")))

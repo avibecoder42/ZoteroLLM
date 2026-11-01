@@ -1,30 +1,38 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/img/banner-en-dark.png">
-    <img src="docs/img/banner-en-light.png" alt="ZotLLM – Ask your Zotero library. Semantic search, answers and literature reviews with citations down to the page.">
+    <img src="docs/img/banner-en-light.png" alt="Zotivity – Comprehensive scholarly work with Zotero. Database search, cited answers and checked literature reviews. Formerly ZotLLM.">
   </picture>
 </p>
 
 <p align="center">
-  <a href="https://github.com/avibecoder42/ZotLLM/releases/latest"><img src="https://img.shields.io/github/v/release/avibecoder42/ZotLLM?label=release&color=4a43c4" alt="Latest release"></a>
-  <a href="https://github.com/avibecoder42/ZotLLM/releases"><img src="https://img.shields.io/github/downloads/avibecoder42/ZotLLM/total?color=4a43c4" alt="Downloads"></a>
+  <a href="https://github.com/avibecoder42/Zotivity/releases/latest"><img src="https://img.shields.io/github/v/release/avibecoder42/Zotivity?label=release&color=4a43c4" alt="Latest release"></a>
+  <a href="https://github.com/avibecoder42/Zotivity/releases"><img src="https://img.shields.io/github/downloads/avibecoder42/Zotivity/total?color=4a43c4" alt="Downloads"></a>
   <img src="https://img.shields.io/badge/platform-Windows-4a43c4" alt="Platform: Windows">
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/avibecoder42/ZotLLM?color=4a43c4" alt="License: MIT"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/avibecoder42/Zotivity?color=4a43c4" alt="License: MIT"></a>
   <a href="#vibe-coded"><img src="https://img.shields.io/badge/vibe--coded%20with-Claude-d97757" alt="Vibe-coded with Claude"></a>
 </p>
 
 <p align="center"><b>English</b> · <a href="README.de.md">Deutsch</a></p>
 
-ZotLLM is a desktop application that works alongside Zotero. You organise your work in **projects**, each with its own
-**knowledge corpora**: a corpus is a selection of Zotero collections or whole libraries, group libraries included.
-ZotLLM reads the PDFs, Word documents and other texts of the corpora, keeps their page numbers and indexes them on your
-computer. Questions and literature reviews then draw on exactly the texts that belong to the project.
+**Zotivity** (formerly ZotLLM) is a desktop application that works alongside Zotero and enables **comprehensive scholarly
+work**: from searching subject databases and screening what you find, through reading and asking about your sources, to
+checked literature reviews with citations down to the page.
+
+You organise your work in **projects**, each with its own **knowledge corpora**: a corpus is a selection of Zotero
+collections or whole libraries, group libraries included. Zotivity reads the PDFs, Word documents and other texts of the
+corpora, keeps their page numbers and indexes them on your computer. Questions and literature reviews then draw on
+exactly the texts that belong to the project. The **Guide** in the app leads through these steps, with links and the status
+of the active project.
 
 <table>
   <tr>
-    <td width="33%" valign="top"><img src="docs/img/feature-ask.svg" width="40" height="40" alt=""><br><b>Ask</b><br>Questions about your own texts, answered only from the retrieved passages. Every citation opens the passage and its page.</td>
-    <td width="33%" valign="top"><img src="docs/img/feature-review.svg" width="40" height="40" alt=""><br><b>Literature review</b><br>From search strategy to a checked synthesis: every citation and verbatim quotation is verified against the PDFs.</td>
-    <td width="33%" valign="top"><img src="docs/img/feature-search.svg" width="40" height="40" alt=""><br><b>Search</b><br>Fast search across your library and groups, without a language model. Copy references in your citation style or export a selection.</td>
+    <td width="50%" valign="top"><img src="docs/img/feature-research.svg" width="40" height="40" alt=""><br><b>Database search</b><br>From the research question to the selected literature in Zotero: search strings for open databases, RIS import, a de-duplicated pool, screening, full texts and a flow diagram in the style of PRISMA.</td>
+    <td width="50%" valign="top"><img src="docs/img/feature-ask.svg" width="40" height="40" alt=""><br><b>Ask</b><br>Questions about your own texts, answered only from the retrieved passages. Every citation opens the passage and its page.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><img src="docs/img/feature-review.svg" width="40" height="40" alt=""><br><b>Literature review</b><br>From search strategy to a checked synthesis: every citation and verbatim quotation is verified against the PDFs.</td>
+    <td width="50%" valign="top"><img src="docs/img/feature-search.svg" width="40" height="40" alt=""><br><b>Search</b><br>Fast search across your library and groups, without a language model. Copy references in your citation style or export a selection.</td>
   </tr>
 </table>
 
@@ -35,13 +43,10 @@ scripts are prepared for macOS and Linux.
 
 Also included: a **CSL editor** to find a citation style on zotero.org, adapt it by clicking on the preview and install
 it directly in Zotero. It is a first version and still in development – feedback and contributions are welcome
-([issues](https://github.com/avibecoder42/ZotLLM/issues)).
+([issues](https://github.com/avibecoder42/Zotivity/issues)).
 
-New in 1.1: **Database search** – the step before the literature review. A search project leads from the research
-question through search strings for PubMed, OpenAlex and other open databases (plus RIS import from licensed ones such
-as PsycInfo), a de-duplicated pool and keyboard screening to the selected literature in Zotero collections. Optional AI
-suggestions use the language model set in ZotLLM; the decisions are always yours. See
-[Database search](#database-search).
+New in 1.1: **Database search**, the step before the literature review, with optional AI suggestions; the decisions are
+always yours. See [Database search](#database-search).
 
 <p align="center"><img src="docs/screenshots/en/ask.png" alt="Ask: answer with numbered citations and the cited passage"></p>
 <p align="center"><sub>Answers with citations; a click shows the passage and its page. Demo library with fictitious sources.</sub></p>
@@ -51,27 +56,31 @@ suggestions use the language model set in ZotLLM; the decisions are always yours
     <td width="50%" valign="top"><img src="docs/screenshots/en/review.png" alt="Literature review: check step with statistics and the cited text"><br><sub>Literature review: every citation and quotation checked against the sources</sub></td>
     <td width="50%" valign="top"><img src="docs/screenshots/en/search.png" alt="Search: results with three selected items and the selection bar"><br><sub>Search without a language model, with a selection to copy, export or ask about</sub></td>
   </tr>
+  <tr>
+    <td width="50%" valign="top"><img src="docs/screenshots/en/research-strategy.png" alt="Database search: concept blocks with AI suggestions and search strings per database"><br><sub>Database search: concept blocks with AI suggestions, search strings and hit counts per database</sub></td>
+    <td width="50%" valign="top"><img src="docs/screenshots/en/guide.png" alt="Guide: the four steps with links and the status of the active project"><br><sub>The Guide: four steps with links and the status of the active project</sub></td>
+  </tr>
 </table>
 
 <a name="vibe-coded"></a>
 
-> **Vibe-coded.** ZotLLM was written by **Claude** (Anthropic's AI model, working in Claude Code) – the
+> **Vibe-coded.** Zotivity was written by **Claude** (Anthropic's AI model, working in Claude Code) – the
 > application, the Zotero plugin, the installer scripts, the tests and the documentation. The project's initiator,
 > [avibecoder](https://github.com/avibecoder42), defined what to build, tested every version in day-to-day research and decided
 > on each next step; no code was written by hand. Read the code with that in mind: it is extensively tested
-> (≈ 330 automated tests), but it has not been reviewed line by line by a human developer.
+> (≈ 350 automated tests), but it has not been reviewed line by line by a human developer.
 
 > **Use it as a tool, not as a replacement for your own scholarly work.** See
 > [Use it as a tool – the risk of deskilling](#use-it-as-a-tool--the-risk-of-deskilling).
 
-ZotLLM is an independent project, not affiliated with or endorsed by Zotero or the Corporation for Digital Scholarship.
+Zotivity is an independent project, not affiliated with or endorsed by Zotero or the Corporation for Digital Scholarship.
 Zotero is a registered trademark of the Corporation for Digital Scholarship.
 
 ---
 
 ## Use it as a tool – the risk of deskilling
 
-ZotLLM can search, summarise and draft. That is exactly why it can wear down the abilities research depends on:
+Zotivity can search, summarise and draft. That is exactly why it can wear down the abilities research depends on:
 reading closely, weighing evidence, building an argument and writing in your own voice. The more of this you hand
 over, the less of it you practise.
 
@@ -80,7 +89,7 @@ over, the less of it you practise.
   disclose where you used it.
 - **Read the sources.** Every citation leads to the original passage (a click opens the PDF at the page). Check that
   the statement is really there and correctly represented: context, hedging, sample, limitations.
-- **Verify critically.** ZotLLM checks verbatim quotations against the PDF text – it does not check paraphrases,
+- **Verify critically.** Zotivity checks verbatim quotations against the PDF text – it does not check paraphrases,
   interpretations or how studies are weighted. Language models misattribute, overgeneralise and leave out
   contradicting findings. The evidence is limited to your library and to what the search found.
 - **Keep the thinking yours.** Formulate the question, the structure and the argument yourself. Use the tool to find
@@ -91,7 +100,7 @@ over, the less of it you practise.
 ## Architecture
 
 ```
-Zotero 10 (local API)  ←→  ZotLLM service (Python, 127.0.0.1:23120)  ←→  LLM of your choice
+Zotero 10 (local API)  ←→  Zotivity service (Python, 127.0.0.1:23120)  ←→  LLM of your choice
   + slim plugin               – text + page numbers from PDF/EPUB/HTML/Word   Claude · GPT · Gemini
     (context menu, autostart) – chunking, reference-list detection            DeepSeek · local (Ollama)
                               – embedding: built in (llama.cpp), Ollama, OpenAI …
@@ -102,30 +111,30 @@ Claude Desktop (MCP)  ←→      – MCP server
 
 - **No direct access to `zotero.sqlite`.** Everything goes through Zotero's local API (Zotero 10 writes its database
   in WAL mode; direct readers may see incomplete data).
-- **The index is local** (`%LOCALAPPDATA%\ZotLLM`), not in the synchronised Zotero folder.
+- **The index is local** (`%LOCALAPPDATA%\Zotivity`), not in the synchronised Zotero folder.
 - **The plugin stays slim** (menus, autostart). Zotero often changes plugin interfaces between major versions, so the
   actual work is done by the external service.
 
 ## Installation (Windows)
 
-1. Download `ZotLLM-Setup-<version>.exe` from [Releases](https://github.com/avibecoder42/ZotLLM/releases) and run it
+1. Download `Zotivity-Setup-<version>.exe` from [Releases](https://github.com/avibecoder42/Zotivity/releases) and run it
    (per-user installation, no administrator rights needed; if a version is already installed, the setup offers update,
    repair or downgrade). The installer is built by GitHub Actions from the published source code, and each release
    contains a `.sha256` file to check the download. It is **not code-signed yet**, so Windows SmartScreen warns
    ("Unknown publisher"): click *More info → Run anyway*. If that option is missing (e.g. on managed PCs), right-click
    the downloaded file → *Properties* → tick *Unblock* → *OK*, then start it again.
-2. Open ZotLLM from the Start menu. The *Setup* window guides you step by step.
+2. Open Zotivity from the Start menu. The first start leads to *Settings → Setup*; after that, the *Guide* shows the workflow.
 
-ZotLLM runs embedding models itself (llama.cpp is included in the installer); the models are downloaded later with
+Zotivity runs embedding models itself (llama.cpp is included in the installer); the models are downloaded later with
 a button in the settings. Optional: [Ollama](https://ollama.com) for local language models. The Microsoft Edge
 WebView2 runtime is required (included in Windows 10/11; the setup warns if it is missing).
 
 **Behaviour:** starting it a second time brings the open window to the front. If indexing is still running when you
-close the window, ZotLLM asks whether to continue in the background. If the Zotero plugin starts ZotLLM, it runs
-without a window and ends a few minutes after Zotero; "Open ZotLLM" in Zotero shows the window.
+close the window, Zotivity asks whether to continue in the background. If the Zotero plugin starts Zotivity, it runs
+without a window and ends a few minutes after Zotero; "Open Zotivity" in Zotero shows the window.
 
 **Updates:** under *Settings → Program & data*, enter an update source – an HTTPS address or network path to the file
-`zotllm-update.json` that the build creates next to the installer. ZotLLM checks at start-up, downloads the
+`zotivity-update.json` that the build creates next to the installer. Zotivity checks at start-up, downloads the
 installer, verifies its SHA-256 checksum, installs silently and restarts. Settings, index, corpora and keys are kept
 (also when uninstalling).
 
@@ -135,21 +144,21 @@ Releases are built by GitHub Actions ([`release.yml`](.github/workflows/release.
 the release notes are the version's section of the [changelog](CHANGELOG.md) plus
 [`packaging/release-footer.md`](packaging/release-footer.md).
 
-Development without an installer: `install.bat`, then `start.bat` (browser) or `.venv\Scripts\zotllm-app.exe`
+Development without an installer: `install.bat`, then `start.bat` (browser) or `.venv\Scripts\zotivity-app.exe`
 (window). macOS/Linux: `./install.sh`, then `./start.sh`.
 
 ## Preparing Zotero
 
 1. **Enable the local API:** Zotero → Settings → Advanced → "Allow other applications on this computer to communicate
    with Zotero".
-2. **Install the plugin (optional, recommended):** in ZotLLM, *Settings → Zotero and export → Save plugin*, then in
+2. **Install the plugin (optional, recommended):** in Zotivity, *Settings → Zotero and export → Save plugin*, then in
    Zotero *Tools → Plugins → gear → Install plugin from file …*. The plugin adds context menus ("Index collection",
    "Ask about selected items", "Create evaluation sheets") and starts the service together with Zotero once it has run.
    New plugin versions are installed by installing the `.xpi` again (Zotero only accepts HTTPS update addresses, the
    local service speaks HTTP). The setup checklist reports an outdated plugin.
 3. **Grant write access (for notes and collections):** *Settings → Zotero and export → Grant write access*. Zotero asks
    for confirmation – choose "Remember my decision", otherwise access lasts only until the next restart. **The dialog
-   may be hidden behind other windows**; ZotLLM tries to bring it to the front, otherwise click Zotero in the
+   may be hidden behind other windows**; Zotivity tries to bring it to the front, otherwise click Zotero in the
    taskbar.
 
 ## Projects
@@ -160,7 +169,7 @@ A **project** bundles knowledge corpora, chats and literature reviews. The switc
 
 - **Corpora are shared:** a corpus can belong to several projects; the index is shared and every text is embedded only
   once.
-- **Saving is continuous.** "Save as file" exports a project as `.zllm` (corpus definitions, chats, literature reviews,
+- **Saving is continuous.** "Save as file" exports a project as `.zoty` (corpus definitions, chats, literature reviews,
   evaluation sheets, search history – without index and without keys); "Import project" loads it again, also on another
   computer.
 - **Manual order and archive:** project tiles can be dragged into order; finished projects can be archived (nothing is
@@ -168,11 +177,14 @@ A **project** bundles knowledge corpora, chats and literature reviews. The switc
 
 ## First steps
 
-The first start (and every start while setup steps are open) begins in the **Setup** window; otherwise ZotLLM reopens the last project in the view used last. Setup shows *All projects*, *New project* and *Import project* at the top, the setup
-checklist below with the next open step highlighted. All side panels can be resized (double-click: default width).
+The first start leads to *Settings → Setup*: the technical part, once per computer, and any step can be skipped. From there
+you go to the **Guide**, the top entry of the navigation bar: create a project, database search (optional), create and index
+a corpus, work with the corpora – with links and the status in the active project. After that, Zotivity reopens the last
+project in the view used last. All side panels can be resized (double-click: default width), and in the program window the
+whole interface can be zoomed.
 
 1. **Language models** (*Settings → Language models*): choose a provider and store its key. If the chosen provider has
-   no key but another one has, ZotLLM switches automatically. "Test connection" checks key and model.
+   no key but another one has, Zotivity switches automatically. "Test connection" checks key and model.
 2. **Embedding model** (*Settings → Embedding*): default is *Built in* with `bge-m3`. The model catalog shows curated
    models with strengths, disciplines, time per 100 pages on this computer and memory needs; **Download** fetches one
    (resumable, checksum-verified), and a short test then measures speed and retrieval quality. More GGUF models can be
@@ -185,7 +197,7 @@ checklist below with the next open step highlighted. All side panels can be resi
 5. **Ask:** answers with clickable citations `[3]` (preview with "Open PDF (p. x)" and "Show in Zotero"); the retrieved
    passages are listed below, each with a **relevance** indicator. "Passages only" searches without an LLM.
 
-Keyboard: Ctrl+1–5 project views, Ctrl+6 index, Ctrl+, settings, F1 help, Ctrl+P switch project. Appearance: system,
+Keyboard: Ctrl+1–6 project views, Ctrl+7 CSL editor, Ctrl+8 index, Ctrl+, settings, F1 help, Ctrl+P switch project. Appearance: system,
 light, grey, dark (the window title bar follows).
 
 ### Search (without a language model)
@@ -221,7 +233,7 @@ Answers, passages and literature reviews can be copied (as text or formatted for
 
 Interface and help are available in German and English (*Settings → Language*); the language of the AI output is set
 separately. More languages: dictionary `server/static/js/i18n/<code>.js` (keys are the German texts), service messages
-`zotllm/locales/<code>.py`, manual `server/static/help/<code>.md`. The **help** (F1) is a manual with table of
+`zotivity/locales/<code>.py`, manual `server/static/help/<code>.md`. The **help** (F1) is a manual with table of
 contents and full-text search.
 
 ### How long does indexing take?
@@ -243,24 +255,34 @@ only embedded for the new model.
 - Short outages of the embedding service are bridged; the computer stays awake while indexing; disk space is checked.
 - Background mode in stages (time window, maximum texts per run), index backups, a queue for further runs.
 - **Duplicates:** the same work in several libraries is recognised by DOI or by title, first author and year; only one
-  copy is read and used. ZotLLM asks before a manual run which copy to use.
+  copy is read and used. Zotivity asks before a manual run which copy to use.
 - Citations of items deleted in Zotero are moved to a remaining copy of the same work.
 
 ## Database search
 
 The **Database search** view (Ctrl+2) takes a search from the research question to the selected literature in
-Zotero. Every database search belongs to a ZotLLM project (the project page shows its status); the data is stored in `research.db` in the data folder.
+Zotero. Every database search belongs to a Zotivity project (the project page shows its status); the data is stored in `research.db` in the data folder.
+
+<table>
+  <tr>
+    <td width="50%" valign="top"><img src="docs/screenshots/en/research-pool.png" alt="Pool: records in a list, prefilters and recall check in the panel on the right"><br><sub>Pool: the list takes the width, prefilters and recall check sit on the right</sub></td>
+    <td width="50%" valign="top"><img src="docs/screenshots/en/research-fulltext.png" alt="Full texts: status per text"><br><sub>Full texts: status per text; missing PDFs hold nothing up</sub></td>
+  </tr>
+</table>
+
+<p align="center"><img src="docs/screenshots/en/research-flow.png" alt="Handover: selection flow as a diagram" width="70%"></p>
 
 | Tab | What happens |
 |---|---|
-| Project | research question, short description, inclusion and exclusion criteria |
+| Project | research question, short description, inclusion and exclusion criteria, up to three reviewers, target library in Zotero |
 | Databases | choose disciplines; the app suggests databases from its catalog (access, terms of use, keys) |
 | Search strategy | concept blocks → search strings for each database, with live hit counts |
 | Search & import | versioned search strings; searches in PubMed, OpenAlex, Europe PMC, ERIC, EconBiz, Semantic Scholar, arXiv, OSF Preprints and swisscovery; RIS import from Ovid, EBSCO or Web of Science |
 | Pool | de-duplicated records (DOI, PMID, OpenAlex ID, title), check against the Zotero target library, prefilters, borderline cases, missing abstracts fetched, recall check with key papers |
-| Folders | target library and folders 1–20 (shortcuts 1–9), each mapped to a Zotero collection |
+| Folders | folders 1–20 (shortcuts 1–9), each mapped to a Zotero collection |
 | Screening | cards (J/K browse, 1–9 folder, X exclude, ? unsure, G borderline, A accept AI suggestion, Z undo) or a list with bulk apply |
-| Handover | plan per folder, then write to Zotero – only after explicit confirmation; search log as Markdown/CSV in the style of PRISMA-S |
+| Handover | plan per folder, then write to Zotero – only after explicit confirmation; flow diagram and search log as Markdown/CSV in the style of PRISMA-S; on request an AI draft for the methods section |
+| Full texts | optional: status per text (still missing, available, not retrievable, included, excluded with reason); missing PDFs hold nothing up |
 
 - **Nothing disappears silently:** prefilters only mark records; records with an exception term become borderline
   cases, and hidden records can be reviewed and restored.
@@ -270,7 +292,9 @@ Zotero. Every database search belongs to a ZotLLM project (the project page show
   with prices entered – the costs. Decisions are made by hand; suggestion and decision are both logged.
 - **Databases only via legal routes:** official interfaces, access unlocked by your institution, or RIS export by
   hand – no browser automation.
-- **Zotero:** locally through Zotero's API (write permission as elsewhere in ZotLLM) or through the Zotero web API.
+- **PRISMA:** database search covers searching and selection. It does not cover data extraction, risk of bias or synthesis,
+  and each record holds one person's decision (no independent double screening). The log says so.
+- **Zotero:** locally through Zotero's API (write permission as elsewhere in Zotivity) or, with a key, through the Zotero web API.
   Keys for the web API and the databases are read from the key store (`zotero-web`, `openalex` – required by OpenAlex
   since February 2026 –, `ncbi`, `semanticscholar`); a settings section for entering them is planned.
 
@@ -309,29 +333,29 @@ work (see [the risk of deskilling](#use-it-as-a-tool--the-risk-of-deskilling)).
   Database search sends search strings to the databases you choose and, for AI suggestions, titles and abstracts of
   the records plus the project text to the language model.
 - **Model downloads** are pinned to a commit and SHA-256; the built-in runtime only accepts requests carrying
-  ZotLLM's random key.
+  Zotivity's random key.
 
 ## Command line
 
 ```
-.venv\Scripts\python -m zotllm serve --open          service + interface
-.venv\Scripts\python -m zotllm status                status
-.venv\Scripts\python -m zotllm keys set anthropic    enter a key (hidden)
-.venv\Scripts\python -m zotllm index --collection users/0:ABCD1234
-.venv\Scripts\python -m zotllm search "chatbots adolescents"
-.venv\Scripts\python -m zotllm ask "What do my sources say about …?"
-.venv\Scripts\python -m zotllm mcp                    MCP server (stdio)
+.venv\Scripts\python -m zotivity serve --open          service + interface
+.venv\Scripts\python -m zotivity status                status
+.venv\Scripts\python -m zotivity keys set anthropic    enter a key (hidden)
+.venv\Scripts\python -m zotivity index --collection users/0:ABCD1234
+.venv\Scripts\python -m zotivity search "chatbots adolescents"
+.venv\Scripts\python -m zotivity ask "What do my sources say about …?"
+.venv\Scripts\python -m zotivity mcp                    MCP server (stdio)
 ```
 
-The installed `ZotLLM.exe` understands the same commands (`ZotLLM.exe mcp`, `… status`, `… index`).
+The installed `Zotivity.exe` understands the same commands (`Zotivity.exe mcp`, `… status`, `… index`).
 
 ## Claude Desktop (MCP)
 
 In `claude_desktop_config.json`:
 
 ```json
-{ "mcpServers": { "zotllm": {
-    "command": "C:\\Users\\<name>\\AppData\\Local\\Programs\\ZotLLM\\ZotLLM.exe",
+{ "mcpServers": { "zotivity": {
+    "command": "C:\\Users\\<name>\\AppData\\Local\\Programs\\Zotivity\\Zotivity.exe",
     "args": ["mcp"] } } }
 ```
 
@@ -350,7 +374,7 @@ The tests run without Zotero, without model downloads and without API costs: the
 For the built-in runtime during development, run `python packaging/fetch_llama.py` once.
 
 ```
-src/zotllm/
+src/zotivity/
   zotero/      client for the local API (read, write, authorisation)
   extract/     PDF/EPUB/HTML/Word/ODT text with page numbers, chunking, reference-list detection
   embeddings/  built in (llama.cpp: runtime, catalog, download, short test, name search), Ollama, OpenAI, Gemini, …
@@ -359,7 +383,7 @@ src/zotllm/
   retrieval/   hybrid search (RRF), MMR, reranking
   rag/         questions, literature review, sources
   research/    database search: databases, search strings, pool, screening, handover to Zotero (/api/research/…);
-               knows nothing of ZotLLM – research_adapters.py connects it (Zotero client, key store, language models)
+               knows nothing of Zotivity – research_adapters.py connects it (Zotero client, key store, language models)
   server/      FastAPI + interface (static/: js, css, help/<language>.md)
   plugin/      Zotero plugin (served by the service as .xpi)
   locales/     service messages per language

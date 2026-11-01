@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 from research_fakes import QUERIES
 
-from zotllm.research.querybuild import build, build_all, pubmed_to_openalex
+from zotivity.research.querybuild import build, build_all, pubmed_to_openalex
 
 BLOCKS = [
     {"name": "Population", "terms": ["adolescen*", "teen*", '"young people"'], "mesh": ["Adolescent"], "psycinfo": []},

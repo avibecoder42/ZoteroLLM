@@ -13,22 +13,22 @@ import numpy as np
 import pytest
 from fastapi.testclient import TestClient
 
-from zotllm.embeddings import benchmark, gguf, hf_search, llama_runtime, model_catalog, model_store
-from zotllm.embeddings.base import EmbeddingError
-from zotllm.embeddings.model_catalog import CatalogError, ModelEntry
-from zotllm.extract.chunker import Chunk
-from zotllm.index import spaces
-from zotllm.index.indexer import embedding_text
-from zotllm.jobs import Job, JobCancelled
-from zotllm.settings import EmbeddingSettings
+from zotivity.embeddings import benchmark, gguf, hf_search, llama_runtime, model_catalog, model_store
+from zotivity.embeddings.base import EmbeddingError
+from zotivity.embeddings.model_catalog import CatalogError, ModelEntry
+from zotivity.extract.chunker import Chunk
+from zotivity.index import spaces
+from zotivity.index.indexer import embedding_text
+from zotivity.jobs import Job, JobCancelled
+from zotivity.settings import EmbeddingSettings
 
 FAKE_SERVER = Path(__file__).parent / "fake_llama_server.py"
-H = {"X-ZotLLM": "1"}
+H = {"X-Zotivity": "1"}
 
 
 @pytest.fixture(autouse=True)
 def fresh_catalog(tmp_path, monkeypatch):
-    monkeypatch.setenv("ZOTLLM_HOME", str(tmp_path))
+    monkeypatch.setenv("ZOTIVITY_HOME", str(tmp_path))
     model_catalog.invalidate()
     yield
     model_catalog.invalidate()
@@ -186,7 +186,7 @@ def test_download_checks_sha_and_resumes():
 
 # -- Laufzeit und Embedder --------------------------------------------------------------------------------------
 def test_builtin_embedder_with_runtime(fake_runtime):
-    from zotllm.embeddings import make_embedder
+    from zotivity.embeddings import make_embedder
 
     content = gguf_bytes(dim=16)
     entry = user_entry(content)
@@ -213,7 +213,7 @@ def test_builtin_embedder_with_runtime(fake_runtime):
 
 
 def test_runtime_restarts_after_crash(fake_runtime, monkeypatch):
-    from zotllm.embeddings import make_embedder
+    from zotivity.embeddings import make_embedder
 
     content = gguf_bytes()
     install(user_entry(content), content)
@@ -228,7 +228,7 @@ def test_runtime_restarts_after_crash(fake_runtime, monkeypatch):
 
 
 def test_missing_runtime_is_reported(monkeypatch):
-    from zotllm.embeddings import make_embedder
+    from zotivity.embeddings import make_embedder
 
     content = gguf_bytes()
     install(user_entry(content), content)
@@ -240,7 +240,7 @@ def test_missing_runtime_is_reported(monkeypatch):
 
 
 def test_matryoshka_truncates_and_normalizes(fake_runtime):
-    from zotllm.embeddings import make_embedder
+    from zotivity.embeddings import make_embedder
 
     content = gguf_bytes()
     install(user_entry(content), content)
@@ -251,7 +251,7 @@ def test_matryoshka_truncates_and_normalizes(fake_runtime):
 
 # -- Zeitschätzung und Kurztest -------------------------------------------------------------------------------
 def test_estimates_and_short_test(fake_runtime, monkeypatch):
-    from zotllm.embeddings import make_embedder
+    from zotivity.embeddings import make_embedder
 
     monkeypatch.setattr(benchmark, "cpu_score", lambda force=False: {"gflops": 200.0, "cpu": benchmark.cpu_name()})
     bge = model_catalog.get("bge-m3")
@@ -365,7 +365,7 @@ def test_adopt_index_from_other_provider(engine):
 
 
 def test_compare_two_models(engine, monkeypatch):
-    from zotllm.retrieval import compare as cmp
+    from zotivity.retrieval import compare as cmp
 
     rows = _library(engine)
     emb = engine.embedder()
@@ -389,7 +389,7 @@ def test_project_embedding_pin(engine):
     pid = engine.ensure_project()
     engine.settings_store.update({"embedding": {"provider": "ollama", "model": "bge-m3"}})
     assert engine.apply_project_embedding(pid) is None  # kein eigenes Modell
-    from zotllm.engine import project_embedding
+    from zotivity.engine import project_embedding
 
     pin = project_embedding({"provider": "builtin", "model": "qwen3-embedding-0.6b", "base_url": "x"})
     assert pin == {"provider": "builtin", "model": "qwen3-embedding-0.6b", "query_prefix": None,
@@ -405,9 +405,9 @@ def test_project_embedding_pin(engine):
 # -- Schnittstellen ------------------------------------------------------------------------------------------------
 @pytest.fixture
 def api(engine, fake_runtime, monkeypatch):
-    monkeypatch.setattr("zotllm.server.app.ollama_available", lambda url: False)
+    monkeypatch.setattr("zotivity.server.app.ollama_available", lambda url: False)
     monkeypatch.setattr(benchmark, "cpu_score", lambda force=False: {"gflops": 400.0, "cpu": benchmark.cpu_name()})
-    from zotllm.server.app import create_app
+    from zotivity.server.app import create_app
 
     with TestClient(create_app(engine)) as c:
         yield c

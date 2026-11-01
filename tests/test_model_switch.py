@@ -9,11 +9,11 @@ from conftest import HashEmbedder
 from fastapi.testclient import TestClient
 from test_indexing_search import build_library, run_index
 
-from zotllm.embeddings import make_embedder
-from zotllm.embeddings.ollama import OllamaEmbedder
-from zotllm.settings import EmbeddingSettings
+from zotivity.embeddings import make_embedder
+from zotivity.embeddings.ollama import OllamaEmbedder
+from zotivity.settings import EmbeddingSettings
 
-H = {"X-ZotLLM": "1"}
+H = {"X-Zotivity": "1"}
 
 
 class NamedHash(HashEmbedder):
@@ -77,7 +77,7 @@ def test_corpus_embeds_only_its_own_texts(zengine, fake_zotero, switch):
 
 def test_text_in_progress_counts_as_open(zengine, fake_zotero, monkeypatch):
     """Ein gerade gelesener, noch nicht fertig eingebetteter Text ist „offen“, nicht „einzubetten“."""
-    from zotllm.index.indexer import Indexer
+    from zotivity.index.indexer import Indexer
 
     build_library(fake_zotero)
     seen = []
@@ -110,8 +110,8 @@ def test_api_reports_model_and_texts_to_embed(zengine, fake_zotero, switch, monk
     build_library(fake_zotero)
     run_index(zengine)
     switch("hash-neu")
-    monkeypatch.setattr("zotllm.server.app.ollama_available", lambda url: False)
-    from zotllm.server.app import create_app
+    monkeypatch.setattr("zotivity.server.app.ollama_available", lambda url: False)
+    from zotivity.server.app import create_app
 
     with TestClient(create_app(zengine)) as c:
         o = c.get("/api/index/overview").json()
@@ -139,8 +139,8 @@ def test_texts_waiting_for_reread_stay_searchable(zengine, fake_zotero, monkeypa
     zengine.store.mark_pending("users/0", ["ATTA0001", "ATTB0001"])
     st = zengine.store.scope_stats(None, space)
     assert st["refresh"] == 2 and st["pending"] == 0 and st["indexed"] == 0 and st["to_embed_chunks"] == 0
-    monkeypatch.setattr("zotllm.server.app.ollama_available", lambda url: False)
-    from zotllm.server.app import create_app
+    monkeypatch.setattr("zotivity.server.app.ollama_available", lambda url: False)
+    from zotivity.server.app import create_app
 
     with TestClient(create_app(zengine)) as c:
         step = next(s for s in c.get("/api/setup").json()["steps"] if s["id"] == "index")
@@ -169,11 +169,11 @@ def test_embed_only_reads_nothing(zengine, fake_zotero, switch):
 
 
 def test_prefix_overrides_for_catalog_models(zengine, monkeypatch):
-    from zotllm.embeddings import model_catalog
+    from zotivity.embeddings import model_catalog
 
     default = model_catalog.catalog_runtime("bge-m3")
-    monkeypatch.setattr("zotllm.server.app.ollama_available", lambda url: False)
-    from zotllm.server.app import create_app
+    monkeypatch.setattr("zotivity.server.app.ollama_available", lambda url: False)
+    from zotivity.server.app import create_app
 
     zengine.settings_store.update({"embedding": {"provider": "ollama", "model": "bge-m3"}})
     with TestClient(create_app(zengine)) as c:
@@ -199,8 +199,8 @@ def test_activate_saved_space(zengine, monkeypatch, prefixes):
     emb = make_embedder(EmbeddingSettings(provider="ollama", model="nomic-embed-text", **custom))
     emb._dim = 768
     zengine.store.ensure_space(emb.space_id, "ollama", "nomic-embed-text", 768, emb.space_params)
-    monkeypatch.setattr("zotllm.server.app.ollama_available", lambda url: False)
-    from zotllm.server.app import create_app
+    monkeypatch.setattr("zotivity.server.app.ollama_available", lambda url: False)
+    from zotivity.server.app import create_app
 
     with TestClient(create_app(zengine)) as c:
         assert c.post("/api/embedding/spaces/activate", json={"space": "gibt:es:nicht"}, headers=H).status_code == 404

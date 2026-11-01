@@ -5,16 +5,16 @@ from __future__ import annotations
 import httpx
 import pytest
 
-from zotllm.research.errors import SourceError
-from zotllm.research.querybuild import build_all, translate
-from zotllm.research.sources import catalog
-from zotllm.research.sources.arxiv import ArXiv
-from zotllm.research.sources.econbiz import EconBiz
-from zotllm.research.sources.eric import ERIC
-from zotllm.research.sources.europepmc import EuropePMC
-from zotllm.research.sources.osf import OSFPreprints
-from zotllm.research.sources.semanticscholar import SemanticScholar
-from zotllm.research.sources.swisscovery import Swisscovery
+from zotivity.research.errors import SourceError
+from zotivity.research.querybuild import build_all, translate
+from zotivity.research.sources import catalog
+from zotivity.research.sources.arxiv import ArXiv
+from zotivity.research.sources.econbiz import EconBiz
+from zotivity.research.sources.eric import ERIC
+from zotivity.research.sources.europepmc import EuropePMC
+from zotivity.research.sources.osf import OSFPreprints
+from zotivity.research.sources.semanticscholar import SemanticScholar
+from zotivity.research.sources.swisscovery import Swisscovery
 
 
 def epmc_handler(req):
@@ -205,7 +205,7 @@ def test_catalog_suggestions():
 
 def test_swisscovery_blocks_wildcards_years(sim):
     """Der Katalog wertet mehrere Klammerblöcke falsch aus: abgefragt wird der engste Block, der Rest nachträglich."""
-    from zotllm.research.sources import swisscovery as sc
+    from zotivity.research.sources import swisscovery as sc
 
     sc._PLANS.clear()
 

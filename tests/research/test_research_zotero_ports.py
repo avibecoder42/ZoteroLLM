@@ -1,5 +1,5 @@
 """Zotero-Adapter gegen simulierte APIs: Web-API (zotero.org, ZoteroWebPort des Pakets) und lokale API von Zotero 10
-(ZoteroClientPort um ZotLLMs ZoteroClient). Geschrieben wird nur in Attrappen."""
+(ZoteroClientPort um Zotivitys ZoteroClient). Geschrieben wird nur in Attrappen."""
 
 from __future__ import annotations
 
@@ -9,13 +9,13 @@ import httpx
 import pytest
 from research_fakes import MemoryKeyStore, json_body
 
-from zotllm import winfocus
-from zotllm.keystore import get_store
-from zotllm.research.errors import ResearchError, SourceError, ZoteroWriteRefused
-from zotllm.research.http import Http
-from zotllm.research.zotero_web import ZoteroWebPort
-from zotllm.research_adapters import ZoteroClientPort
-from zotllm.zotero import ZoteroClient
+from zotivity import winfocus
+from zotivity.keystore import get_store
+from zotivity.research.errors import ResearchError, SourceError, ZoteroWriteRefused
+from zotivity.research.http import Http
+from zotivity.research.zotero_web import ZoteroWebPort
+from zotivity.research_adapters import ZoteroClientPort
+from zotivity.zotero import ZoteroClient
 
 
 @pytest.fixture(autouse=True)
@@ -27,6 +27,7 @@ def no_window_watch(monkeypatch):
 class WebSim:
     def __init__(self):
         self.requests = []
+        self.posted = []
         self.items = [{"key": f"K{i}", "version": 1, "data": {"itemType": "journalArticle", "title": f"T{i}", "collections": []}}
                       for i in range(150)] + [{"key": "N1", "version": 1, "data": {"itemType": "note"}}]
 
@@ -42,6 +43,15 @@ class WebSim:
                                   headers={"Total-Results": "1"})
         if path.endswith("/collections") and req.method == "GET":
             return httpx.Response(200, json=[{"key": "A", "data": {"name": "Rollen", "parentCollection": False}}], headers={"Total-Results": "1"})
+        if path.endswith("/items/K1/children"):
+            return httpx.Response(200, json=[{"key": "A1", "data": {"itemType": "attachment", "contentType": "application/pdf"}}])
+        if path.endswith("/items/K2/children"):
+            return httpx.Response(200, json=[{"key": "A2", "data": {"itemType": "attachment", "contentType": "text/html"}}])
+        if path.endswith("/items/K3") and req.method == "GET":
+            return httpx.Response(200, json={"key": "K3", "version": 7, "data": {"collections": ["A", "B"], "tags": [{"tag": "x"}]}})
+        if path.endswith("/items") and req.method == "POST" and json_body(req)[0].get("key") == "K3":
+            self.posted.append(json_body(req)[0])
+            return httpx.Response(200, json={"success": {"0": "K3"}})
         if path.endswith("/items/top"):
             start, limit = int(params["start"]), int(params["limit"])
             assert params["itemType"] == "-attachment"
@@ -142,8 +152,8 @@ def test_local_not_running():
         port.collections("users/0")
 
 
-def test_local_port_with_zotllm_client(zengine, fake_zotero):
-    """Lesen und Schreiben über ZotLLMs Client gegen die simulierte lokale API (wie ZotLLM sie testet)."""
+def test_local_port_with_zotivity_client(zengine, fake_zotero):
+    """Lesen und Schreiben über Zotivitys Client gegen die simulierte lokale API (wie Zotivity sie testet)."""
     fake_zotero.add_collection("C1", "Rollen")
     fake_zotero.add_collection("C2", "neu", "C1")
     fake_zotero.add_item("I1", "Teasing among adolescents", collections=["C1"])
@@ -160,3 +170,18 @@ def test_local_port_with_zotllm_client(zengine, fake_zotero):
     assert new[0]["key"] in fake_zotero.items
     assert port.add_to_collection("users/0", key, ["I1"]) == 1
     assert key in fake_zotero.items["I1"]["data"]["collections"]
+
+
+def test_web_port_fulltext_and_set_aside(web):
+    port, sim = web
+    assert port.has_fulltext("users/0", "K1") and not port.has_fulltext("users/0", "K2")
+    port.set_aside("users/0", "K3", ["A"], "weg")
+    assert sim.posted == [{"key": "K3", "version": 7, "collections": ["B"], "tags": [{"tag": "x"}, {"tag": "weg"}]}]
+
+
+def test_key_change_forgets_the_account(web):
+    port, _ = web
+    port.key_info()
+    assert port.user_id
+    port.forget_key()
+    assert port.user_id is None and port._key_info is None

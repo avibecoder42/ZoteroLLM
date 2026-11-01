@@ -7,11 +7,11 @@ from fastapi.testclient import TestClient
 from test_indexing_search import build_library, run_index
 from test_model_switch import NamedHash
 
-from zotllm.index.indexer import MODEL_SWITCHED, Indexer
-from zotllm.jobs import JobManager, JobQueue
-from zotllm.titlebar import apply, colorref
+from zotivity.index.indexer import MODEL_SWITCHED, Indexer
+from zotivity.jobs import JobManager, JobQueue
+from zotivity.titlebar import apply, colorref
 
-H = {"X-ZotLLM": "1"}
+H = {"X-Zotivity": "1"}
 
 
 def wait_until(cond, timeout=5.0):
@@ -86,7 +86,7 @@ def test_queue_continues_after_error_and_starts_at_once_when_free():
 
 def test_queue_api(zengine, fake_zotero, monkeypatch):
     build_library(fake_zotero)
-    monkeypatch.setattr("zotllm.server.app.ollama_available", lambda url: False)
+    monkeypatch.setattr("zotivity.server.app.ollama_available", lambda url: False)
     gate = threading.Event()
     calls = []
 
@@ -99,7 +99,7 @@ def test_queue_api(zengine, fake_zotero, monkeypatch):
     cid = zengine.store.corpora()[0]["id"]
     pid = zengine.ensure_project()
     zengine.store.assign_corpus(pid, cid)
-    from zotllm.server.app import create_app
+    from zotivity.server.app import create_app
 
     try:
         with TestClient(create_app(zengine)) as c:

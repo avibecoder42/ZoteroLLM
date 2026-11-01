@@ -1,8 +1,8 @@
 import pytest
 from pydantic import ValidationError
 
-from zotllm.keystore import SecretStore, SecretStoreError
-from zotllm.settings import SettingsStore
+from zotivity.keystore import SecretStore, SecretStoreError
+from zotivity.settings import SettingsStore
 
 
 def test_keys_roundtrip_and_masking(memory_keyring):

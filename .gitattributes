@@ -4,4 +4,4 @@
 *.bat text eol=crlf
 
 # Mitgelieferte Fremdbibliotheken (citeproc-js, CSL-Sprachdateien) nicht in die Sprachstatistik von GitHub zählen
-src/zotllm/server/static/vendor/** linguist-vendored
+src/zotivity/server/static/vendor/** linguist-vendored

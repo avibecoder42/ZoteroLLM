@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-from zotllm.research.errors import ResearchError
-from zotllm.research.records import dedup_keys, normalize
+from zotivity.research.errors import ResearchError
+from zotivity.research.records import dedup_keys, normalize
 
 
 def make_project(service, **kw):
@@ -162,7 +162,7 @@ def test_pool_follows_latest_search_and_reset(service, sim):
     """Der Pool zeigt je Suchstring nur die letzte Suche; gelöschte Suchstrings verschwinden, Entschiedenes bleibt."""
     import pytest
 
-    from zotllm.research.errors import ResearchError
+    from zotivity.research.errors import ResearchError
 
     pid = make_project(service)["id"]
     q = service.add_query(pid, "T2_Teasing", "pubmed", "teasing[tiab]")
@@ -192,7 +192,7 @@ def test_more_folders_and_move(service, sim):
     """Mehr als sechs Ordner; vor dem Löschen werden aufgenommene Treffer verschoben (rückgängig als Ganzes)."""
     import pytest
 
-    from zotllm.research.errors import ResearchError
+    from zotivity.research.errors import ResearchError
 
     pid = make_project(service)["id"]
     service.update_project(pid, {"folder_map": [{"slot": 1, "label": "Teasing", "path": "T"}, {"slot": 12, "label": "Neu", "path": "N"},

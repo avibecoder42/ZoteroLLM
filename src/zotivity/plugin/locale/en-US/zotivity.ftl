@@ -1,0 +1,16 @@
+zotivity-menu =
+    .label = Zotivity
+zotivity-index-collection =
+    .label = Index Collection
+zotivity-ask-collection =
+    .label = Ask About This Collection…
+zotivity-ask-items =
+    .label = Ask About Selected Items…
+zotivity-index-items =
+    .label = Index Selected Items
+zotivity-sheets-items =
+    .label = Create Extraction Sheets
+zotivity-open =
+    .label = Open Zotivity
+zotivity-sync =
+    .label = Zotivity: Sync Now

@@ -4,11 +4,11 @@ import zipfile
 
 from test_indexing_search import run_index
 
-from zotllm.extract import extract_file
-from zotllm.extract.office import DOCX_TYPE, ODT_TYPE
-from zotllm.rag.sources import build_sources
-from zotllm.retrieval.search import Searcher
-from zotllm.settings import OFFICE_TYPES, SettingsStore
+from zotivity.extract import extract_file
+from zotivity.extract.office import DOCX_TYPE, ODT_TYPE
+from zotivity.rag.sources import build_sources
+from zotivity.retrieval.search import Searcher
+from zotivity.settings import OFFICE_TYPES, SettingsStore
 
 W_NS = ('xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" '
         'xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"')

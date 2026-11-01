@@ -4,8 +4,8 @@ sonst mit den gespeicherten Kurzangaben lesbar halten und in der Prüfung melden
 from test_duplicates import add_copy
 from test_indexing_search import build_library, run_index
 
-from zotllm import references
-from zotllm.rag.review import ReviewService
+from zotivity import references
+from zotivity.rag.review import ReviewService
 
 
 def make_review(engine, text, keys):

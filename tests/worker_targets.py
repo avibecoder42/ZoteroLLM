@@ -11,6 +11,6 @@ def flaky_extract(path, content_type, **kwargs):
         os._exit(3)
     if "HANG" in name:
         time.sleep(120)
-    from zotllm.extract.pdf import extract_file
+    from zotivity.extract.pdf import extract_file
 
     return extract_file(path, content_type, **kwargs)

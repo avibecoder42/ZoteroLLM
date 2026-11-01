@@ -1,5 +1,5 @@
 @echo off
-rem ZotLLM – Einrichtung unter Windows (einmalig)
+rem Zotivity – Einrichtung unter Windows (einmalig)
 setlocal
 cd /d "%~dp0"
 

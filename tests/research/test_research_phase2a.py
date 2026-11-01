@@ -12,9 +12,9 @@ import pytest
 from research_fakes import pubmed_article
 from test_research_pool_screening import make_project
 
-from zotllm.research.errors import ResearchError
-from zotllm.research.pool import pattern_regex
-from zotllm.research.store import SCHEMA_VERSION, Store
+from zotivity.research.errors import ResearchError
+from zotivity.research.pool import pattern_regex
+from zotivity.research.store import SCHEMA_VERSION, Store
 
 # Die 12 Grenzfälle aus Cyberaggression/Recherche_Onlineaggression_2026-10-29.md („Nachtrag: Grenzfälle“);
 # None = OpenAlex hat kein Abstract

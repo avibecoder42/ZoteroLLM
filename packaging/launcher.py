@@ -2,7 +2,7 @@
 
 import sys
 
-from zotllm.desktop import entry
+from zotivity.desktop import entry
 
 if __name__ == "__main__":
     sys.exit(entry())

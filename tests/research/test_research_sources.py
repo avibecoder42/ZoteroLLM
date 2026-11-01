@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from zotllm.research.sources import ris
-from zotllm.research.sources.crossref import Crossref, enrich
-from zotllm.research.sources.openalex import OpenAlex, abstract_from_index, work_to_rec
-from zotllm.research.sources.pubmed import PubMed
+from zotivity.research.sources import ris
+from zotivity.research.sources.crossref import Crossref, enrich
+from zotivity.research.sources.openalex import OpenAlex, abstract_from_index, work_to_rec
+from zotivity.research.sources.pubmed import PubMed
 
 
 def test_pubmed_count_and_search(sim):

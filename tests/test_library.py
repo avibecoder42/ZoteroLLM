@@ -2,8 +2,8 @@
 
 from test_server import H, client  # noqa: F401 - Fixture
 
-from zotllm.jobs import Job
-from zotllm.library_search import CatalogQuery, fts_expression, search_catalog
+from zotivity.jobs import Job
+from zotivity.library_search import CatalogQuery, fts_expression, search_catalog
 
 
 def test_fts_expression():
@@ -64,7 +64,7 @@ def test_corpus_preview_counts_texts_before_indexing(client):
 def test_catalog_sync_job(zengine, fake_zotero):
     from test_indexing_search import build_library
 
-    from zotllm.index.indexer import Indexer
+    from zotivity.index.indexer import Indexer
 
     build_library(fake_zotero)
     summary = Indexer(zengine).sync_catalog(Job("catalog", "t"))
@@ -80,8 +80,8 @@ def test_catalog_follows_zotero_changes(zengine, fake_zotero, monkeypatch):
 
     from test_indexing_search import build_library
 
-    from zotllm import service
-    from zotllm.index.indexer import Indexer
+    from zotivity import service
+    from zotivity.index.indexer import Indexer
 
     build_library(fake_zotero)
     idx = Indexer(zengine)
@@ -109,9 +109,9 @@ def test_catalog_changes_in_group_without_versions(engine, tmp_path, monkeypatch
     """Gruppen melden in Zotero 10 lokal keine Version: neue Einträge zeigt die Zahl der Einträge."""
     from fakes import FakeZotero
 
-    from zotllm import keystore
-    from zotllm.index.indexer import Indexer
-    from zotllm.zotero import ZoteroClient
+    from zotivity import keystore
+    from zotivity.index.indexer import Indexer
+    from zotivity.zotero import ZoteroClient
 
     fz = FakeZotero(tmp_path / "storage", lib="groups/77", versioned=False)
     fz.add_item("GRPA0001", "Gruppeneintrag", "Gruppe", "2020")
@@ -131,11 +131,11 @@ def test_outdated_plugin_is_reported(client):
         return next(s for s in client.get("/api/setup").json()["steps"] if s["id"] == "plugin")
 
     assert not step()["done"]
-    # Plugins bis 0.7.3 hiessen „ZoteroLLM“: altes entfernen, neues installieren
-    client.get("/api/plugin/info?client=zotero-plugin&version=0.7.3")
+    # Plugins bis 1.0.1 hiessen „ZotLLM“: altes entfernen, neues installieren
+    client.get("/api/plugin/info?client=zotero-plugin&version=1.0.1")
     s = step()
-    assert not s["done"] and "heisst jetzt ZotLLM" in s["detail"]
-    client.get("/api/plugin/info?client=zotero-plugin&version=0.8.0")
+    assert not s["done"] and "heisst jetzt Zotivity" in s["detail"] and "„ZotLLM“" in s["detail"]
+    client.get("/api/plugin/info?client=zotero-plugin&version=1.1.0")
     assert step()["done"]
 
 

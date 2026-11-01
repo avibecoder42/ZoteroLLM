@@ -1,5 +1,5 @@
 """KI-Vorschläge (Phase 2b) ohne Netz: Fachlogik mit einer Attrappe des ChatModel-Ports; der Adapter ResearchChat über
-ZotLLMs Claude-Anbindung mit einer Attrappe des Anthropic-Clients."""
+Zotivitys Claude-Anbindung mit einer Attrappe des Anthropic-Clients."""
 
 from __future__ import annotations
 
@@ -12,14 +12,14 @@ import pytest
 from research_fakes import MemoryKeyStore
 from test_research_pool_screening import make_project
 
-from zotllm.keystore import get_store
-from zotllm.llm.anthropic_provider import _FALLBACK_BETA as FALLBACK_BETA
-from zotllm.llm.anthropic_provider import AnthropicChat
-from zotllm.research.ai import SCREENING_SCHEMA, estimate_cost
-from zotllm.research_adapters import ResearchChat
-from zotllm.settings import Settings
-from zotllm.research.errors import ResearchError
-from zotllm.research.service import ResearchService
+from zotivity.keystore import get_store
+from zotivity.llm.anthropic_provider import _FALLBACK_BETA as FALLBACK_BETA
+from zotivity.llm.anthropic_provider import AnthropicChat
+from zotivity.research.ai import SCREENING_SCHEMA, estimate_cost
+from zotivity.research_adapters import ResearchChat
+from zotivity.settings import Settings
+from zotivity.research.errors import ResearchError
+from zotivity.research.service import ResearchService
 
 
 class FakeChat:
@@ -235,9 +235,9 @@ def test_ai_blocks_checked_and_not_saved(store, sim, zotero):
     assert svc.store.blocks(pid) == []  # nichts gespeichert
 
 
-# ------------------------------------------------------------------------------------------- Claude über ZotLLM
+# ------------------------------------------------------------------------------------------- Claude über Zotivity
 class FakeAnthropic:
-    """Wie ``anthropic.Anthropic`` für ZotLLMs AnthropicChat: ``messages.stream`` bzw. ``beta.messages.stream`` als
+    """Wie ``anthropic.Anthropic`` für Zotivitys AnthropicChat: ``messages.stream`` bzw. ``beta.messages.stream`` als
     Kontextmanager; jede Anfrage bekommt die nächste Antwort (die letzte wiederholt sich)."""
 
     def __init__(self, *responses, error=None):
@@ -283,7 +283,7 @@ def response(text='{"items": []}', stop="end_turn", category=None):
 
 
 def claude(client, **llm):
-    """ResearchChat mit Claude: Einstellungen von ZotLLM, Schlüssel im (Test-)Schlüsselspeicher, Attrappe als Client."""
+    """ResearchChat mit Claude: Einstellungen von Zotivity, Schlüssel im (Test-)Schlüsselspeicher, Attrappe als Client."""
     get_store().set("anthropic", "KEY")
     settings = Settings()
     settings.llm = settings.llm.model_copy(update={"helper_model": "claude-opus-5-5", **llm})
@@ -300,7 +300,7 @@ def test_claude_request_shape_and_usage():
     client = FakeAnthropic(response('{"items": [{"id": 1}]}'))
     chat = claude(client)
     assert chat and (chat.provider, chat.model, chat.effort, chat.vendor) == ("anthropic", "claude-opus-5-5", "low", "Anthropic")
-    assert chat.label == "Anthropic Claude (claude-opus-5-5)" and chat.key_source == "ZotLLM (Schlüsselspeicher)"
+    assert chat.label == "Anthropic Claude (claude-opus-5-5)" and chat.key_source == "Zotivity (Schlüsselspeicher)"
     assert chat.complete_json("SYSTEM", "PROMPT", {"type": "object"}) == {"items": [{"id": 1}]}
     k = client.kwargs
     assert k["model"] == "claude-opus-5-5" and k["max_tokens"] == 16000
@@ -345,11 +345,11 @@ def test_claude_errors_are_explained(error, kind):
 def test_ai_endpoints(ai_service, zengine):
     from fastapi.testclient import TestClient
 
-    from zotllm.server.app import create_app
+    from zotivity.server.app import create_app
 
     svc, _ = ai_service
     client = TestClient(create_app(zengine, research=svc))
-    h = {"X-ZotLLM": "1"}
+    h = {"X-Zotivity": "1"}
     assert client.get("/api/research/ai/status").json()["model"] == "claude-test"
     pid = pool(svc)
     assert counts(client.get(f"/api/research/projects/{pid}/ai/plan").json()["scopes"]["open"]) == {"new": 3, "failed": 0, "done": 0}

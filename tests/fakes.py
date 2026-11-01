@@ -11,7 +11,7 @@ import httpx
 import keyring.backend
 import pymupdf
 
-from zotllm.llm.base import ChatModel, StreamEvent, Usage
+from zotivity.llm.base import ChatModel, StreamEvent, Usage
 
 
 class MemoryKeyring(keyring.backend.KeyringBackend):
@@ -98,8 +98,8 @@ class FakeZotero:
         self.local_key = "LOCALKEY123"
         self.authorized = True
         self.remember = True  # „Entscheidung merken“ im Zotero-Dialog
-        self.plugin = True  # ZotLLM-Plugin installiert (Schnittstelle /zotllm/uris)
-        self.plugin_version = (0, 10)  # ab 0.10: Stile installieren (/zotllm/styles/install)
+        self.plugin = True  # Zotivity-Plugin installiert (Schnittstelle /zotivity/uris)
+        self.plugin_version = (0, 10)  # ab 0.10: Stile installieren (/zotivity/styles/install)
         self.installed_styles: dict[str, str] = {}
         self.schema = SCHEMA
         self.writes: list[dict] = []
@@ -206,23 +206,23 @@ class FakeZotero:
                 return self._resp(428, text="Zotero-Server-ID not provided")
             if sid != self.SERVER_ID:
                 return self._resp(412, text="Zotero-Server-ID does not match this server")
-        if path == "/zotllm/uris":
-            # Schnittstelle des ZotLLM-Plugins: URIs, wie sie das Word-Plugin speichert
+        if path == "/zotivity/uris":
+            # Schnittstelle des Zotivity-Plugins: URIs, wie sie das Word-Plugin speichert
             if not self.plugin:
                 return self._resp(404, text="No endpoint found")
             refs = json.loads(request.content or b"{}").get("items", [])
             return self._resp(200, {"uris": {r: f"http://zotero.org/users/local/abcd1234/items/{r.split(':')[1]}"
                                              for r in refs}})
-        if path == "/zotllm/styles/install":
-            # Plugin ab 1.0.0: eigenen Stil installieren (nur mit X-ZotLLM und ZotLLM-Kennung, wie im Plugin)
+        if path == "/zotivity/styles/install":
+            # Plugin ab 1.0.0: eigenen Stil installieren (nur mit X-Zotivity und Zotivity-Kennung, wie im Plugin)
             if not self.plugin or self.plugin_version < (0, 10):
                 return self._resp(404, text="No endpoint found")
-            if request.headers.get("X-ZotLLM") != "1":
-                return self._resp(403, text="X-ZotLLM header required")
+            if request.headers.get("X-Zotivity") != "1":
+                return self._resp(403, text="X-Zotivity header required")
             style = json.loads(request.content or b"{}").get("style", "")
             m = re.search(r"<id>\s*([^<]+?)\s*</id>", style)
-            if not m or not m.group(1).startswith("http://www.zotero.org/styles/zotllm-"):
-                return self._resp(400, {"error": "Nur eigene Stile aus ZotLLM"})
+            if not m or not m.group(1).startswith("http://www.zotero.org/styles/zotivity-"):
+                return self._resp(400, {"error": "Nur eigene Stile aus Zotivity"})
             self.installed_styles[m.group(1)] = style
             return self._resp(200, {"installed": m.group(1)})
         if path == "/api/local/authorize":

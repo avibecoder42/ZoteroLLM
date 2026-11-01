@@ -11,7 +11,7 @@ import json
 import re
 import zipfile
 
-from zotllm.plugin_build import xpi_bytes
+from zotivity.plugin_build import xpi_bytes
 
 ZOTERO_VERSION = "10.0.5"
 EXTENSION_ID = re.compile(r"(?i)^[a-z0-9-._]*@[a-z0-9-._]+$")
@@ -45,10 +45,10 @@ def test_xpi_passes_zotero_install_checks():
     for icon in manifest.get("icons", {}).values():
         assert icon in names, f"Icon fehlt im Paket: {icon}"
     for loc in ("de-DE", "en-US"):
-        ftl = z.read(f"locale/{loc}/zotllm.ftl").decode()
-        assert "zotllm-open =" in ftl and ".label =" in ftl
+        ftl = z.read(f"locale/{loc}/zotivity.ftl").decode()
+        assert "zotivity-open =" in ftl and ".label =" in ftl
 
 
 def test_prefs_point_to_service():
     z = zipfile.ZipFile(io.BytesIO(xpi_bytes("http://127.0.0.1:24000/")))
-    assert 'pref("extensions.zotllm.serviceURL", "http://127.0.0.1:24000/");' in z.read("prefs.js").decode()
+    assert 'pref("extensions.zotivity.serviceURL", "http://127.0.0.1:24000/");' in z.read("prefs.js").decode()

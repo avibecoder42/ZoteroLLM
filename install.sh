@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ZotLLM – Einrichtung unter macOS und Linux (einmalig)
+# Zotivity – Einrichtung unter macOS und Linux (einmalig)
 set -euo pipefail
 cd "$(dirname "$0")"
 
@@ -12,7 +12,7 @@ else
   .venv/bin/python -m pip install -e .
 fi
 
-if ! .venv/bin/python -c "import sys; from zotllm.keystore import get_store; sys.exit(0 if get_store().backend_info()['secure'] else 1)"; then
+if ! .venv/bin/python -c "import sys; from zotivity.keystore import get_store; sys.exit(0 if get_store().backend_info()['secure'] else 1)"; then
   echo "Hinweis: Für die verschlüsselte Ablage der API-Schlüssel wird ein Secret-Service benötigt"
   echo "(z. B. gnome-keyring oder KWallet). Alternativ Umgebungsvariablen wie ANTHROPIC_API_KEY setzen."
 fi

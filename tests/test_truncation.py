@@ -5,13 +5,13 @@ import json
 
 from fastapi.testclient import TestClient
 
-from zotllm.jobs import Job
-from zotllm.llm import ChatModel, GenParams, StreamEvent, Usage, truncation
-from zotllm.llm.base import RECITATION_HINT
-from zotllm.rag import ReviewService
-from zotllm.rag.review import incomplete_reasons, unclosed_quote
+from zotivity.jobs import Job
+from zotivity.llm import ChatModel, GenParams, StreamEvent, Usage, truncation
+from zotivity.llm.base import RECITATION_HINT
+from zotivity.rag import ReviewService
+from zotivity.rag.review import incomplete_reasons, unclosed_quote
 
-H = {"X-ZotLLM": "1"}
+H = {"X-Zotivity": "1"}
 CUT = ("In einer Querschnittstudie beschrieben Samatha et al. diese Wirkungsweise prägnant: „These results suggest "
        "that AI tools are perceived by adolescents as emotionally neutral yet cognitively supportive companions, useful")
 
@@ -116,8 +116,8 @@ def test_old_check_is_refreshed_and_rewrite_api(zengine, monkeypatch):
     svc = ReviewService(zengine)
     inc = svc.get(rid)["state"]["check"]["incomplete_sections"]
     assert inc[0]["index"] == 0 and "quote" in inc[0]["reasons"]
-    monkeypatch.setattr("zotllm.server.app.ollama_available", lambda url: False)
-    from zotllm.server.app import create_app
+    monkeypatch.setattr("zotivity.server.app.ollama_available", lambda url: False)
+    from zotivity.server.app import create_app
 
     with TestClient(create_app(zengine)) as c:
         assert c.post(f"/api/reviews/{rid}/sections/5/rewrite", headers=H).status_code == 404

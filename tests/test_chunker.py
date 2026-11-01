@@ -1,4 +1,4 @@
-from zotllm.extract.chunker import (
+from zotivity.extract.chunker import (
     chunk_pages,
     estimate_tokens,
     make_abstract_chunk,
@@ -6,7 +6,7 @@ from zotllm.extract.chunker import (
     reference_density,
     split_sentences,
 )
-from zotllm.extract.pdf import PageText, html_to_text, text_as_document
+from zotivity.extract.pdf import PageText, html_to_text, text_as_document
 
 
 def pages(n=6, sentences=40):

@@ -8,10 +8,10 @@ from pathlib import Path
 import pytest
 from test_indexing_search import build_library, run_index
 
-from zotllm.embeddings import EmbeddingError
-from zotllm.extract.worker import ExtractionFailed, ExtractionWorker
-from zotllm.index.indexer import Indexer, in_hour_window, window_end
-from zotllm.jobs import Job
+from zotivity.embeddings import EmbeddingError
+from zotivity.extract.worker import ExtractionFailed, ExtractionWorker
+from zotivity.index.indexer import Indexer, in_hour_window, window_end
+from zotivity.jobs import Job
 
 TEXT = ("Digitale Partizipation in der Sozialen Arbeit wird in diesem Abschnitt ausführlich diskutiert. " * 20)
 
@@ -125,7 +125,7 @@ def test_stage_limit_and_deadline(zengine, fake_zotero):
 
 def test_disk_space_is_checked(zengine, fake_zotero, monkeypatch):
     build_library(fake_zotero)
-    monkeypatch.setattr("zotllm.index.indexer.shutil.disk_usage",
+    monkeypatch.setattr("zotivity.index.indexer.shutil.disk_usage",
                         lambda p: type("U", (), {"free": 50 * 1024 * 1024})())
     with pytest.raises(RuntimeError, match="Speicherplatz"):
         run_index(zengine)

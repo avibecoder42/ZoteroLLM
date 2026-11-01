@@ -10,18 +10,18 @@ from fakes import ScriptedModel
 from fastapi.testclient import TestClient
 from test_indexing_search import build_library, run_index
 
-import zotllm
-from zotllm.rag import chat as chat_mod
-from zotllm.server.app import create_app
+import zotivity
+from zotivity.rag import chat as chat_mod
+from zotivity.server.app import create_app
 
-H = {"X-ZotLLM": "1"}
+H = {"X-Zotivity": "1"}
 
 
 @pytest.fixture
 def client(zengine, fake_zotero, monkeypatch):
     build_library(fake_zotero)
     run_index(zengine)
-    monkeypatch.setattr("zotllm.server.app.ollama_available", lambda url: False)
+    monkeypatch.setattr("zotivity.server.app.ollama_available", lambda url: False)
     app = create_app(zengine)
     with TestClient(app) as c:
         yield c
@@ -42,7 +42,7 @@ def test_static_files_are_revalidated(client):
     page = client.get("/")
     assert page.headers["cache-control"] == "no-cache"
     # Module unter einem Pfad je Version: nach einem Update stammt nichts aus dem Zwischenspeicher der alten Version
-    from zotllm import __version__
+    from zotivity import __version__
 
     assert f'src="/static/v{__version__}/js/main.js"' in page.text and '"/static/js/' not in page.text
     r = client.get(f"/static/v{__version__}/js/main.js")
@@ -54,14 +54,14 @@ def test_status_and_ui(client):
     assert st["zotero"]["running"] and st["index"]["items"] == 2
     assert st["keystore"]["secure"]
     page = client.get("/").text
-    assert "ZotLLM" in page
+    assert "Zotivity" in page
     for asset in re.findall(r'(?:src|href)="(/static/[^"]+)"', page):
         assert client.get(asset).status_code == 200, asset
 
 
 def test_llm_choice_healed_on_start(zengine):
     """Früher gespeicherter Gemini-Schlüssel, eingestellt ist noch Anthropic ohne Schlüssel → beim Start umstellen."""
-    from zotllm.keystore import get_store
+    from zotivity.keystore import get_store
 
     get_store().set("gemini", "test-gemini-key-1234")
     zengine.settings_store.update({"llm": {"provider": "anthropic", "helper_provider": "anthropic"}})
@@ -72,11 +72,11 @@ def test_llm_choice_healed_on_start(zengine):
 
 
 def test_update_check_and_defaults(client, tmp_path):
-    manifest = tmp_path / "zotllm-update.json"
-    manifest.write_text(json.dumps({"version": "99.0.0", "url": "ZotLLM-Setup-99.0.0.exe", "sha256": "ab"}))
+    manifest = tmp_path / "zotivity-update.json"
+    manifest.write_text(json.dumps({"version": "99.0.0", "url": "Zotivity-Setup-99.0.0.exe", "sha256": "ab"}))
     r = client.post("/api/update/check", json={"url": str(manifest)}, headers=H).json()
     assert r["available"] and r["latest"] == "99.0.0"
-    assert Path(r["installer"]) == tmp_path / "ZotLLM-Setup-99.0.0.exe"
+    assert Path(r["installer"]) == tmp_path / "Zotivity-Setup-99.0.0.exe"
     # Ohne Quelle: nicht eingerichtet; unverschlüsseltes HTTP wird abgelehnt
     assert client.post("/api/update/check", json={}, headers=H).json()["configured"] is False
     assert client.post("/api/update/check", json={"url": "http://example.org/u.json"}, headers=H).status_code == 400
@@ -85,7 +85,7 @@ def test_update_check_and_defaults(client, tmp_path):
 
 def test_frontend_imports_resolve():
     """Ohne Build-Schritt: jeder Import muss auf eine vorhandene Datei und einen exportierten Namen zeigen."""
-    root = Path(zotllm.__file__).parent / "server" / "static" / "js"
+    root = Path(zotivity.__file__).parent / "server" / "static" / "js"
     exports: dict[Path, set[str]] = {}
 
     def exported(path: Path) -> set[str]:
@@ -210,17 +210,60 @@ def test_setup_and_provider_switch(client):
     assert client.get("/api/setup").json()["steps"][1]["done"]
 
 
+def test_setup_separates_technical_steps_from_work(client):
+    r = client.get("/api/setup").json()
+    groups = {s["id"]: s["group"] for s in r["steps"]}
+    assert groups["corpus"] == groups["index"] == "project" and groups["zotero"] == groups["llm"] == groups["databases"] == "technical"
+    assert not r["first_run"]  # es gibt schon einen Korpus
+    # Korpus und Indexieren entscheiden nicht, ob die Einrichtung fertig ist
+    client.put("/api/keys/gemini", json={"key": "AIza-test-1234"}, headers=H)
+    r = client.get("/api/setup").json()
+    done = {s["id"]: s["done"] for s in r["steps"]}
+    assert r["ready"] == all(done[k] for k in ("zotero", "llm", "embedding"))
+
+
+def test_first_run_ends_when_setup_is_done(client):
+    engine = client.app.state.engine
+    for c in engine.store.corpora():
+        engine.store.delete_corpus(c["id"])
+    assert client.get("/api/setup").json()["first_run"]
+    assert client.post("/api/setup/done", json={}, headers=H).json()["ok"]
+    assert not client.get("/api/setup").json()["first_run"]
+
+
+def test_research_keys_are_never_shown_in_plain_text(client):
+    assert client.put("/api/research-keys/unbekannt", json={"key": "x"}, headers=H).status_code == 404
+    assert client.put("/api/research-keys/openalex", json={"key": "OPENALEX-SECRET-1234"}, headers=H).json()["masked"] == "••••1234"
+    r = client.get("/api/research-keys")
+    assert "OPENALEX-SECRET" not in r.text
+    keys = {k["id"]: k for k in r.json()["keys"]}
+    assert keys["openalex"]["stored"] and not keys["ncbi"]["stored"] and keys["zotero-web"]["url"].startswith("https://www.zotero.org")
+    assert client.app.state.research.info()["keys"]["openalex"] is True
+    step = next(s for s in client.get("/api/setup").json()["steps"] if s["id"] == "databases")
+    assert step["optional"] and not step["done"] and "OpenAlex" not in step["detail"] and "PubMed" in step["detail"]
+    assert client.delete("/api/research-keys/openalex", headers=H).json()["deleted"]
+    assert not client.app.state.research.info()["keys"]["openalex"]
+
+
+def test_research_errors_follow_the_interface_language(client):
+    client.app.state.research.create_project({"title": "T", "zotero_backend": "web"})
+    pid = client.app.state.research.store.projects()[0]["id"]
+    client.put("/api/settings", json={"language": "en"}, headers=H)
+    r = client.post(f"/api/research/projects/{pid}/zotero/match", json={}, headers=H)
+    assert r.status_code == 400 and "No key stored for the Zotero web API" in r.json()["detail"] and "config.ini" not in r.text
+
+
 def test_provider_models_without_key_use_catalog(client):
     r = client.get("/api/providers/gemini/models").json()
     assert r["loaded"] is False and r["models"][0] == "gemini-pro-latest" and r["default_main"] == "gemini-pro-latest"
 
 
 def test_plugin_package(client):
-    r = client.get("/plugin/zotllm.xpi")
+    r = client.get("/plugin/zotivity.xpi")
     z = zipfile.ZipFile(io.BytesIO(r.content))
     names = set(z.namelist())
-    assert {"manifest.json", "bootstrap.js", "prefs.js", "content/zotllm.js", "locale/de-DE/zotllm.ftl"} <= names
+    assert {"manifest.json", "bootstrap.js", "prefs.js", "content/zotivity.js", "locale/de-DE/zotivity.ftl"} <= names
     manifest = json.loads(z.read("manifest.json"))
-    assert manifest["applications"]["zotero"]["id"] == "zotllm@zotllm.local"
+    assert manifest["applications"]["zotero"]["id"] == "zotivity@zotivity.local"
     assert manifest["applications"]["zotero"]["update_url"].startswith("https:")
     assert "content/icon.svg" in names

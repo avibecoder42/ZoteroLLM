@@ -11,11 +11,11 @@ from urllib.parse import parse_qs
 
 import httpx
 
-from zotllm.research.http import Http
-from zotllm.research.ports import MY_LIBRARY
+from zotivity.research.http import Http
+from zotivity.research.ports import MY_LIBRARY
 
 # Echte Suchstrings eines Projekts (Ordner mit .txt-Dateien, nur gelesen) – optional, sonst werden die Tests übersprungen
-QUERIES = Path(os.environ.get("ZOTLLM_TEST_QUERIES") or Path(__file__).parent / "queries-fehlen")
+QUERIES = Path(os.environ.get("ZOTIVITY_TEST_QUERIES") or Path(__file__).parent / "queries-fehlen")
 
 
 class MemoryKeyStore:

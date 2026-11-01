@@ -1,30 +1,37 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/img/banner-de-dark.png">
-    <img src="docs/img/banner-de-light.png" alt="ZotLLM – Fragen an die eigene Zotero-Bibliothek. Semantische Suche, Antworten und Forschungsstand mit Belegen bis auf die Seite.">
+    <img src="docs/img/banner-de-light.png" alt="Zotivity – Umfassendes wissenschaftliches Arbeiten mit Zotero. Recherche, belegte Antworten und geprüfte Forschungsstände. Vormals ZotLLM.">
   </picture>
 </p>
 
 <p align="center">
-  <a href="https://github.com/avibecoder42/ZotLLM/releases/latest"><img src="https://img.shields.io/github/v/release/avibecoder42/ZotLLM?label=release&color=4a43c4" alt="Neueste Version"></a>
-  <a href="https://github.com/avibecoder42/ZotLLM/releases"><img src="https://img.shields.io/github/downloads/avibecoder42/ZotLLM/total?color=4a43c4" alt="Downloads"></a>
+  <a href="https://github.com/avibecoder42/Zotivity/releases/latest"><img src="https://img.shields.io/github/v/release/avibecoder42/Zotivity?label=release&color=4a43c4" alt="Neueste Version"></a>
+  <a href="https://github.com/avibecoder42/Zotivity/releases"><img src="https://img.shields.io/github/downloads/avibecoder42/Zotivity/total?color=4a43c4" alt="Downloads"></a>
   <img src="https://img.shields.io/badge/platform-Windows-4a43c4" alt="Plattform: Windows">
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/avibecoder42/ZotLLM?color=4a43c4" alt="Lizenz: MIT"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/avibecoder42/Zotivity?color=4a43c4" alt="Lizenz: MIT"></a>
   <a href="#vibe-coded"><img src="https://img.shields.io/badge/vibe--coded%20with-Claude-d97757" alt="Vibe-coded mit Claude"></a>
 </p>
 
 <p align="center"><a href="README.md">English</a> · <b>Deutsch</b></p>
 
-ZotLLM ist ein Programm für den Desktop, das mit Zotero zusammenarbeitet. Die Arbeit ist in **Projekte** gegliedert,
-jedes mit eigenen **Wissenskorpora**: Ein Korpus ist eine Auswahl von Zotero-Sammlungen oder ganzen Bibliotheken, auch
-aus Gruppen. ZotLLM liest die PDFs, Word-Dokumente und weiteren Texte der Korpora samt Seitenzahlen und indexiert sie auf dem
-eigenen Rechner. Fragen und Forschungsstände stützen sich dann genau auf die Texte des Projekts.
+**Zotivity** (vormals ZotLLM) ist ein Programm für den Desktop, das mit Zotero zusammenarbeitet und **umfassendes
+wissenschaftliches Arbeiten** ermöglicht: von der Recherche in Fachdatenbanken und dem Sichten der Treffer über das Lesen und
+Befragen der Quellen bis zum geprüften Forschungsstand mit Belegen bis auf die Seite.
+
+Die Arbeit ist in **Projekte** gegliedert, jedes mit eigenen **Wissenskorpora**: Ein Korpus ist eine Auswahl von
+Zotero-Sammlungen oder ganzen Bibliotheken, auch aus Gruppen. Zotivity liest die PDFs, Word-Dokumente und weiteren Texte der
+Korpora samt Seitenzahlen und indexiert sie auf dem eigenen Rechner. Fragen und Forschungsstände stützen sich dann genau auf
+die Texte des Projekts. Die **Anleitung** im Programm führt durch diese Schritte, mit Links und dem Stand im aktiven Projekt.
 
 <table>
   <tr>
-    <td width="33%" valign="top"><img src="docs/img/feature-ask.svg" width="40" height="40" alt=""><br><b>Fragen</b><br>Fragen an die eigenen Texte, beantwortet nur aus den gefundenen Textstellen. Jeder Beleg öffnet die Textstelle mit Seite.</td>
-    <td width="33%" valign="top"><img src="docs/img/feature-review.svg" width="40" height="40" alt=""><br><b>Forschungsstand</b><br>Von der Suchstrategie bis zur geprüften Synthese: Jeder Beleg und jedes wörtliche Zitat wird an den PDFs geprüft.</td>
-    <td width="33%" valign="top"><img src="docs/img/feature-search.svg" width="40" height="40" alt=""><br><b>Suchen</b><br>Schnelle Suche über die eigene Bibliothek und alle Gruppen, ohne Sprachmodell. Literaturangaben im eigenen Zitierstil kopieren oder eine Auswahl exportieren.</td>
+    <td width="50%" valign="top"><img src="docs/img/feature-research.svg" width="40" height="40" alt=""><br><b>Recherche</b><br>Von der Fragestellung bis zur ausgewählten Literatur in Zotero: Suchstrings für offene Datenbanken, RIS-Import, Pool ohne Duplikate, Screening, Volltexte und ein Flussdiagramm im Stil von PRISMA.</td>
+    <td width="50%" valign="top"><img src="docs/img/feature-ask.svg" width="40" height="40" alt=""><br><b>Fragen</b><br>Fragen an die eigenen Texte, beantwortet nur aus den gefundenen Textstellen. Jeder Beleg öffnet die Textstelle mit Seite.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><img src="docs/img/feature-review.svg" width="40" height="40" alt=""><br><b>Forschungsstand</b><br>Von der Suchstrategie bis zur geprüften Synthese: Jeder Beleg und jedes wörtliche Zitat wird an den PDFs geprüft.</td>
+    <td width="50%" valign="top"><img src="docs/img/feature-search.svg" width="40" height="40" alt=""><br><b>Suchen</b><br>Schnelle Suche über die eigene Bibliothek und alle Gruppen, ohne Sprachmodell. Literaturangaben im eigenen Zitierstil kopieren oder eine Auswahl exportieren.</td>
   </tr>
 </table>
 
@@ -35,12 +42,10 @@ Schlüsselspeicher und Startskripte sind für macOS und Linux angelegt.
 
 Dazu kommt ein **CSL-Editor**: Zitierstil auf zotero.org suchen, per Klick auf die Vorschau anpassen und direkt in
 Zotero installieren. Er ist eine erste Version und noch in Entwicklung – Hinweise und Beiträge sind willkommen
-([Issues](https://github.com/avibecoder42/ZotLLM/issues)).
+([Issues](https://github.com/avibecoder42/Zotivity/issues)).
 
-Neu in 1.1: **Recherche** – der Schritt vor dem Forschungsstand. Ein Recherche-Projekt führt von der Fragestellung über
-Suchstrings für PubMed, OpenAlex und weitere offene Datenbanken (dazu RIS-Import aus lizenzierten wie PsycInfo), einen
-Pool ohne Duplikate und ein Screening per Tastatur bis zur ausgewählten Literatur in Zotero-Sammlungen. KI-Vorschläge
-sind freiwillig und nutzen das in ZotLLM eingestellte Sprachmodell; entscheiden tust du. Siehe [Recherche](#recherche).
+Neu in 1.1: **Recherche**, der Schritt vor dem Forschungsstand, mit freiwilligen KI-Vorschlägen; entscheiden tust du.
+Siehe [Recherche](#recherche).
 
 <p align="center"><img src="docs/screenshots/de/ask.png" alt="Fragen: Antwort mit nummerierten Belegen und der zitierten Textstelle"></p>
 <p align="center"><sub>Antworten mit Belegen; ein Klick zeigt die Textstelle mit Seite. Demo-Bibliothek mit erfundenen Quellen.</sub></p>
@@ -50,28 +55,32 @@ sind freiwillig und nutzen das in ZotLLM eingestellte Sprachmodell; entscheiden 
     <td width="50%" valign="top"><img src="docs/screenshots/de/review.png" alt="Forschungsstand: Prüfschritt mit Kennzahlen und dem belegten Text"><br><sub>Forschungsstand: Jeder Beleg und jedes Zitat wird an den Quellen geprüft</sub></td>
     <td width="50%" valign="top"><img src="docs/screenshots/de/search.png" alt="Suchen: Treffer mit drei ausgewählten Einträgen und der Auswahlleiste"><br><sub>Suchen ohne Sprachmodell, mit Auswahl zum Kopieren, Exportieren oder Befragen</sub></td>
   </tr>
+  <tr>
+    <td width="50%" valign="top"><img src="docs/screenshots/de/research-strategy.png" alt="Recherche: Konzeptblöcke mit KI-Vorschlägen und Suchstrings je Datenbank"><br><sub>Recherche: Konzeptblöcke mit KI-Vorschlägen, Suchstrings und Trefferzahlen je Datenbank</sub></td>
+    <td width="50%" valign="top"><img src="docs/screenshots/de/guide.png" alt="Anleitung: die vier Schritte mit Links und dem Stand im aktiven Projekt"><br><sub>Die Anleitung: vier Schritte mit Links und dem Stand im aktiven Projekt</sub></td>
+  </tr>
 </table>
 
 <a name="vibe-coded"></a>
 
-> **Vibe-coded.** ZotLLM wurde von **Claude** geschrieben (dem KI-Modell von Anthropic, in Claude Code) – das
+> **Vibe-coded.** Zotivity wurde von **Claude** geschrieben (dem KI-Modell von Anthropic, in Claude Code) – das
 > Programm, das Zotero-Plugin, die Installationsskripte, die Tests und die Dokumentation. Initiiert hat das Projekt
 > [avibecoder](https://github.com/avibecoder42): avibecoder hat festgelegt, was entsteht, jede Version im Forschungsalltag getestet und über
 > jeden nächsten Schritt entschieden; von Hand geschrieben wurde kein Code. Bitte den Code in diesem Bewusstsein lesen:
-> Er ist umfangreich getestet (rund 330 automatische Tests), aber nicht Zeile für Zeile von einer Entwicklerin oder
+> Er ist umfangreich getestet (rund 350 automatische Tests), aber nicht Zeile für Zeile von einer Entwicklerin oder
 > einem Entwickler geprüft.
 
 > **Als Werkzeug nutzen, nicht als Ersatz für die eigene wissenschaftliche Arbeit.** Siehe
 > [Werkzeug statt Ersatz – die Gefahr des Deskilling](#werkzeug-statt-ersatz--die-gefahr-des-deskilling).
 
-ZotLLM ist ein unabhängiges Projekt und steht in keiner Verbindung zu Zotero oder der Corporation for Digital
+Zotivity ist ein unabhängiges Projekt und steht in keiner Verbindung zu Zotero oder der Corporation for Digital
 Scholarship. Zotero ist eine eingetragene Marke der Corporation for Digital Scholarship.
 
 ---
 
 ## Werkzeug statt Ersatz – die Gefahr des Deskilling
 
-ZotLLM kann suchen, zusammenfassen und Entwürfe schreiben. Genau deshalb kann es die Fähigkeiten schwächen, von
+Zotivity kann suchen, zusammenfassen und Entwürfe schreiben. Genau deshalb kann es die Fähigkeiten schwächen, von
 denen wissenschaftliche Arbeit lebt: genau lesen, Befunde gewichten, eine Argumentation aufbauen und in eigenen Worten
 schreiben. Je mehr davon man abgibt, desto weniger übt man es.
 
@@ -80,7 +89,7 @@ schreiben. Je mehr davon man abgibt, desto weniger übt man es.
   Hochschule zum KI-Einsatz beachten und offenlegen, wofür das Werkzeug verwendet wurde.
 - **Die Quellen lesen.** Jeder Beleg führt zur Originalstelle (ein Klick öffnet die PDF auf der Seite). Prüfen, ob die
   Aussage dort wirklich steht und richtig wiedergegeben ist: Zusammenhang, Einschränkungen, Stichprobe, Grenzen.
-- **Kritisch gegenprüfen.** ZotLLM prüft wörtliche Zitate gegen den PDF-Text – nicht aber sinngemässe Wiedergaben,
+- **Kritisch gegenprüfen.** Zotivity prüft wörtliche Zitate gegen den PDF-Text – nicht aber sinngemässe Wiedergaben,
   Deutungen oder die Gewichtung von Studien. Sprachmodelle ordnen falsch zu, verallgemeinern zu stark und lassen
   widersprechende Befunde weg. Die Grundlage ist auf die eigene Bibliothek beschränkt und auf das, was die Suche findet.
 - **Das Denken selbst behalten.** Fragestellung, Gliederung und Argumentation selbst entwickeln. Das Werkzeug nutzen,
@@ -92,7 +101,7 @@ schreiben. Je mehr davon man abgibt, desto weniger übt man es.
 ## Aufbau
 
 ```
-Zotero 10 (lokale API)  ←→  ZotLLM-Dienst (Python, 127.0.0.1:23120)   ←→  LLM nach Wahl
+Zotero 10 (lokale API)  ←→  Zotivity-Dienst (Python, 127.0.0.1:23120)   ←→  LLM nach Wahl
   + schlankes Plugin           – Text + Seitenzahlen aus PDF/EPUB/HTML/Word   Claude · GPT · Gemini
     (Rechtsklick, Autostart)   – Zerlegung, Literaturverzeichnisse erkennen   DeepSeek · lokal (Ollama)
                                – Embedding: eingebaut (llama.cpp), Ollama, OpenAI …
@@ -103,33 +112,33 @@ Claude Desktop (MCP) ←→        – MCP-Server
 
 - **Kein direkter Zugriff auf `zotero.sqlite`.** Alles läuft über die lokale API von Zotero (Zotero 10 schreibt
   seine Datenbank im WAL-Modus; direkte Leser können unvollständige Daten sehen).
-- **Index liegt lokal** (`%LOCALAPPDATA%\ZotLLM`), nicht im synchronisierten Zotero-Ordner.
+- **Index liegt lokal** (`%LOCALAPPDATA%\Zotivity`), nicht im synchronisierten Zotero-Ordner.
 - **Das Plugin bleibt schlank** (Menüs, Autostart). Zotero ändert bei Hauptversionen oft Plugin-Schnittstellen;
   die eigentliche Arbeit macht deshalb der externe Dienst.
 
 ## Installation (Windows)
 
-1. `ZotLLM-Setup-<Version>.exe` unter [Releases](https://github.com/avibecoder42/ZotLLM/releases) herunterladen und
+1. `Zotivity-Setup-<Version>.exe` unter [Releases](https://github.com/avibecoder42/Zotivity/releases) herunterladen und
    ausführen (Installation pro Benutzer, keine Adminrechte nötig; ist bereits eine Version installiert, fragt das Setup
    nach Update, Reparatur oder Rückstufung). Das Installationsprogramm wird von GitHub Actions aus dem veröffentlichten
    Quellcode gebaut; jedes Release enthält eine `.sha256`-Datei zur Kontrolle. Es ist **noch nicht signiert**, deshalb
    warnt Windows SmartScreen («Unbekannter Herausgeber»): *Weitere Informationen → Trotzdem ausführen*. Fehlt diese
    Möglichkeit (z. B. auf verwalteten Geschäfts-PCs), die heruntergeladene Datei mit rechter Maustaste → *Eigenschaften*
    → *Zulassen* ankreuzen → *OK* und erneut starten.
-2. ZotLLM aus dem Startmenü öffnen. Das Fenster *Einrichtung* führt Schritt für Schritt durch die Einrichtung.
+2. Zotivity aus dem Startmenü öffnen. Der erste Start führt zu *Einstellungen → Einrichtung*, danach zeigt die *Anleitung* den Ablauf.
 
-Embedding-Modelle führt ZotLLM selbst aus (llama.cpp ist im Installationsprogramm enthalten); die Modelle selbst
+Embedding-Modelle führt Zotivity selbst aus (llama.cpp ist im Installationsprogramm enthalten); die Modelle selbst
 werden erst in den Einstellungen per Knopf heruntergeladen. Optional: [Ollama](https://ollama.com) für lokale
 Sprachmodelle. Benötigt wird die Microsoft-Edge-WebView2-Laufzeit (in Windows 10/11 enthalten; das Setup warnt, falls
 sie fehlt).
 
 **Verhalten des Programms:** Ein zweiter Start holt das offene Fenster nach vorne. Wird beim Schliessen noch indexiert,
-fragt ZotLLM, ob im Hintergrund weitergearbeitet werden soll. Startet das Zotero-Plugin ZotLLM, läuft es ohne
-Fenster im Hintergrund und endet einige Minuten nach Zotero; «ZotLLM öffnen» in Zotero zeigt das Fenster.
+fragt Zotivity, ob im Hintergrund weitergearbeitet werden soll. Startet das Zotero-Plugin Zotivity, läuft es ohne
+Fenster im Hintergrund und endet einige Minuten nach Zotero; «Zotivity öffnen» in Zotero zeigt das Fenster.
 Beenden jederzeit unter *Einstellungen → Programm & Daten*.
 
 **Updates:** Unter *Einstellungen → Programm & Daten* eine Update-Quelle eintragen – HTTPS-Adresse oder Netzwerkpfad
-zur Datei `zotllm-update.json`, die beim Build neben dem Installer entsteht. ZotLLM prüft beim Start, lädt den
+zur Datei `zotivity-update.json`, die beim Build neben dem Installer entsteht. Zotivity prüft beim Start, lädt den
 Installer, kontrolliert die SHA-256-Prüfsumme, installiert unbeaufsichtigt und startet neu. Einstellungen, Index,
 Korpora und Schlüssel bleiben erhalten (auch bei der Deinstallation).
 
@@ -139,14 +148,14 @@ Releases baut GitHub Actions ([`release.yml`](.github/workflows/release.yml)), s
 wird; die Release-Notes sind der Abschnitt der Version im [Changelog](CHANGELOG.md) plus
 [`packaging/release-footer.md`](packaging/release-footer.md).
 
-Entwicklung ohne Installer: `install.bat`, dann `start.bat` (Browser) bzw. `.venv\Scripts\zotllm-app.exe` (Fenster).
+Entwicklung ohne Installer: `install.bat`, dann `start.bat` (Browser) bzw. `.venv\Scripts\zotivity-app.exe` (Fenster).
 macOS/Linux: `./install.sh`, danach `./start.sh`.
 
 ## Zotero vorbereiten
 
 1. **Lokale API aktivieren:** Zotero → Einstellungen → Erweitert →
    «Anderen Anwendungen auf diesem Computer erlauben, mit Zotero zu kommunizieren».
-2. **Plugin installieren (optional, empfohlen):** In ZotLLM unter *Einstellungen → Zotero und Export → Plugin
+2. **Plugin installieren (optional, empfohlen):** In Zotivity unter *Einstellungen → Zotero und Export → Plugin
    speichern*, dann in Zotero *Werkzeuge → Plugins → Zahnrad → Plugin aus Datei installieren …*.
    Das Plugin bringt Rechtsklick-Menüs («Sammlung indexieren», «Fragen zu ausgewählten Einträgen»,
    «Auswertungsblätter erstellen») und startet den Dienst automatisch mit Zotero, sobald er einmal lief.
@@ -155,7 +164,7 @@ macOS/Linux: `./install.sh`, danach `./start.sh`.
    Plugin.
 3. **Schreibzugriff freigeben (für Notizen und Sammlungen):** *Einstellungen → Zotero und Export → Schreibzugriff
    freigeben*. Zotero zeigt eine Rückfrage – «Entscheidung merken» wählen, sonst gilt die Freigabe nur bis zum
-   nächsten Neustart. **Der Dialog kann hinter anderen Fenstern liegen**; ZotLLM versucht ihn nach vorne zu holen,
+   nächsten Neustart. **Der Dialog kann hinter anderen Fenstern liegen**; Zotivity versucht ihn nach vorne zu holen,
    sonst in der Taskleiste auf Zotero klicken.
 
 ## Projekte
@@ -166,7 +175,7 @@ zeigt das aktive Projekt; *Projekt*, *Fragen*, *Forschungsstand* und *Korpora* b
 
 - **Korpora werden geteilt:** Ein Korpus kann in mehreren Projekten vorkommen; der Index ist gemeinsam, jeder Text wird
   nur einmal eingebettet.
-- **Speichern geschieht laufend.** «Als Datei speichern» exportiert ein Projekt als `.zllm` (Korpus-Definitionen, Chats,
+- **Speichern geschieht laufend.** «Als Datei speichern» exportiert ein Projekt als `.zoty` (Korpus-Definitionen, Chats,
   Forschungsstände, Auswertungsblätter, Suchverlauf – ohne Index und ohne Schlüssel); «Projekt importieren» lädt es
   wieder, auch auf einem anderen Rechner.
 - **Reihenfolge und Archiv:** Projektkacheln lassen sich ziehen; abgeschlossene Projekte lassen sich archivieren (nichts
@@ -174,12 +183,14 @@ zeigt das aktive Projekt; *Projekt*, *Fragen*, *Forschungsstand* und *Korpora* b
 
 ## Erste Schritte
 
-Der erste Start (und jeder Start, solange Schritte der Einrichtung offen sind) beginnt im Fenster **Einrichtung**; sonst öffnet ZotLLM das zuletzt offene Projekt in der zuletzt benutzten Ansicht. Die Einrichtung zeigt oben *Alle Projekte*, *Neues Projekt* und *Projekt importieren*,
-darunter die Einrichtungs-Checkliste mit dem nächsten offenen Schritt hervorgehoben. Alle Seitenleisten lassen sich in
-der Breite ziehen (Doppelklick: Standardbreite).
+Der erste Start führt zu *Einstellungen → Einrichtung*: das Technische, einmal je Computer, jeder Schritt lässt sich
+überspringen. Von dort geht es zur **Anleitung**, dem obersten Eintrag der Navigationsleiste: Projekt anlegen, Recherche
+(optional), Korpus anlegen und indexieren, mit den Korpora arbeiten – mit Links und dem Stand im aktiven Projekt. Danach
+öffnet Zotivity das zuletzt offene Projekt in der zuletzt benutzten Ansicht. Alle Seitenleisten lassen sich in
+der Breite ziehen (Doppelklick: Standardbreite), und im Programmfenster lässt sich die ganze Oberfläche zoomen.
 
 1. **Sprachmodelle** (*Einstellungen → Sprachmodelle*): Anbieter wählen, Schlüssel speichern. Ist für den eingestellten
-   Anbieter kein Schlüssel da, stellt ZotLLM automatisch auf einen Anbieter mit Schlüssel um. «Verbindung testen»
+   Anbieter kein Schlüssel da, stellt Zotivity automatisch auf einen Anbieter mit Schlüssel um. «Verbindung testen»
    prüft Schlüssel und Modell.
 2. **Embedding-Modell** (*Einstellungen → Embedding*): Standard ist *Eingebaut* mit `bge-m3`. Der Modellkatalog zeigt
    geprüfte Modelle mit Stärken, Fächern, Zeit pro 100 Seiten auf diesem Rechner und Speicherbedarf; **Herunterladen**
@@ -194,7 +205,7 @@ der Breite ziehen (Doppelklick: Standardbreite).
 5. **Fragen:** Antwort mit anklickbaren Belegen `[3]` (Vorschau mit «PDF öffnen (S. x)» und «In Zotero zeigen»);
    die Textstellen stehen darunter, jeweils mit **Relevanz**. «Nur Textstellen» sucht ohne LLM.
 
-Tastatur: Strg+1–5 Ansichten des Projekts, Strg+6 Index, Strg+, Einstellungen, F1 Hilfe, Strg+P Projekt wechseln.
+Tastatur: Strg+1–6 Ansichten des Projekts, Strg+7 CSL-Editor, Strg+8 Index, Strg+, Einstellungen, F1 Hilfe, Strg+P Projekt wechseln.
 Darstellung: System, Hell, Grau, Dunkel (die Titelleiste des Fensters passt sich an).
 
 ### Suchen (ohne Sprachmodell)
@@ -230,7 +241,7 @@ Antworten, Textstellen und Forschungsstände lassen sich kopieren (als Text oder
 
 Oberfläche und Hilfe gibt es auf Deutsch und Englisch (*Einstellungen → Sprache*), getrennt davon die Sprache der
 KI-Ausgaben. Weitere Sprachen: Wörterbuch `server/static/js/i18n/<code>.js` (Schlüssel sind die deutschen Texte),
-Meldungen des Dienstes `zotllm/locales/<code>.py`, Handbuch `server/static/help/<code>.md`. Die **Hilfe** (F1) ist
+Meldungen des Dienstes `zotivity/locales/<code>.py`, Handbuch `server/static/help/<code>.md`. Die **Hilfe** (F1) ist
 ein Handbuch mit Inhaltsverzeichnis und Volltextsuche.
 
 ### Wie lange dauert das Indexieren?
@@ -254,24 +265,34 @@ werden nicht neu gelesen, nur für das neue Modell eingebettet.
 - Kurze Ausfälle des Embedding-Dienstes werden überbrückt; der Rechner bleibt wach; der Speicherplatz wird geprüft.
 - Hintergrundmodus in Etappen (Zeitfenster, Höchstzahl Texte pro Lauf), Sicherungen des Index, Warteschlange.
 - **Dubletten:** Dasselbe Werk in mehreren Bibliotheken wird an der DOI bzw. an Titel, Erstautor/in und Jahr erkannt;
-  nur eine Kopie wird gelesen und verwendet. Vor einem Lauf von Hand fragt ZotLLM, welche.
+  nur eine Kopie wird gelesen und verwendet. Vor einem Lauf von Hand fragt Zotivity, welche.
 - Belege auf in Zotero gelöschte Einträge werden auf eine verbleibende Kopie desselben Werks umgestellt.
 
 ## Recherche
 
 Die Ansicht **Recherche** (Strg+2) führt eine Literatursuche von der Fragestellung bis zur ausgewählten Literatur in
-Zotero. Jede Recherche gehört zu einem ZotLLM-Projekt (die Projektseite zeigt ihren Stand); die Daten liegen in `research.db` im Datenordner.
+Zotero. Jede Recherche gehört zu einem Zotivity-Projekt (die Projektseite zeigt ihren Stand); die Daten liegen in `research.db` im Datenordner.
+
+<table>
+  <tr>
+    <td width="50%" valign="top"><img src="docs/screenshots/de/research-pool.png" alt="Pool: Treffer als Liste, Vorfilter und Recall-Check im rechten Fenster"><br><sub>Pool: Die Liste nutzt die Breite, Vorfilter und Recall-Check stehen rechts</sub></td>
+    <td width="50%" valign="top"><img src="docs/screenshots/de/research-fulltext.png" alt="Volltexte: Stand je Text"><br><sub>Volltexte: Stand je Text; fehlende PDFs halten nichts auf</sub></td>
+  </tr>
+</table>
+
+<p align="center"><img src="docs/screenshots/de/research-flow.png" alt="Übergabe: Ablauf der Auswahl als Diagramm" width="70%"></p>
 
 | Reiter | Was geschieht |
 |---|---|
-| Projekt | Fragestellung, Kurzbeschreibung, Ein- und Ausschlusskriterien |
+| Projekt | Fragestellung, Kurzbeschreibung, Ein- und Ausschlusskriterien, bis zu drei Reviewende, Zielbibliothek in Zotero |
 | Datenbanken | Disziplinen wählen; die App schlägt Datenbanken aus ihrem Katalog vor (Zugang, Bedingungen, Schlüssel) |
 | Suchstrategie | Konzeptblöcke → Suchstrings je Datenbank, mit Trefferzahl live |
 | Suche & Import | versionierte Suchstrings; Suche in PubMed, OpenAlex, Europe PMC, ERIC, EconBiz, Semantic Scholar, arXiv, OSF-Preprints und swisscovery; RIS-Import aus Ovid, EBSCO oder Web of Science |
 | Pool | Treffer ohne Duplikate (DOI, PMID, OpenAlex-ID, Titel), Abgleich mit der Zotero-Zielbibliothek, Vorfilter, Grenzfälle, fehlende Abstracts nachladen, Recall-Check mit Schlüsselarbeiten |
-| Ordner | Zielbibliothek und Ordner 1–20 (Kürzel 1–9), je einer Zotero-Sammlung zugeordnet |
+| Ordner | Ordner 1–20 (Kürzel 1–9), je einer Zotero-Sammlung zugeordnet |
 | Screening | Karten (J/K blättern, 1–9 Ordner, X ausschliessen, ? unsicher, G Grenzfall, A KI-Vorschlag übernehmen, Z rückgängig) oder Liste mit Sammel-Übernahme |
-| Übergabe | Plan je Ordner, dann nach Zotero – nur nach ausdrücklicher Bestätigung; Suchprotokoll als Markdown/CSV im Stil von PRISMA-S |
+| Übergabe | Plan je Ordner, dann nach Zotero – nur nach ausdrücklicher Bestätigung; Flussdiagramm und Suchprotokoll als Markdown/CSV im Stil von PRISMA-S; auf Wunsch ein KI-Entwurf für den Methodenteil |
+| Volltexte | freiwillig: Stand je Text (fehlt noch, vorhanden, nicht beschaffbar, eingeschlossen, ausgeschlossen mit Grund); fehlende PDFs halten nichts auf |
 
 - **Nichts verschwindet still:** Vorfilter markieren nur; Treffer mit einem Ausnahmebegriff werden Grenzfälle,
   Ausgeblendete lassen sich prüfen und zurückholen.
@@ -282,7 +303,9 @@ Zotero. Jede Recherche gehört zu einem ZotLLM-Projekt (die Projektseite zeigt i
   im Protokoll.
 - **Datenbanken nur auf legalem Weg:** offizielle Schnittstellen, von der Hochschule freigeschaltete Zugänge oder
   RIS-Export von Hand – keine Browser-Automatisierung.
-- **Zotero:** lokal über die API von Zotero (Schreibfreigabe wie im übrigen ZotLLM) oder über die Zotero-Web-API.
+- **PRISMA:** Die Recherche erfasst Suche und Auswahl. Datenextraktion, Risk of Bias und Synthese erfasst sie nicht, und je
+  Treffer ist der Entscheid einer Person festgehalten (kein unabhängiges Doppel-Screening). Das Protokoll sagt das auch so.
+- **Zotero:** lokal über die API von Zotero (Schreibfreigabe wie im übrigen Zotivity) oder, mit Schlüssel, über die Zotero-Web-API.
   Schlüssel für die Web-API und die Datenbanken liest die App aus dem Schlüsselspeicher (`zotero-web`, `openalex` –
   bei OpenAlex seit Februar 2026 nötig –, `ncbi`, `semanticscholar`); eine Einstellungsseite zum Eintragen ist geplant.
 
@@ -321,29 +344,29 @@ endgültige Text bleiben deine Arbeit (siehe [die Gefahr des Deskilling](#werkze
   Die Recherche sendet Suchstrings an die gewählten Datenbanken und für KI-Vorschläge Titel und Abstracts der Treffer
   sowie den Projekttext an das Sprachmodell.
 - **Downloads** von Modellen sind mit Commit und SHA-256 festgelegt; die eingebaute Laufzeit nimmt nur Anfragen mit dem
-  zufälligen Schlüssel von ZotLLM an.
+  zufälligen Schlüssel von Zotivity an.
 
 ## Kommandozeile
 
 ```
-.venv\Scripts\python -m zotllm serve --open          Dienst + Oberfläche
-.venv\Scripts\python -m zotllm status                Zustand
-.venv\Scripts\python -m zotllm keys set anthropic    Schlüssel verdeckt eingeben
-.venv\Scripts\python -m zotllm index --collection users/0:ABCD1234
-.venv\Scripts\python -m zotllm search "Chatbots Jugendliche"
-.venv\Scripts\python -m zotllm ask "Was schreiben meine Quellen über …?"
-.venv\Scripts\python -m zotllm mcp                    MCP-Server (stdio)
+.venv\Scripts\python -m zotivity serve --open          Dienst + Oberfläche
+.venv\Scripts\python -m zotivity status                Zustand
+.venv\Scripts\python -m zotivity keys set anthropic    Schlüssel verdeckt eingeben
+.venv\Scripts\python -m zotivity index --collection users/0:ABCD1234
+.venv\Scripts\python -m zotivity search "Chatbots Jugendliche"
+.venv\Scripts\python -m zotivity ask "Was schreiben meine Quellen über …?"
+.venv\Scripts\python -m zotivity mcp                    MCP-Server (stdio)
 ```
 
-Die installierte `ZotLLM.exe` versteht dieselben Befehle (`ZotLLM.exe mcp`, `… status`, `… index`).
+Die installierte `Zotivity.exe` versteht dieselben Befehle (`Zotivity.exe mcp`, `… status`, `… index`).
 
 ## Claude Desktop (MCP)
 
 In `claude_desktop_config.json`:
 
 ```json
-{ "mcpServers": { "zotllm": {
-    "command": "C:\\Users\\<name>\\AppData\\Local\\Programs\\ZotLLM\\ZotLLM.exe",
+{ "mcpServers": { "zotivity": {
+    "command": "C:\\Users\\<name>\\AppData\\Local\\Programs\\Zotivity\\Zotivity.exe",
     "args": ["mcp"] } } }
 ```
 
@@ -357,13 +380,13 @@ suchen und mit Seitenzahl und Zotero-Link zitieren.
   Installationsfehler – aktuelle `.xpi` unter *Einstellungen → Zotero und Export* neu speichern und installieren.
 - **Embedding-Fehler «noch nicht heruntergeladen»:** Unter *Einstellungen → Embedding* das Modell herunterladen. Bei
   Ollama: `ollama pull bge-m3`.
-- **Eingebaute Laufzeit startet nicht:** Fehlt eine Programmdatei (z. B. von einem Virenscanner entfernt), ZotLLM
+- **Eingebaute Laufzeit startet nicht:** Fehlt eine Programmdatei (z. B. von einem Virenscanner entfernt), Zotivity
   neu installieren. Ladefehler eines Modells stehen in `Logs\llama-<Modell>.log`.
 - **Dokumente «ohne Text»:** Scans ohne Textebene. Texterkennung über *Einstellungen → Experten → Einlesen → OCR*
   (benötigt eine Tesseract-Installation) oder die PDFs vorher mit OCR versehen.
-- **Logs:** `%LOCALAPPDATA%\ZotLLM\Logs\zotllm.log`.
+- **Logs:** `%LOCALAPPDATA%\Zotivity\Logs\zotivity.log`.
 - **Zotero-Datenordner in einem Cloud-Ordner** (OneDrive, Dropbox …): Zotero rät davon ab, weil das die Datenbank
-  beschädigen kann; besser die Zotero-eigene Synchronisation verwenden. ZotLLM ist davon nicht betroffen (liest nur
+  beschädigen kann; besser die Zotero-eigene Synchronisation verwenden. Zotivity ist davon nicht betroffen (liest nur
   über die API).
 
 ## Entwicklung
@@ -379,7 +402,7 @@ Die Tests laufen ohne Zotero, ohne Modell-Downloads und ohne API-Kosten: Sie sim
 ausführen.
 
 ```
-src/zotllm/
+src/zotivity/
   zotero/      Client für die lokale API (Lesen, Schreiben, Autorisierung)
   extract/     PDF/EPUB/HTML/Word/ODT-Text mit Seitenzahlen, Chunking, Literaturverzeichnis-Erkennung
   embeddings/  eingebaut (llama.cpp: Laufzeit, Katalog, Download, Kurztest, Namenssuche), Ollama, OpenAI, Gemini, …
@@ -388,7 +411,7 @@ src/zotllm/
   retrieval/   Hybride Suche (RRF), MMR, Reranking
   rag/         Fragen, Forschungsstand, Quellen
   research/    Recherche: Datenbanken, Suchstrings, Pool, Screening, Übergabe nach Zotero (/api/research/…);
-               kennt ZotLLM nicht – research_adapters.py verbindet (Zotero-Client, Schlüsselspeicher, Sprachmodelle)
+               kennt Zotivity nicht – research_adapters.py verbindet (Zotero-Client, Schlüsselspeicher, Sprachmodelle)
   server/      FastAPI + Oberfläche (static/: js, css, help/<Sprache>.md)
   plugin/      Zotero-Plugin (wird vom Dienst als .xpi ausgeliefert)
   locales/     Meldungen des Dienstes je Sprache

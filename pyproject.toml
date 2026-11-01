@@ -3,9 +3,9 @@ requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [project]
-name = "zotllm"
+name = "zotivity"
 version = "1.1.0"
-description = "Semantic search, cited answers and literature reviews for your own Zotero library – local service with selectable embedding models and LLMs."
+description = "Comprehensive scholarly work with your Zotero library: database search, screening, cited answers and checked literature reviews (formerly ZotLLM)."
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
@@ -37,20 +37,21 @@ build = ["pyinstaller>=6.20", "pywebview>=6.2"]
 dev = ["pytest>=8"]
 
 [project.urls]
-Homepage = "https://github.com/avibecoder42/ZotLLM"
-Changelog = "https://github.com/avibecoder42/ZotLLM/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/avibecoder42/Zotivity"
+Changelog = "https://github.com/avibecoder42/Zotivity/blob/main/CHANGELOG.md"
 
 [project.scripts]
-zotllm = "zotllm.cli:main"
+zotivity = "zotivity.cli:main"
+zotllm = "zotivity.cli:main"  # früherer Name, z. B. in bestehenden MCP-Einstellungen
 
 [project.gui-scripts]
 # Startet den Dienst ohne Konsolenfenster (Windows: pythonw)
-zotllm-service = "zotllm.cli:service_main"
+zotivity-service = "zotivity.cli:service_main"
 # Programmfenster mit eingebettetem Dienst
-zotllm-app = "zotllm.desktop:entry"
+zotivity-app = "zotivity.desktop:entry"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/zotllm"]
+packages = ["src/zotivity"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

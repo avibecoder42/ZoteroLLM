@@ -1,10 +1,10 @@
 import pytest
 
-from zotllm.keystore import get_store
-from zotllm.llm.anthropic_provider import supports_effort, supports_sampling
-from zotllm.llm.base import parse_json
-from zotllm.rag.markdown import md_to_html
-from zotllm.zotero import ZoteroAuthRequired, ZoteroClient, zotero_open_pdf_url, zotero_select_url
+from zotivity.keystore import get_store
+from zotivity.llm.anthropic_provider import supports_effort, supports_sampling
+from zotivity.llm.base import parse_json
+from zotivity.rag.markdown import md_to_html
+from zotivity.zotero import ZoteroAuthRequired, ZoteroClient, zotero_open_pdf_url, zotero_select_url
 
 
 def client(fz):
@@ -21,11 +21,11 @@ def test_status_and_write_flow(fake_zotero):
         zc.create_note("users/0", "ITEM0001", "<p>x</p>")
     assert zc.authorize() is True
     assert zc.has_write_access()  # "Immer erlauben" → Schlüssel liegt im Schlüsselspeicher
-    note = zc.create_note("users/0", "ITEM0001", "<p>Blatt</p>", tags=["ZotLLM-Auswertung"])
+    note = zc.create_note("users/0", "ITEM0001", "<p>Blatt</p>", tags=["Zotivity-Auswertung"])
     write = fake_zotero.writes[-1]
     assert write["body"][0]["parentItem"] == "ITEM0001"
     assert fake_zotero.items[note]["data"]["note"] == "<p>Blatt</p>"
-    col = zc.create_collection("users/0", "ZotLLM – Test")
+    col = zc.create_collection("users/0", "Zotivity – Test")
     assert zc.add_to_collection("users/0", col, ["ITEM0001"]) == 1
     assert col in fake_zotero.items["ITEM0001"]["data"]["collections"]
     # Zweites Hinzufügen ändert nichts
@@ -53,7 +53,7 @@ def test_zotero_urls():
 
 
 def test_bidi_isolates_removed(engine):
-    from zotllm.rag.sources import author_year
+    from zotivity.rag.sources import author_year
 
     engine.store.upsert_items("users/0", [{"key": "BIDI0001", "version": 1,
                                            "data": {"itemType": "journalArticle", "title": "T", "creators": []},

@@ -7,8 +7,8 @@ from fakes import ScriptedModel
 from test_rag import indexed, install_models  # noqa: F401 - Fixture
 from test_server import H, client  # noqa: F401 - Fixture
 
-from zotllm.jobs import Job
-from zotllm.rag import ReviewService
+from zotivity.jobs import Job
+from zotivity.rag import ReviewService
 
 
 def wait(client, job):

@@ -7,11 +7,11 @@ import pytest
 from fakes import FakeZotero
 from test_indexing_search import SOCIAL, TEEN
 
-from zotllm import keystore
-from zotllm.index.indexer import Indexer
-from zotllm.jobs import Job
-from zotllm.retrieval import Searcher
-from zotllm.zotero import ZoteroClient
+from zotivity import keystore
+from zotivity.index.indexer import Indexer
+from zotivity.jobs import Job
+from zotivity.retrieval import Searcher
+from zotivity.zotero import ZoteroClient
 
 GROUP = "groups/1234567"
 

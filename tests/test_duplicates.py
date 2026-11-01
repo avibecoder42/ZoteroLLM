@@ -4,11 +4,11 @@ gefunden (auch in Korpora, die nur eine andere Kopie enthalten), Entscheidungen 
 from fastapi.testclient import TestClient
 from test_indexing_search import TEEN, build_library, run_index
 
-from zotllm.index import duplicates
-from zotllm.index.duplicates import find_groups, normalize_doi, title_key
-from zotllm.retrieval import Searcher
+from zotivity.index import duplicates
+from zotivity.index.duplicates import find_groups, normalize_doi, title_key
+from zotivity.retrieval import Searcher
 
-H = {"X-ZotLLM": "1"}
+H = {"X-Zotivity": "1"}
 
 
 def row(lib, key, title, author="Müller", year=2024, doi="", extra="", item_type="journalArticle"):
@@ -73,7 +73,7 @@ def test_only_the_chosen_copy_is_read_and_found(zengine, fake_zotero):
 
     # Korpus nur mit der anderen Kopie: das Werk gehört dazu – über die gewählte Kopie
     cid = zengine.store.create_corpus("Soziale Arbeit", ["users/0:COLB0002"])
-    from zotllm.index.indexer import Indexer
+    from zotivity.index.indexer import Indexer
 
     assert Indexer(zengine).scope(corpus_id=cid) == {("users/0", "ITEMB001"), ("users/0", "ITEMA001")}
     assert Indexer(zengine).scope(corpus_id=cid, resolve=False) == {("users/0", "ITEMB001"), ("users/0", "ITEMD001")}
@@ -100,8 +100,8 @@ def test_only_the_chosen_copy_is_read_and_found(zengine, fake_zotero):
 def test_duplicates_api(zengine, fake_zotero, monkeypatch):
     build_library(fake_zotero)
     add_copy(fake_zotero)
-    monkeypatch.setattr("zotllm.server.app.ollama_available", lambda url: False)
-    from zotllm.server.app import create_app
+    monkeypatch.setattr("zotivity.server.app.ollama_available", lambda url: False)
+    from zotivity.server.app import create_app
 
     with TestClient(create_app(zengine)) as c:
         # Vor dem ersten Lauf: Bibliothek noch nie abgeglichen → sync=1 gleicht vorher ab

@@ -5,9 +5,9 @@ import json
 from test_indexing_search import build_library
 from test_server import H, client  # noqa: F401 - Fixture
 
-from zotllm.exporting import CiteItem, Citations
-from zotllm.rag.review import NO_PAGE
-from zotllm.zotero import styles as zstyles
+from zotivity.exporting import CiteItem, Citations
+from zotivity.rag.review import NO_PAGE
+from zotivity.zotero import styles as zstyles
 
 HEAD = '<style xmlns="http://purl.org/net/xbiblio/csl" class="{cls}" version="1.0"><info><title>{title}</title>' \
        '<id>http://www.zotero.org/styles/{id}</id>{extra}<category citation-format="{fmt}"/></info>'
@@ -136,7 +136,7 @@ def test_names_follow_the_style(zengine, tmp_path, monkeypatch):
     assert cit.short([CiteItem("users/0", "GONG0001", "2")]) == "(Gong/Li 2026: 2)"
     assert cit.short([CiteItem("users/0", "GONG0001", NO_PAGE)]) == "(Gong/Li 2026: o. S.)"
     zengine.settings_store.update({"citation_style": "http://www.zotero.org/styles/test-slash"})
-    from zotllm.exporting import source_reference
+    from zotivity.exporting import source_reference
 
     ref = source_reference(zengine, "users/0", "GONG0001", "<FEFF0032>", "text")  # alte, rohe Beschriftung
     assert ref["short"] == "(Gong/Li 2026: 2)" and "adaptive ecological trap" in ref["reference"]

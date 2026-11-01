@@ -1,4 +1,4 @@
-"""KI der Recherche über die Sprachmodelle von ZotLLM (ResearchChat in research_adapters.py) – ohne Netz und ohne den
+"""KI der Recherche über die Sprachmodelle von Zotivity (ResearchChat in research_adapters.py) – ohne Netz und ohne den
 echten Schlüsselspeicher. Gemini mit einer Attrappe des google-genai-Clients, sonst eine Modell-Attrappe."""
 
 from __future__ import annotations
@@ -12,14 +12,14 @@ from google.genai import errors as genai_errors
 from google.genai import types
 from research_fakes import FakeZoteroPort
 
-from zotllm.keystore import get_store
-from zotllm.llm import ChatModel, LLMError, StreamEvent, Usage
-from zotllm.llm.gemini_provider import GeminiChat
-from zotllm.research import ai as research_ai
-from zotllm.research.errors import ResearchError
-from zotllm.research.service import ResearchService
-from zotllm.research_adapters import SCHEMA_HINT, ResearchChat, ZoteroClientPort, build_research_service, sync_prices
-from zotllm.settings import Settings
+from zotivity.keystore import get_store
+from zotivity.llm import ChatModel, LLMError, StreamEvent, Usage
+from zotivity.llm.gemini_provider import GeminiChat
+from zotivity.research import ai as research_ai
+from zotivity.research.errors import ResearchError
+from zotivity.research.service import ResearchService
+from zotivity.research_adapters import SCHEMA_HINT, ResearchChat, ZoteroClientPort, build_research_service, sync_prices
+from zotivity.settings import Settings
 
 SCHEMA = {"type": "object", "properties": {"items": {"type": "array"}}, "required": ["items"], "additionalProperties": False}
 
@@ -30,9 +30,9 @@ def settings_with(**llm) -> Settings:
     return s
 
 
-# ------------------------------------------------------------------------------------------- Gemini über ZotLLM
+# ------------------------------------------------------------------------------------------- Gemini über Zotivity
 class FakeGenai:
-    """Wie ``genai.Client`` für ZotLLMs GeminiChat: ``models.generate_content_stream(**kw)``; Antworten oder Fehler der
+    """Wie ``genai.Client`` für Zotivitys GeminiChat: ``models.generate_content_stream(**kw)``; Antworten oder Fehler der
     Reihe nach (die letzte Antwort wiederholt sich)."""
 
     def __init__(self, *outcomes):
@@ -84,7 +84,7 @@ def test_gemini_request_shape_and_usage():
     assert cfg.thinking_config.thinking_level == types.ThinkingLevel.LOW
     assert chat.usage == {"input_tokens": 400, "output_tokens": 350, "cache_read_input_tokens": 800, "requests": 1}
     assert (chat.provider, chat.vendor, chat.label) == ("gemini", "Google", "Google Gemini (gemini-flash-latest)")
-    assert chat.key_source == "ZotLLM (Schlüsselspeicher)"
+    assert chat.key_source == "Zotivity (Schlüsselspeicher)"
 
 
 def test_gemini_retries_without_thinking_or_schema():
@@ -184,14 +184,14 @@ def test_invalid_json_is_asked_again_once():
 
 
 # ------------------------------------------------------------------------------------------- Schlüssel, Modellwahl
-def test_keys_come_from_zotllm_store(store, sim, monkeypatch):
+def test_keys_come_from_zotivity_store(store, sim, monkeypatch):
     keys = get_store()
     keys.set("openalex", "OA-KEY")
     keyring.set_password("ZoteroLLM", "ncbi", "N-ALT")  # früherer Name wird übernommen
     svc = ResearchService(store, keys, {"web": FakeZoteroPort()}, http=sim.http(), sleep=lambda s: None)
-    assert svc.info()["keys"] == {"ncbi": True, "openalex": True, "semanticscholar": False}
+    assert svc.info()["keys"] == {"ncbi": True, "openalex": True, "semanticscholar": False, "zotero-web": False}
     assert svc.openalex().api_key == "OA-KEY" and keys.get("ncbi") == "N-ALT"
-    assert keyring.get_password("ZotLLM", "ncbi") == "N-ALT"
+    assert keyring.get_password("Zotivity", "ncbi") == "N-ALT"
 
     chat = ResearchChat(lambda: settings_with(helper_provider="gemini", helper_model="gemini-flash-latest"), keys)
     assert not chat and chat.key_source == ""
@@ -245,7 +245,7 @@ def test_chat_model_is_rebuilt_when_key_or_model_changes():
 
 
 # ------------------------------------------------------------------------------------------- Preise, Aufbau
-def test_prices_from_zotllm_settings(monkeypatch):
+def test_prices_from_zotivity_settings(monkeypatch):
     monkeypatch.setattr(research_ai, "PRICES", dict(research_ai.PRICES))
     sync_prices(settings_with(prices={"gemini-flash-latest": [0.5, 3.0], "kaputt": [1]}).llm)
     assert research_ai.PRICES["gemini-flash-latest"] == (0.5, 3.0, 0.5) and "kaputt" not in research_ai.PRICES
@@ -259,10 +259,10 @@ def test_build_research_service(zengine, monkeypatch):
     svc = build_research_service(zengine)
     try:
         db = Path(svc.store.path)
-        assert db.name == "research.db" and db.parent == zengine.store.path.parent  # Datenordner von ZotLLM
+        assert db.name == "research.db" and db.parent == zengine.store.path.parent  # Datenordner von Zotivity
         assert set(svc.zotero) == {"web", "local"} and isinstance(svc.zotero["local"], ZoteroClientPort)
-        assert svc.zotero["local"].status()["ok"]  # ZotLLMs Client gegen die simulierte lokale API
-        assert isinstance(svc.chat, ResearchChat) and svc.http.client.headers["User-Agent"].startswith("ZotLLM/")
+        assert svc.zotero["local"].status()["ok"]  # Zotivitys Client gegen die simulierte lokale API
+        assert isinstance(svc.chat, ResearchChat) and svc.http.client.headers["User-Agent"].startswith("Zotivity/")
         zengine.settings_store.update({"llm": {"prices": {"claude-haiku-5-5": [1.0, 5.0]}}})
         assert research_ai.PRICES["claude-haiku-5-5"] == (1.0, 5.0, 1.0)  # Änderung in den Einstellungen gilt sofort
     finally:

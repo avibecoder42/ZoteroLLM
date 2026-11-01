@@ -7,11 +7,11 @@ import pytest
 from fastapi.testclient import TestClient
 from test_indexing_search import build_library, run_index
 
-from zotllm.index.indexer import Indexer
-from zotllm.index.store import PROJECT_COLORS, Store
-from zotllm.jobs import Job, JobCancelled
+from zotivity.index.indexer import Indexer
+from zotivity.index.store import PROJECT_COLORS, Store
+from zotivity.jobs import Job, JobCancelled
 
-H = {"X-ZotLLM": "1"}
+H = {"X-Zotivity": "1"}
 
 
 def test_runs_are_recorded_only_with_work(zengine, fake_zotero):
@@ -64,8 +64,8 @@ def test_stage_run(zengine, fake_zotero):
 def test_overview_and_runs_api(zengine, fake_zotero, monkeypatch):
     build_library(fake_zotero)
     run_index(zengine)
-    monkeypatch.setattr("zotllm.server.app.ollama_available", lambda url: False)
-    from zotllm.server.app import create_app
+    monkeypatch.setattr("zotivity.server.app.ollama_available", lambda url: False)
+    from zotivity.server.app import create_app
 
     with TestClient(create_app(zengine)) as c:
         o = c.get("/api/index/overview").json()
@@ -95,8 +95,8 @@ def test_last_indexed_corpus(zengine, fake_zotero, monkeypatch):
     time.sleep(0.05)
     zengine.store.mark_pending("users/0", ["ATTB0001"])
     run_index(zengine, corpus_id=sa)  # nur „Soziale Arbeit“ wird neu gelesen
-    monkeypatch.setattr("zotllm.server.app.ollama_available", lambda url: False)
-    from zotllm.server.app import create_app
+    monkeypatch.setattr("zotivity.server.app.ollama_available", lambda url: False)
+    from zotivity.server.app import create_app
 
     with TestClient(create_app(zengine)) as c:
         last = {k["id"]: k["last_indexed_at"] for k in c.get("/api/corpora").json()["corpora"]}
@@ -121,7 +121,7 @@ def test_project_colors_are_stored(tmp_path):
 
 
 def test_reimport_keeps_color(engine):
-    from zotllm.projects_io import export_project, import_project
+    from zotivity.projects_io import export_project, import_project
 
     pid = engine.store.create_project("Farbig")
     color = engine.store.project(pid)["color"]

@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+  "name": "Zotivity",
+  "version": "0.1.0",
+  "description": "Umfassendes wissenschaftliches Arbeiten mit der eigenen Bibliothek – schlanke Anbindung an den lokalen Zotivity-Dienst.",
+  "author": "Zotivity",
+  "icons": {
+    "48": "content/icon.svg",
+    "96": "content/icon.svg"
+  },
+  "applications": {
+    "zotero": {
+      "id": "zotivity@zotivity.local",
+      "update_url": "https://zotivity.invalid/updates.json",
+      "strict_min_version": "8.0",
+      "strict_max_version": "10.*"
+    }
+  }
+}

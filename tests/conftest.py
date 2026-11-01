@@ -11,12 +11,12 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from fakes import FakeZotero, MemoryKeyring  # noqa: E402
 
-from zotllm import keystore  # noqa: E402
-from zotllm.embeddings.base import Embedder  # noqa: E402
-from zotllm.engine import Engine  # noqa: E402
-from zotllm.index.store import Store  # noqa: E402
-from zotllm.settings import EmbeddingSettings, SettingsStore  # noqa: E402
-from zotllm.zotero import ZoteroClient  # noqa: E402
+from zotivity import keystore  # noqa: E402
+from zotivity.embeddings.base import Embedder  # noqa: E402
+from zotivity.engine import Engine  # noqa: E402
+from zotivity.index.store import Store  # noqa: E402
+from zotivity.settings import EmbeddingSettings, SettingsStore  # noqa: E402
+from zotivity.zotero import ZoteroClient  # noqa: E402
 
 
 class HashEmbedder(Embedder):
@@ -53,14 +53,14 @@ def memory_keyring(monkeypatch):
 @pytest.fixture(autouse=True)
 def no_real_zotero_styles(monkeypatch):
     """Nie die Zotero-Einstellungen und Stile des Rechners lesen (Tests mit Stilen setzen einen eigenen Ordner)."""
-    from zotllm.zotero import styles
+    from zotivity.zotero import styles
 
     monkeypatch.setattr(styles, "zotero_data_dir", lambda store=None: None)
 
 
 @pytest.fixture
 def engine(tmp_path, monkeypatch):
-    monkeypatch.setenv("ZOTLLM_HOME", str(tmp_path))
+    monkeypatch.setenv("ZOTIVITY_HOME", str(tmp_path))
     ss = SettingsStore(tmp_path / "settings.json")
     # Schnell und ohne Nebenwirkungen: Lesen im selben Prozess, kein Wachhalten, keine Sicherungen
     # (die Robustheitsfunktionen haben eigene Tests in test_robustness.py)

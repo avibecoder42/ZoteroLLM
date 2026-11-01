@@ -43,11 +43,11 @@ jobs:
 
       - uses: actions/upload-artifact@v5
         with:
-          name: ZotLLM-Setup
+          name: Zotivity-Setup
           path: |
-            dist/ZotLLM-Setup-*.exe
-            dist/ZotLLM-Setup-*.exe.sha256
-            dist/zotllm-update.json
+            dist/Zotivity-Setup-*.exe
+            dist/Zotivity-Setup-*.exe.sha256
+            dist/zotivity-update.json
             dist/release-notes.md
 
       - name: Release veröffentlichen
@@ -57,5 +57,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           $version = (python packaging/build_tools.py print-version).Trim()
-          gh release create "${{ github.ref_name }}" "dist/ZotLLM-Setup-$version.exe" "dist/ZotLLM-Setup-$version.exe.sha256" `
-            --title "ZotLLM $version" --notes-file dist/release-notes.md --verify-tag
+          gh release create "${{ github.ref_name }}" "dist/Zotivity-Setup-$version.exe" "dist/Zotivity-Setup-$version.exe.sha256" `
+            --title "Zotivity $version" --notes-file dist/release-notes.md --verify-tag

@@ -1,0 +1,16 @@
+zotivity-menu =
+    .label = Zotivity
+zotivity-index-collection =
+    .label = Sammlung indexieren
+zotivity-ask-collection =
+    .label = Fragen zu dieser Sammlung …
+zotivity-ask-items =
+    .label = Fragen zu ausgewählten Einträgen …
+zotivity-index-items =
+    .label = Ausgewählte Einträge indexieren
+zotivity-sheets-items =
+    .label = Auswertungsblätter erstellen
+zotivity-open =
+    .label = Zotivity öffnen
+zotivity-sync =
+    .label = Zotivity: jetzt abgleichen

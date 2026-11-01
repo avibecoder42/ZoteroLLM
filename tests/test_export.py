@@ -53,7 +53,7 @@ def test_answer_as_word_with_zotero_fields(client):
     first = re.search(r"ADDIN ZOTERO_ITEM CSL_CITATION (\{.*?\})\s+ADDIN", code).group(1)
     cit = json.loads(first)
     item = cit["citationItems"][0]
-    assert item["uris"] == ["http://zotero.org/users/local/abcd1234/items/ITEMA001"]  # vom ZotLLM-Plugin
+    assert item["uris"] == ["http://zotero.org/users/local/abcd1234/items/ITEMA001"]  # vom Zotivity-Plugin
     assert item["locator"] == "2" and item["label"] == "page"
     assert item["itemData"]["title"] == "Chatbots als Gesprächspartner"
     assert "ADDIN ZOTERO_BIBL" in code and "CSL_BIBLIOGRAPHY" in code
@@ -115,7 +115,7 @@ def test_export_errors(client):
 
 
 def test_formulas_become_text():
-    from zotllm.rag.markdown import latex_to_text
+    from zotivity.rag.markdown import latex_to_text
 
     assert latex_to_text(r"($\beta = .35$ and $.39$; $\alpha \approx .89\text{--}.91$; $I^2 > 98\%$; $r = -.14$)") == \
         "(β = .35 and .39; α ≈ .89–.91; I² > 98%; r = −.14)"
@@ -127,7 +127,7 @@ def test_formulas_become_text():
 
 
 def test_author_named_before_citation():
-    from zotllm.rag.review import named_before
+    from zotivity.rag.review import named_before
 
     shin = {"creators": [{"creatorType": "author", "lastName": "Shin"}, {"creatorType": "author", "lastName": "Kim"},
                          {"creatorType": "author", "lastName": "Lee"}]}

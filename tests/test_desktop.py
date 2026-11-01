@@ -4,10 +4,10 @@ import sys
 
 from fastapi.testclient import TestClient
 
-from zotllm import desktop, updates
-from zotllm.server.app import create_app
+from zotivity import desktop, updates
+from zotivity.server.app import create_app
 
-H = {"X-ZotLLM": "1"}
+H = {"X-Zotivity": "1"}
 
 
 def test_open_external_only_known_schemes(monkeypatch):
@@ -33,14 +33,14 @@ def test_window_icon_never_passed_as_png_on_windows():
 def test_splash_follows_theme():
     light = desktop._splash_html("light")
     dark = desktop._splash_html("dark")
-    assert "ZotLLM" in light and "<svg" in light
+    assert "Zotivity" in light and "<svg" in light
     assert "#f4f3f0" in light and "#121212" in dark
 
 
 def test_cli_commands_bypass_window(monkeypatch):
     called = {}
-    monkeypatch.setattr(sys, "argv", ["ZotLLM.exe", "status"])
-    monkeypatch.setattr("zotllm.cli.main", lambda argv: called.setdefault("cli", argv))
+    monkeypatch.setattr(sys, "argv", ["Zotivity.exe", "status"])
+    monkeypatch.setattr("zotivity.cli.main", lambda argv: called.setdefault("cli", argv))
     monkeypatch.setattr(desktop, "run_desktop", lambda argv: called.setdefault("desktop", argv) and 0)
     assert desktop.entry() == 0
     assert called == {"cli": ["status"]}
@@ -106,3 +106,12 @@ def test_version_order():
     assert updates.version_tuple("0.10.0") > updates.version_tuple("0.9.3")
     assert updates.version_tuple("1.0") == updates.version_tuple("1.0.0.0")
     assert updates.version_tuple("0.2.0b1") > updates.version_tuple("0.1.9")
+
+
+def test_zoom_without_native_window_does_nothing():
+    from types import SimpleNamespace
+
+    from zotivity.desktop import JsApi, set_webview_zoom
+
+    assert set_webview_zoom(SimpleNamespace(native=None), 1.25) is False
+    assert JsApi(SimpleNamespace(window=SimpleNamespace())).set_zoom(9) is False

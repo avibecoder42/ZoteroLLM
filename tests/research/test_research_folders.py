@@ -6,8 +6,8 @@ import pytest
 from research_fakes import FakeZoteroPort, MemoryKeyStore
 from test_research_ai import FakeChat
 
-from zotllm.research.errors import ResearchError, ZoteroWriteRefused
-from zotllm.research.service import ResearchService
+from zotivity.research.errors import ResearchError, ZoteroWriteRefused
+from zotivity.research.service import ResearchService
 
 COLS = [{"key": "A", "name": "test", "parent": None}, {"key": "B", "name": "Rollen", "parent": "A"},
         {"key": "C", "name": "alt", "parent": None}, {"key": "D", "name": "Bewältigung", "parent": "A"},

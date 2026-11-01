@@ -3,8 +3,8 @@ zu lange Abschnitte und „Kürzen“ (Anlass: 1600 Wörter geplant, rund 2400 g
 
 from fastapi.testclient import TestClient
 
-from zotllm.jobs import Job
-from zotllm.rag.review import count_words, section_budget
+from zotivity.jobs import Job
+from zotivity.rag.review import count_words, section_budget
 from test_truncation import H, Scripted, service
 
 LONG = "## Einleitung\n\n" + "Jugendliche nutzen Chatbots häufig und vielfältig. " * 30 + "[@A, S. 2]."
@@ -75,8 +75,8 @@ def test_shorten_long_sections(zengine):
 
 def test_shorten_api(zengine, monkeypatch):
     rid = make_review(zengine, [{"heading": "Einleitung", "text": SHORT}])
-    monkeypatch.setattr("zotllm.server.app.ollama_available", lambda url: False)
-    from zotllm.server.app import create_app
+    monkeypatch.setattr("zotivity.server.app.ollama_available", lambda url: False)
+    from zotivity.server.app import create_app
 
     with TestClient(create_app(zengine)) as c:
         r = c.post(f"/api/reviews/{rid}/shorten", headers=H, json={})
