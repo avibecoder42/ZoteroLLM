@@ -16,9 +16,9 @@ library, not only language models.
   environment variables `ZOTLLM_*` still work.
 
 ### New
-- **Database search** (new project view, Ctrl+2; German: “Recherche”): the step before the literature review, taken
-  over from the standalone literature search app (litsearch) as the module `zotivity.research`. A search project leads from the research question to the
-  selected literature in Zotero, in nine tabs (Alt+1 … Alt+9). Everything is saved automatically:
+- **Database search** (new project view, Ctrl+2; German: “Recherche”): the step before the literature review. A search
+  project leads from the research question to the selected literature in Zotero, in nine tabs (Alt+1 … Alt+9). Everything
+  is saved automatically:
   - **Project** and **Databases:** research question, criteria, up to three reviewers, target library in Zotero;
     disciplines and a database catalog with access, terms of use and keys.
   - **Search strategy** and **Search & import:** concept blocks → search strings per database with live hit counts; AI
