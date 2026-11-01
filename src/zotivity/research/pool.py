@@ -157,6 +157,8 @@ def evaluate(prefilters: list[dict], rec: dict, reviews: dict[str, str] | None =
                                "strength": STRENGTH[exc["where"]]})
         elif reviews.get(f["id"]) in ("restore", "borderline"):
             continue  # geprüft und zurückgeholt
+        elif f.get("kind") == "in_zotero" and reviews.get(f["id"]) != "exclude" and (rec.get("decision") or {}).get("status", "open") != "open":
+            continue  # selbst gesichtet: Oft ist der Treffer erst durch die Übergabe in Zotero
         else:
             hidden.append(f["id"])
     return {"matched": matched, "hidden": hidden, "borderline": borderline}

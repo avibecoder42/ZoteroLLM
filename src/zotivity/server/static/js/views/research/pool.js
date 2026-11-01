@@ -377,7 +377,7 @@ export function poolTab() {
       h('div', { class: 'row wrap' },
         h('div', { class: 'grow' }, h('h2', null, t('Pool')),
           h('div', { class: 'muted' }, t('{n} eindeutige Treffer · {h} durch Vorfilter ausgeblendet · {v} zu sichten · {b} Grenzfälle',
-            { n: fmtInt(pool.total), h: fmtInt(pool.hidden), v: fmtInt(pool.total - pool.hidden), b: fmtInt(sum.borderline || 0) }))),
+            { n: fmtInt(pool.total), h: fmtInt(pool.hidden), v: fmtInt((sum.visible || 0) - (sum.screened || 0)), b: fmtInt(sum.borderline || 0) }))),
         pool.total ? btn(t('Pool zurücksetzen …'), { icon: 'trash', kind: 'ghost', busy: isBusy('reset-pool'), onClick: () => resetPool(pool),
           title: t('Alle Treffer und Entscheide löschen, um neu zu suchen') }) : null,
         btn(t('Mit Zotero abgleichen'), { icon: 'zotero', busy: isBusy('zotero-match'), onClick: zoteroMatch,

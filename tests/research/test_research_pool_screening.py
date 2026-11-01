@@ -86,6 +86,45 @@ def test_prefilters_and_zotero_match(service, zotero):
     assert service.summary(pid)["visible"] == 1
 
 
+def test_handed_over_records_stay_visible(service):
+    """Die Übergabe setzt den Zotero-Schlüssel – das darf gesichtete Treffer nicht nachträglich ausblenden."""
+    pid = make_project(service)["id"]
+    run = service.store.add_run(pid, kind="import", source="ris")
+    service.store.add_records(pid, run, [{"title": f"Record number {i} about online conflict", "abstract": "a" * 60} for i in range(4)])
+    ids = [it["id"] for it in service.queue(pid)["items"]]
+    service.decide(pid, ids[0], "include", 2)
+    service.decide(pid, ids[1], "exclude", reason="Cyberbullying")
+    service.store.add_link(pid, ids[0], "users/0", "K0", "COLL", "created")
+    s = service.summary(pid)
+    assert (s["visible"], s["screened"], s["included"], s["hidden"]) == (4, 2, 1, 0)
+    assert [it["id"] for it in service.queue(pid, "include")["items"]] == [ids[0]]
+    assert service.pool(pid)["hidden"] == 0
+
+    # Noch nicht gesichtet und schon in Zotero: Das blendet der Vorfilter weiter aus
+    service.store.add_link(pid, ids[2], "users/0", "K2", "COLL", "added")
+    s = service.summary(pid)
+    assert (s["visible"], s["screened"], s["hidden"]) == (3, 2, 1)
+
+    # Abgeschaltet nennt er nur, was er tatsächlich ausblenden würde, nicht die gesichteten Treffer
+    p = service.get_project(pid)
+    off = [{**f, "active": False} if f["kind"] == "in_zotero" else f for f in p["prefilters"]]
+    service.update_project(pid, {"prefilters": off})
+    assert next(f for f in service.pool(pid)["prefilters"] if f["kind"] == "in_zotero")["count"] == 1
+    service.update_project(pid, {"prefilters": p["prefilters"]})
+
+    # Ein über „Ausgeblendete prüfen“ bestätigter Ausschluss bleibt ausgeblendet
+    service.review(pid, [ids[2]], "exclude")
+    assert service.store.current_decision(pid, ids[2])["status"] == "exclude"
+    assert service.summary(pid)["hidden"] == 1
+
+    # Rückgängig: wieder offen und in Zotero, also wieder ausgeblendet
+    service.store.add_link(pid, ids[3], "users/0", "K3", "COLL", "added")
+    service.decide(pid, ids[3], "include", 2)
+    assert ids[3] not in [it["id"] for it in service.pool(pid, status="hidden")["items"]]
+    service.undo(pid)
+    assert ids[3] in [it["id"] for it in service.pool(pid, status="hidden")["items"]]
+
+
 def test_screening_decide_and_undo(service):
     pid = make_project(service)["id"]
     run = service.store.add_run(pid, kind="import", source="ris")

@@ -14,7 +14,7 @@ from . import export as export_mod
 from . import protocol
 from .errors import NotFound, ResearchError, SourceError, ZoteroWriteRefused
 from .http import Http
-from .pool import DEFAULT_PREFILTERS, exception_hit, filter_pool, matches, status_of, summarize, with_ids
+from .pool import DEFAULT_PREFILTERS, evaluate, filter_pool, status_of, summarize, with_ids
 from .ports import KEY_NCBI, KEY_OPENALEX, KEY_SEMANTICSCHOLAR, KEY_ZOTERO_WEB, ChatModel, KeyStore, ZoteroPort
 from .querybuild import TRANSLATABLE, build_all, clean_terms, parse_pubmed
 from .querybuild import translate as translate_query_string
@@ -408,9 +408,11 @@ class ResearchService:
         items, prefilters = self._pool_items(pid, p)
         stats = self.rule_stats(prefilters, items)
         records = self._records(pid)
+        reviews = self.store.reviews(pid)
         for f in prefilters:  # abgeschaltete Regel: wie viele sie ausblenden würde
             if not f.get("active"):
-                stats[f["id"]]["hidden"] = sum(1 for rec in records if matches(f, rec) and not exception_hit(f, rec))
+                on = {**f, "active": True}
+                stats[f["id"]]["hidden"] = sum(1 for rec in records if evaluate([on], rec, reviews.get(rec["id"]))["hidden"])
         shown = filter_pool(items, **{k: v for k, v in filters.items() if v not in (None, "")})
         return {"items": shown, "total": len(items), "hidden": sum(1 for it in items if it["hidden_by"]),
                 "prefilters": [{**f, **stats.get(f["id"], {}), "count": stats.get(f["id"], {}).get("hidden", 0)}
